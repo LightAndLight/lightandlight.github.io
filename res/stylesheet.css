@@ -1,0 +1,125 @@
+html {
+	background-color: #e1e1e1;
+	color: #2f2f2f;
+	font-family: "Source Serif Pro", serif;
+}
+
+body {
+	background-color: #eeeeee;
+	border-radius: 10px;
+	border-spacing: 10px;
+	display: block;
+	margin-bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0;
+	width: 90%;
+}
+
+h1 {
+	font-family: "Source Sans Pro", sans-serif;
+	font-size: 3em;
+	font-weight: 200;
+	margin: 0.5em;
+}
+
+p {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+header {
+	display: block;
+	font-family: "Source Sans Pro", sans-serif;
+	font-size: 3em;
+	text-align: center;
+}
+
+nav {
+	display: table-cell;
+	margin-right: 1%;
+	vertical-align: top;
+	width: 25%;
+}
+
+nav ul {
+	background-color: #fafafa;
+	border-radius: 10px;
+	display: inline-block;
+	list-style-type: none;
+	margin: 0;
+	padding: 5%;
+	width: 90%;
+}
+
+nav li {
+	display: inline-block;
+	width: 100%;
+}
+
+section {
+	background-color: #fafafa;
+	border-radius: 10px;
+	display: table-cell;
+}
+
+article {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 30em;
+	word-wrap: break-word;
+}
+
+div#central {
+	display: table;
+	width: 100%;
+}
+
+footer {
+	height: 5%;
+	margin-top: 1%;
+	text-align: center;
+}
+
+footer#page {
+	display: block;
+	text-align: center;
+}
+
+@media screen and (max-width: 750px) {
+	header {
+		display: block;
+		width: 100%;
+	}
+
+	nav {
+		display: block;
+		margin-bottom: 1%;
+		width: 100%;
+	}
+
+	nav ul {
+		display: block;
+		padding: 2.5%;
+		width: 95%;
+	}
+
+	nav li {
+		display: inline;
+	}
+
+	section {
+		display: inline-block;
+		width: 100%;
+	}
+
+	div#central {
+		display: block;
+		width: 100%;
+	}
+
+	footer#page {
+		display: block;
+		width: 100%;
+	}
+}
