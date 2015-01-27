@@ -1,0 +1,5 @@
+#Vim backup files
+*~
+
+#Jekyll generated site
+_site
