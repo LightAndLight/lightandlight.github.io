@@ -3,3 +3,7 @@
 
 #Jekyll generated site
 _site/
+
+#Gemfile.lock
+
+Gemfile.lock
