@@ -2,4 +2,4 @@
 *~
 
 #Jekyll generated site
-_site
+_site/
