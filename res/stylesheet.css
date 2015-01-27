@@ -86,7 +86,7 @@ footer#page {
 	text-align: center;
 }
 
-@media screen and (max-width: 750px) {
+@media handheld, screen and (max-width: 750px) {
 	header {
 		display: block;
 		width: 100%;
