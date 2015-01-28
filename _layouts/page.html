@@ -6,21 +6,13 @@
 		<link rel="stylesheet" href="/res/stylesheet.css">
 		<link rel="stylesheet" href="/res/syntax.css">
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro" type="text/css">
+        <script src="/res/script.js"></script>
 		<title> {{ page.title }} </title>
 	</head>
 	
 	<body>
 		<header></header>
-		<nav>
-			<a href="/" class="heading">Home</a>
-			&nbsp;
-			&nbsp;
-			<a href="/about.html" class="heading">About</a>
-			&nbsp;
-			&nbsp;
-			<a href="/blog.html" class="heading">Blog</a>
-		</nav>
-
+	    {% include nav.html %}	
 		<section> {{ content }} </section>
 		<footer><p>Isaac Elliott 2015</p></footer>
 	</body>
