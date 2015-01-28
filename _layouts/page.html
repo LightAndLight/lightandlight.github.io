@@ -4,23 +4,24 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="/res/stylesheet.css">
-		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200|Source+Serif+Pro" type="text/css">
+		<link rel="stylesheet" href="/res/syntax.css">
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro" type="text/css">
 		<title> {{ page.title }} </title>
 	</head>
 	
 	<body>
-		<header> Header </header>
-		<div id="central">
-			<nav>
-			<ul>
-				<li><a href="/">Home</a></li>
-				<li>About</li>
-				<li>Blog</li>
-			</ul>
-			</nav>
+		<header></header>
+		<nav>
+			<a href="/">Home</a>
+			&nbsp;
+			&nbsp;
+			<a href="/about.html">About</a>
+			&nbsp;
+			&nbsp;
+			<a href="/blog.html">Blog</a>
+		</nav>
 
-			<section><article> {{ content }} </article></section>
-		</div>
-		<footer id="page"><p>Isaac Elliott 2015</p></footer>
+		<section><article> {{ content }} </article></section>
+		<footer><p>Isaac Elliott 2015</p></footer>
 	</body>
 </html>

@@ -1,14 +1,18 @@
+//	palette:
+//	#2f2f2f - text
+//	#369392 - links
+//	#4f86c6 - ??
+//	#4fb0c6 - highlights
+//	#ffffff - background
+
+
 html {
-	background-color: #e1e1e1;
+	background-color: #ffffff;
 	color: #2f2f2f;
-	font-family: "Source Serif Pro", serif;
+	font-family: "Source Sans Pro", sans-serif;
 }
 
 body {
-	background-color: #eeeeee;
-	border-radius: 10px;
-	border-spacing: 10px;
-	display: block;
 	margin-bottom: 0;
 	margin-left: auto;
 	margin-right: auto;
@@ -16,11 +20,19 @@ body {
 	width: 90%;
 }
 
+a {
+	color: #379392
+}
+
+blockquote {
+	border-left: 2px solid #4fb0c6;
+}
+
 h1 {
-	font-family: "Source Sans Pro", sans-serif;
-	font-size: 3em;
-	font-weight: 200;
-	margin: 0.5em;
+	font-family: "Source Serif Pro", serif;
+	font-size: 2em;
+	font-weight: 300;
+	margin: 1em;
 }
 
 p {
@@ -28,98 +40,59 @@ p {
 	margin-right: 1em;
 }
 
-header {
-	display: block;
+p#date {
 	font-family: "Source Sans Pro", sans-serif;
-	font-size: 3em;
-	text-align: center;
+	font-weight: 400;
+	font-style: italic;
+}
+
+header {
+	width: 100%;
 }
 
 nav {
-	display: table-cell;
-	margin-right: 1%;
-	vertical-align: top;
-	width: 25%;
-}
-
-nav ul {
-	background-color: #fafafa;
-	border-radius: 10px;
-	display: inline-block;
-	list-style-type: none;
-	margin: 0;
-	padding: 5%;
-	width: 90%;
-}
-
-nav li {
-	display: inline-block;
+	font-family: "Source Serif Pro", serif;
+	font-size: 1.5em;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	text-align: center;
 	width: 100%;
+}
+
+nav a {
+	color: #2f2f2f;
+	text-decoration: none;
+}
+
+nav a:hover {
+	color: #379392;
+	border-bottom: 1px solid #379392;
 }
 
 section {
-	background-color: #fafafa;
-	border-radius: 10px;
-	display: table-cell;
-}
-
-article {
-	margin-left: auto;
-	margin-right: auto;
-	max-width: 30em;
-	word-wrap: break-word;
-}
-
-div#central {
-	display: table;
 	width: 100%;
 }
 
+article {
+	border-top: 1px solid #2f2f2f;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 35em;
+	word-wrap: break-word;
+}
+
 footer {
-	height: 5%;
-	margin-top: 1%;
 	text-align: center;
 }
 
-footer#page {
-	display: block;
-	text-align: center;
-}
-
-@media handheld, screen and (max-width: 750px) {
-	header {
-		display: block;
-		width: 100%;
+@media screen and (max-width: 327px) {
+	h1 {
+		font-size: 2em;
+		text-align: center;
 	}
 
 	nav {
-		display: block;
-		margin-bottom: 1%;
-		width: 100%;
-	}
-
-	nav ul {
-		display: block;
-		padding: 2.5%;
-		width: 95%;
-	}
-
-	nav li {
-		display: inline;
-	}
-
-	section {
-		display: inline-block;
-		width: 100%;
-	}
-
-	div#central {
-		display: block;
-		width: 100%;
-	}
-
-	footer#page {
-		display: block;
-		width: 100%;
+		font-size: 1em;
+		font-weight: 400;
 	}
 }
