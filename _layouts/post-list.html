@@ -1,0 +1,29 @@
+---
+layout: page
+---
+{% if page.tag != "all" %}
+<header><h1 class="centered">Posts about {{ page.tag }}:</h1></header>
+{% endif %}
+
+{% for post in site.posts %}
+    {% if (post.tags contains page.tag) or (page.tag == "all") %}
+    <article>
+        <header>
+            <h1><a href="{{ post.url }}" class="heading">{{ post.title }}</a></h1>
+            <p class="date">{{ post.date | date_to_long_string }}</p>
+        </header>
+
+        {{ post.excerpt }}
+
+        <footer>
+            <p>...<br>
+            tags:
+            {% for tag in post.tags %}
+                <a href="/tags/{{ tag }}/">{{ tag }}</a>
+            {% endfor %}
+            </p>
+        </footer>
+
+    </article>
+    {% endif %}
+{% endfor %}
