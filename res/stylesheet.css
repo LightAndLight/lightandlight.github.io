@@ -9,10 +9,10 @@
 html {
 	background-color: #ffffff;
 	color: #2f2f2f;
-	font-family: "Source Sans Pro", sans-serif;
 }
 
 body {
+	font-family: "Source Sans Pro", sans-serif;
 	margin-bottom: 0;
 	margin-left: auto;
 	margin-right: auto;
