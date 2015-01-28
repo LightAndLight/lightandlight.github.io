@@ -35,6 +35,10 @@ h1 {
 	margin: 1em;
 }
 
+.centered {
+    text-align: center; 
+}
+
 p {
     margin-bottom: 1.5em;
 	margin-left: 1em;
@@ -48,17 +52,16 @@ p {
 	font-style: italic;
 }
 
-header {
-	width: 100%;
-}
-
 nav {
+	border-bottom: 1px solid #2f2f2f;
 	font-family: "Source Serif Pro", serif;
 	font-size: 1.5em;
 	margin-bottom: 1em;
+    margin-left: auto;
+    margin-right: auto;
 	margin-top: 1em;
 	text-align: center;
-	width: 100%;
+	max-width: 23.33em;
 }
 
 .heading {
@@ -68,18 +71,28 @@ nav {
 
 .heading:hover {
 	color: #379392;
-	border-bottom: 1px solid #379392;
+	border-bottom: 1px solid ;
+}
+
+nav a {
+	color: #2f2f2f;
+	text-decoration: none;
+    display: inline-block;
+    padding-bottom: 1em;
+}
+
+nav a:hover {
+	color: #4f86c6;
 }
 
 section {
-	width: 100%;
-}
-
-article {
-	border-top: 1px solid #2f2f2f;
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 35em;
+}
+
+article {
+	border-bottom: 1px solid #2f2f2f;
 	word-wrap: break-word;
 }
 
