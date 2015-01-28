@@ -1,25 +1,7 @@
 ---
+layout: post-list
 title: lightandlight.github.io
-layout: page
+tag: all
 ---
 
-{% for post in site.posts %}
-    <article>
-        <header>
-            <h1><a href="{{ post.url }}" class="heading">{{ post.title }}</a></h1>
-            <p class="date">{{ post.date | date_to_long_string }}</p>
-        </header>
-
-        {{ post.excerpt }}
-
-        <footer>
-            <p>...<br>
-            tags:
-            {% for tag in post.tags %}
-                <a href="/tags.html">{{ tag }}</a>
-            {% endfor %}
-            </p>
-        </footer>
-
-    </article>
-{% endfor %}
+{{ content }}
