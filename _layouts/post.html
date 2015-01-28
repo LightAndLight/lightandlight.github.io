@@ -2,14 +2,23 @@
 layout: page
 ---
 
-<h1>{{ page.title }}</h1>
+<article>
+    <h1>{{ page.title }}</h1>
 
-<p id="date">{{ page.date | date_to_long_string }}</p>
+    <p class="date">{{ page.date | date_to_long_string }}</p>
 
-{{ content }}
+    {{ content }}
 
-<footer>
-	<a href="{{ page.previous.url }}">{{ page.previous.title }} - Previous</a>
-	|
-	<a href="{{ page.next.url }}">Next - {{ page.next.title  }}</a>
-</footer>
+    <footer>
+        {% if page.previous %}
+            <a href="{{ page.previous.url }}">{{ page.previous.title }} - Previous</a>
+        {% else %}
+            <span>Oldest</span>
+        {% endif %}
+        |
+        {% if page.next %}<a href="{{ page.next.url }}">Next - {{ page.next.title  }}</a>
+        {% else %}
+            <span>Newest</span>
+        {% endif %}
+    </footer>
+</article>
