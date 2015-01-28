@@ -1,6 +1,7 @@
 ---
-title: This post has a particularly long title
 layout: post
+title: This post has a particularly long title
+tags: [programming,haskell, short]
 ---
 
 {% highlight haskell linenos %}
