@@ -7,13 +7,16 @@
 		<link rel="stylesheet" href="/res/syntax.css">
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro" type="text/css">
         <script src="/res/script.js"></script>
-		<title> {{ page.title }} </title>
+		<title> {{ page.title }} - ielliott.io</title>
 	</head>
 	
 	<body>
-		<header><h1 class="centered large">O(log n)</h1></header>
+        {%include header.html %}
+
 	    {% include nav.html %}	
+
 		<section> {{ content }} </section>
-		<footer><p>Isaac Elliott 2015</p></footer>
+
+        {% include footer.html %}
 	</body>
 </html>
