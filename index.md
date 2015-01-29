@@ -1,6 +1,6 @@
 ---
 layout: post-list
-title: lightandlight.github.io
+title: Home
 tag: all
 ---
 
