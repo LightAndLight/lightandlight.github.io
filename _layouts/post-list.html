@@ -17,10 +17,7 @@ layout: page
 
         <footer>
             <p>...<br>
-            tags:
-            {% for tag in post.tags %}
-                <a href="/tags/{{ tag }}/">{{ tag }}</a>
-            {% endfor %}
+            {% include tags-list.html  tags=post.tags %}
             </p>
         </footer>
 

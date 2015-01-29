@@ -10,6 +10,7 @@ layout: page
     {{ content }}
 
     <footer>
+        <p>
         {% if page.previous %}
             <a href="{{ page.previous.url }}">{{ page.previous.title }} - Previous</a>
         {% else %}
@@ -20,5 +21,11 @@ layout: page
         {% else %}
             <span>Newest</span>
         {% endif %}
+        
+        <br><br>
+
+        {% include tags-list.html tags=page.tags%}
+
+        </p>
     </footer>
 </article>
