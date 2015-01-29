@@ -24,6 +24,10 @@ a {
 	color: #379392
 }
 
+.image {
+    text-decoration: none;
+}
+
 blockquote {
 	border-left: 2px solid #4fb0c6;
 }
@@ -66,6 +70,10 @@ nav {
 	margin-top: 1em;
 	text-align: center;
 	max-width: 23.33em;
+}
+
+code {
+    white-space: pre-wrap;
 }
 
 .heading {
