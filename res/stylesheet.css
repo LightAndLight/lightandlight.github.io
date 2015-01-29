@@ -114,3 +114,9 @@ footer {
 		font-weight: 400;
 	}
 }
+
+@media screen and (max-width: 403px) {
+	.large {
+		font-size: 2em;
+	}
+}
