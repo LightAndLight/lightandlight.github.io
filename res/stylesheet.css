@@ -72,6 +72,11 @@ nav {
 	max-width: 23.33em;
 }
 
+pre {
+    background: #f2f2f2;
+    padding: 1em;
+}
+
 code {
     white-space: pre-wrap;
 }
