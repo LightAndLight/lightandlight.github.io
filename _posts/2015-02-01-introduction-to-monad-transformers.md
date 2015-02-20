@@ -55,7 +55,7 @@ This monad is called the state monad transformer.
 
 The state monad transformer is defined as:
 
-{% highlight haskell %}newtype StateT s m a = StateT { runStateT :: s -> m (a,s) }`{% endhighlight %}
+{% highlight haskell %}newtype StateT s m a = StateT { runStateT :: s -> m (a,s) }{% endhighlight %}
 
 [^1]Meaning that given an initial state `s` and a state transformer `st`, we can call `runStateT st s` to get
 a monad containing the state tuple. 
