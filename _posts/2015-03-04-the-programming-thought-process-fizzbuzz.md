@@ -22,15 +22,15 @@ from non-programmers in job interviews. Its specification:
 > “Buzz”. For numbers which are multiples of both three and five print “FizzBuzz”.
 
 The first step in creating an answer is to examine the specification text
-for keywords that you can translate into code structures. Take the words "from
+for keywords that you can translate into code. Consider the words "from
 1 to 100". If we want to access every number from 1 to 100, then the best
-approach is to use a loop. All the other directives apply to each individual 
-number, so we can assume that the loop is the outermost construct. `for` and 
-`while` loops are equally valid ways to complete the task, however I'll use a 
-for loop for this example.
+approach is to use a loop. All the other instructions apply to each individual 
+number, so the loop will contain this logic. `for` and `while` loops are 
+equally valid ways to complete the task, however I'll use a for loop for this 
+example as it looks much cleaner.
 
 {% highlight python %}
-for i in range(1,101):
+for i in range(1,101): # range(a,b) has range a <= i < b
     # do some things
 {% endhighlight %}
 
@@ -38,7 +38,7 @@ The next few lines of the spec outline three conditions which could change what
 will be printed. These can all be expressed using "if-else" statements due to 
 their boolean nature. Additionally, if the none of the conditions are 
 satisfied, then the number is to be printed. This "default" behaviour can be
-specific in the "else" section of the statement.
+specified in the "else" section of the statement.
 
 When there are multiple "if-else" statements checking the same variable, it's
 best to use "elif" statement for all the options instead of nested "if-else".
@@ -83,7 +83,7 @@ that for all `r`, `q = floor(a / b)`. Thus if `a - b * floor(a / b) = 0` then
 `a` is a multiple of `b`:
 
 {% highlight python %}
-from math import floor # floor isn't built in
+from math import floor # import the floor function from Python's math module
 
 def multiple_of(a,b):
     # if a is a multiple of b
@@ -139,7 +139,7 @@ should not trigger when a number is divisible by both three and five.
 # 1. changing condition evaluation order
 if i % 3 == 0 and i % 5 == 0:
     print("FizzBuzz")
-elif i % 3 == 0:
+elif i % 3 == 0: # numbers divisible by both three and five will never reach this condition
     print("Fizz")
 elif i % 5 == 0:
     print("Buzz")
@@ -152,9 +152,9 @@ else:
 ...
 
 # 2. clarifying logic
-if i % 3 == 0 and not i % 5 == 0:
+if i % 3 == 0 and not i % 5 == 0: # we want to print fizz for numbers that are divisible by three and NOT divisible by five
     print("Fizz")
-elif i % 5 == 0 and not i % 3 == 0:
+elif i % 5 == 0 and not i % 3 == 0: # the opposite is true here
     print("Buzz")
 elif i % 3 == 0 and i % 5 == 0:
     print("FizzBuzz")
@@ -172,14 +172,14 @@ questions:
 1. Know your tools.
 
    Knowledge of languages and tools does not define you as as programmer, but
-   this knowledge does influence how effectively you can solve a problem in a
+   this knowledge does influence how effectively you can solve a problem using a
    given language. Strong knowledge of language features will give you an
    indication of which tasks are easy or difficult using that language, and
    and help you use full potential of the language to complete the task.
 
 2. Practise.
 
-   Reading will only take you so far if you never try to use the information.
+   If you only read and never practise you will never reach your full potential.
    Practise is essential in reinforcing learning. 
 
 3. Get feedback.
