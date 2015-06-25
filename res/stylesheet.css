@@ -71,11 +71,11 @@ nav {
 	font-family: "Source Serif Pro", serif;
 	font-size: 1.5em;
 	margin-bottom: 1em;
-    margin-left: auto;
-    margin-right: auto;
+    	margin-left: auto;
+    	margin-right: auto;
 	margin-top: 1em;
 	text-align: center;
-	max-width: 23.33em;
+	max-width: 30em;
 }
 
 pre {
@@ -111,7 +111,7 @@ nav a:hover {
 section {
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 35em;
+	max-width: 45em;
 }
 
 article {
