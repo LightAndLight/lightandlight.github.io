@@ -80,11 +80,23 @@ nav {
 
 pre {
     background: #f2f2f2;
+    border: 1px solid #dddddd;
+    border-radius: 0.5em;
     padding: 1em;
 }
 
 code {
+    background: #f2f2f2;
+    border: 1px solid #dddddd;
+    border-radius: 0.25em;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
     white-space: pre-wrap;
+}
+
+pre > code {
+    border: none;
+    border-radius: none;
 }
 
 .heading {
