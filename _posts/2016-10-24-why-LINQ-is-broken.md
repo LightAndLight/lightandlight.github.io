@@ -2,6 +2,9 @@
 layout: post
 permalink: /why-LINQ-is-broken/
 title: Why LINQ (well, C#) is Broken
+tags:
+  - programming
+  - haskell
 ---
 
 LINQ is a system that provides a flexible query interface for .NET languages.
