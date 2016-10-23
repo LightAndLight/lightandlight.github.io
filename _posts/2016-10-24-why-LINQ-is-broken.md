@@ -11,22 +11,22 @@ so any data structure that implements the correct methods can be used with LINQ.
 
 The essential methods for enabling LINQ support are `Select` and `SelectMany`,
 implemented as extension methods. They have the following types:
-```c#
+{% highlight c# %}
 SomeData<B> Select<A,B>(this SomeData<A> a, Func<A,B> f)
 SomeData<B> SelectMany<A,B>(this SomeData<A> a, Func<A,SomeData<B>> f)
 SomeData<C> SelectMany<A,B,C>(this SomeData<A> a, Func<A,SomeData<B>> f, Func<A,B,C> g) // Overloaded to reduce levels of nesting
-```
+{% endhighlight %}
 
 With implementations of these three methods, it is possible to write a query
 expression such as:
-```c#
+{% highlight c# %}
 SomeData<A> myA = ...;
 SomeData<B> myB = ...;
 Func<A,B,C> f = ...;
 SomeData<C> myC = from a in myA
                   from b in myB
                   select f(a,b);
-```
+{% endhighlight %}
 which will be compiled to something like:
 `SomeData<C> output = justWord.SelectMany(a => myB, (a, b) => f(a, b));`
 
@@ -34,7 +34,7 @@ Readers who are familiar with Haskell or similar functional languages will
 notice that `Select` is `fmap`, `SelectMany` is `>>=` and the
 `from .. in .. select` syntax is equivalent to Monad comprehensions. The above
 code would be written in Haskell as follows:
-```haskell
+{% highlight haskell %}
 myA = ...
 myB = ...
 f a b = ...
@@ -42,37 +42,37 @@ myC = do
   a <- myA
   b <- myB
   return $ f a b
-```
+{% endhighlight %}
 
 LINQ was designed to bring Monad comprehensions to C#. And it does. Almost.
 
 Consider our query from earlier:
-```c#
+{% highlight c# %}
 ...
 SomeData<C> myC = from a in myA
                   from b in myB
                   select f(a,b);
-```
+{% endhighlight %}
 This seems like a common pattern. We don't want to write this code over and
 over, so we abstract `myA`, `myB` and `f` and make the query into a method.
 
-```c#
+{% highlight c# %}
 SomeData<C> CombineWith<A,B,C>(SomeData<A> myA, SomeData<B> myB, Func<A,B,C> f)
 {
     return from a in myA from b in myB select f(a,b);
 }
-```
+{% endhighlight %}
 
 Now say we define a new data type to use with LINQ, call it `OtherData<A>`, and
 implement `Select` and `SelectMany` appropriately. We also want to implement
 `CombineWith` because `from .. in .. from .. in .. select ..` is still a common
 pattern that we want to avoid writing:
-```c#
+{% highlight c# %}
 OtherData<C> CombineWith<A,B,C>(OtherData<A> myA, OtherData<B> myB, Func<A,B,C> f)
 {
     return from a in myA from b in myB select f(a,b);
 }
-```
+{% endhighlight %}
 There is a pattern emerging. For every data type that we want to use with LINQ,
 one must reimplement all LINQ-specific methods specifically for that type.
 
@@ -139,13 +139,13 @@ class `List<A>` then you get a compile error if you refer to `List` without
 the type argument.
 
 Let's take another look the Haskell implementation of `CombineWith`:
-```haskell
+{% highlight haskell %}
 combineWith :: Monad m => m a -> m b -> (a -> b -> c) -> m c
 combineWith myA myB f = do
   a <- myA
   b <- myB
   return $ f a b
-```
+{% endhighlight %}
 In this function, and the definition of the Monad typeclass (read: interface)`m`
 implicitly has kind `* -> *`. This function will work for any type that is
 an instance of Monad (read: implements the Monad interface). In Haskell, this
