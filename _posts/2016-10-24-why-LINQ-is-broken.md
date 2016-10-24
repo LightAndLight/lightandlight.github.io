@@ -94,7 +94,7 @@ to write something like
 `F<C> CombineWith<F<?>,A,B,C>(F<A> myA, F<B> myB, Func<A,B,C> f)`, but C# only
 allows abstraction over non-generic types.
 
-To add a little more weight to this revelation, let's imagine if the we could
+To add a little more weight to this revelation, let's imagine if we could
 not abstract over the contents of a list ie. the method
 `List<A> Sort<A>(List <A> input)` cannot be expressed in this language. Due to
 this limitation, we would have to create a new list class every time we needed
