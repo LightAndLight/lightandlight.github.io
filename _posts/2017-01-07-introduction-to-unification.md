@@ -149,7 +149,7 @@ a = b -> c
 b -> (b -> c) -> c = b -> c (using a => ...)
 b -> (b -> (b -> c) -> c) -> (b -> c) -> c = b -> (b -> c) -> c (using c => ...)
 
-no matter how many times we do this they'll never be syntactically equal...
+no matter how many times we do this the equation will never be solved...
 ```
 
 Omitting the occurs check does *not* unify the equations according our definition.
