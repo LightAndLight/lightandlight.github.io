@@ -66,11 +66,13 @@ respectively. To satisfy the requirements of unification, primitives are constan
 and variables are, of course, variables.
 
 Examples of syntactically equal HM terms:
+
 - `a` and `a`
 - `primitive` and `primitive`
 - `a -> a` and `a -> a`
 
 Examples of equivalent HM terms:
+
 - `a` and `c`
 - `primitive` and `d`
 - `(a -> b) -> c` and `d -> e`
