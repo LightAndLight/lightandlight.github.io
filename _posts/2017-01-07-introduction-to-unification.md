@@ -4,7 +4,7 @@ permalink: /introduction-to-unification/
 title: Introduction to Unification
 ---
 
-'Unification' is a vital process in the implementation of Hindley-Damas-Milner
+Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the [original paper](http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf)
 it is mentioned in passing as assumed knowledge, so here is an explanation of
 unification in with a little help from the HM type theory.
@@ -56,8 +56,8 @@ every equation in `sub(eqs)` is solved_
 
 ## Hindley-Milner
 
-Unification is the backbond of type inference in the HM type theory. The actual
-type inference algorithm is not important here- just how Unification works on
+Unification is the backbone of type inference in the HM type theory. The actual
+type inference algorithm is not important here- just how unification works on
 HM terms.
 
 A term in HM is defined as `term := term -> term | primitive | variable` where
