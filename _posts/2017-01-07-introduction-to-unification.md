@@ -35,10 +35,11 @@ equal.
 `{ var_1 => term_1, ..., var_i => term_i }`.
 
 `application`: A substitution can be `applied` to a value containing variables - written `subs(value)`:
-  - term: by replacing variables with terms per each mapping
-  - equation: by applying the substitution to both sides
-  - set of equations: by applying the substitution to each element in the set
-  - substitution: by applying the substitution to the right hand side of each mapping
+- term: by replacing variables with terms per each mapping
+- equation: by applying the substitution to both sides
+- set of equations: by applying the substitution to each element in the set
+- substitution: by applying the substitution to the right hand side of each mapping
+
 Applying an empty substitution to a value does not change the value.
 For reasons that will be explained later, a substitution is only valid if every
 variable on the left side of mapping does *not* occur in the term on the right
