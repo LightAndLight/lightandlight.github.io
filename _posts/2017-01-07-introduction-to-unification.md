@@ -35,6 +35,7 @@ equal.
 `{ var_1 => term_1, ..., var_i => term_i }`.
 
 `application`: A substitution can be `applied` to a value containing variables - written `subs(value)`:
+
 - term: by replacing variables with terms per each mapping
 - equation: by applying the substitution to both sides
 - set of equations: by applying the substitution to each element in the set
