@@ -21,8 +21,12 @@
             ga('create', 'UA-59107737-1', 'auto');
             ga('send', 'pageview');
         </script>
+                {% if page.title %}
+		        <title> {{ page.title }} - ielliott.io </title>
+                {% else %}
+                        <title> {{ ielliott.io }} </title>
+                {% endif %}
 
-		<title> {{ page.title }} - ielliott.io</title>
                 {% seo %}
 	</head>
 	
