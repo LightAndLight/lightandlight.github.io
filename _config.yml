@@ -1,3 +1,19 @@
 gems:
     - jekyll-sitemap
     - jekyll-seo-tag
+
+title:
+    - ielliott.io
+
+author:
+    twitter: ielliott95
+
+description:
+    - Isaac Elliott's personal blog
+
+social:
+    name: Isaac Elliott
+    links:
+        - www.linkedin.com/in/ielliott95
+        - www.github.com/lightandlight
+
