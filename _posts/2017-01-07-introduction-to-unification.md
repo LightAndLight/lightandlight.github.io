@@ -2,6 +2,7 @@
 layout: post
 permalink: /introduction-to-unification/
 title: Introduction to Unification
+author: ielliott95
 ---
 
 Unification is a vital process in the implementation of Hindley-Damas-Milner

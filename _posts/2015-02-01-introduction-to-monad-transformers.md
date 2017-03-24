@@ -1,6 +1,7 @@
 ---
 layout: post
 title: A Practical Introduction to Monad Transformers
+author: ielliott95
 permalink: /a-practical-introduction-to-monad-transformers/
 tags:
     - programming

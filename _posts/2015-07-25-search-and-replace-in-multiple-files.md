@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Search and Replace in Multiple Files
+author: ielliott95
 permalink: /search-and-replace-in-multiple-files/
 tags:
     - programming
