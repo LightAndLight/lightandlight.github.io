@@ -4,7 +4,7 @@ boosting the performance of pure functional code, sometimes there's talk
 of control flow, and occasionally with 'time-travel' thrown in there to make
 it all seem more obscure. It's all true, but let's start from the beginning.
 
-This post was generated from a [Literate Haskell file](asdfasdf) using Pandoc,
+This post was generated from a [Literate Haskell file]({% "/files/continuations.lhs" | absolute_url %}) using Pandoc,
 so you can load it up into GHCI and play around if you want.
 
 == Continuation Passing Style
