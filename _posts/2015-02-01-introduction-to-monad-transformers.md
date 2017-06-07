@@ -13,7 +13,7 @@ as a way to "flatten" nested monads, but are also used to enable interactions be
 monads that, when used seperately, would be incredibly difficult to implement.
 
 
-The Task
+## The Task
 
 You input a number and want to manipulate it while printing the
 result each time. If there were no intermediate IO operations we could use the state monad 
