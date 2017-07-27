@@ -19,7 +19,7 @@ working state and try something different.
 If you don't need to have access to all your old configurations, you
 can delete them:
 
-1. Delete the old (exludes the current) package configurations for the
+1. Delete the old (excludes the current) package configurations for the
    NixOS system `sudo nix-env -p /nix/var/nix/profiles/system
    --delete-generations old`
  
@@ -31,5 +31,5 @@ can delete them:
 4. Remove unnecessary boot loader entries. I use `systemd-boot`, so all
    my entries are located in `/boot/loader/entries`. To remove all the
    old entries, run `sudo bash -c "cd /boot/loader/entries; ls | grep
-   -v <current-generation-name> | xargs rm` (you might want to back up
+   -v <current-generation-name> | xargs rm"` (you might want to back up
    the entries somewhere to be safe)
