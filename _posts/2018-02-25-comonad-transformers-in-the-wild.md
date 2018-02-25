@@ -53,7 +53,7 @@ example1 :: Num a => Grid a -> Maybe a
 example1 grid =
   (\b c -> focus grid * b * c) <$> 
   fmap pos (right grid) <*>
-  fmap pos (right <=< right $ grid) <*>
+  fmap pos (right <=< right $ grid)
 ```
 
 `Grid` can be given a `Comonad` instance, and this process of per-position calulation can be expressed using comonadic operations. If we plug the `example1` function into `extend`, we get the function `extend example1 :: Grid a -> Grid (Maybe a)`. This function walks through the grid, and replaces each cell with the result of running `example1` on it and its neighbours.
