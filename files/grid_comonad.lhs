@@ -49,7 +49,7 @@ example1 :: Num a => Grid a -> Maybe a
 example1 grid =
   (\b c -> focus grid * b * c) <$> 
   fmap pos (right grid) <*>
-  fmap pos (right <=< right $ grid) <*>
+  fmap pos (right <=< right $ grid)
 ```
 
 `Grid` can be given a `Comonad` instance, and this process of per-position
