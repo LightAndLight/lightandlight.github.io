@@ -63,9 +63,9 @@ replaces them with the appropriate De Bruijn index, then wraps the final
 result in an `Abs`. The "appropriate index" is the number of `Abs`
 constructors that we passed on the way.
 
-For example, `abstract "x" (F "x")` outputs `Abs (B 0)`, because we
+For example, `abstract "x" (F "x")` evaluates to `Abs (B 0)`, because we
 passed 0 `Abs` constructors to get to the `"x"`, then wrapped the final
-result in an `Abs`. `abstract "y" (Abs (App (B 0) (F "y")))` outputs
+result in an `Abs`. `abstract "y" (Abs (App (B 0) (F "y")))` evaluates to
 `Abs (Abs (App (B 0) (B 1)))` because we passed 1 `Abs` to get to the
 `"y"`, then wrapped the final result in an `Abs`.
 
