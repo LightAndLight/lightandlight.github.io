@@ -8,8 +8,8 @@ tags:
     - haskell
 ---
 
-I love [bound](https://hackage.haskell.org/package/bound) - it makes De
-Bruijn indices mindlessly easy. I also love
+I love [bound](https://hackage.haskell.org/package/bound) - it makes [De
+Bruijn indices](https://en.wikipedia.org/wiki/De_Bruijn_index) mindlessly easy. I also love
 [Plated](https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html)
 for all sorts of whole-program transformations. I think they're two
 indispensible tools for working with programming languages.
