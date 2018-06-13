@@ -29,8 +29,7 @@ lambda calculus, with De Bruijn indices (`B`), as well as free variables
 function argument, which means that only `B`s can reference them. This
 is called the "locally nameless" approach.
 
-\[Literate Haskell source\]({{ "/files/reverse-state.lhs" \|
-absolute\_url }})
+[Literate Haskell source]({{ "/files/reverse-state.lhs" | absolute_url }})
 
 ```haskell
 {-# language DeriveGeneric #-}
