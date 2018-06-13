@@ -64,9 +64,9 @@ result in an `Abs`. The "appropriate index" is the number of `Abs`
 constructors that we passed on the way.
 
 For example, `abstract "x" (F "x")` evaluates to `Abs (B 0)`, because we
-passed 0 `Abs` constructors to get to the `"x"`, then wrapped the final
+passed zero `Abs` constructors to get to the `"x"`, then wrapped the final
 result in an `Abs`. `abstract "y" (Abs (App (B 0) (F "y")))` evaluates to
-`Abs (Abs (App (B 0) (B 1)))` because we passed 1 `Abs` to get to the
+`Abs (Abs (App (B 0) (B 1)))` because we passed one `Abs` to get to the
 `"y"`, then wrapped the final result in an `Abs`.
 
 "Do this everywhere" usually means
@@ -102,11 +102,11 @@ what we want.
 
 Enter [Reverse
 State](http://hackage.haskell.org/package/rev-state/docs/Control-Monad-Trans-RevState.html).
-In reverse `State`, `get` accesses the state of the computation *after*
+In reverse state, `get` accesses the state of the computation *after*
 it, not before it. Using regular state,
 `execState (modify (+1) *> modify (*2)) 0` will evaluate to `2`, because
 you set the state to zero, add one, then multiply by two. Using reverse
-state, the output is `2`, because you set the state to zero, multiply by
+state, the output is `1`, because you set the state to zero, multiply by
 two, then add one.
 
 This means that if we swap regular state for reverse state in
@@ -131,7 +131,9 @@ abstract name = Abs . flip Reverse.evalState 0 . transformM fun
 The logic remains the same, except now the state transformations run
 backwards.
 
-Now for `instantiate`. `instantiate (Abs body) x` substitutes `x` into
+Now for `instantiate`.
+
+`instantiate (Abs body) x` substitutes `x` into
 the appropriate positions in `body`, and wraps the final result in a
 `Just`. If the first argument to `instantiate` is not an `Abs`, then the
 result is `Nothing`. We substitute `x` everywhere we find a `B` that
@@ -174,6 +176,8 @@ with this, because I highly value the tools `Plated` provides.
 Additionally, the `bound` combinators work over any term as long as it
 is a `Monad`, so `abstract` and `instantiate` only have to be written
 once, whereas we haven't presented any means for generalisation of the
-`Plated` approach. This is easily fixed: in a follow-up post, I'm going
-to write about how we can use Backpacky Prisms to provide `abstract`
+`Plated` approach.
+
+This is easily fixed: in a follow-up post, I'll
+write about how we can use Backpacky Prisms to provide `abstract`
 and `instantiate` as library functions.
