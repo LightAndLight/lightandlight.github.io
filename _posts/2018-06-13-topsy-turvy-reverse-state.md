@@ -100,6 +100,8 @@ it can abstract over, it will replace it with `B 0`, then go upwards
 through the tree, incrementing the counter. This is the *reverse* of
 what we want.
 
+## etatS
+
 Enter [Reverse
 State](http://hackage.haskell.org/package/rev-state/docs/Control-Monad-Trans-RevState.html).
 In reverse state, `get` accesses the state of the computation *after*

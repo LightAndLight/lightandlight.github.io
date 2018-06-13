@@ -88,6 +88,8 @@ functions act from the bottom up. When it sees a free variable it can abstract
 over, it will replace it with `B 0`, then go upwards through the tree,
 incrementing the counter. This is the *reverse* of what we want.
 
+## etatS
+
 Enter [Reverse State](http://hackage.haskell.org/package/rev-state/docs/Control-Monad-Trans-RevState.html). In reverse state, `get` accesses the state of
 the computation *after* it, not before it. Using regular state, `execState (modify (+1) *> modify (*2)) 0` will evaluate to `2`, because you set the state to zero, add one, then multiply by two. Using reverse state, the output is `2`,
 because you set the state to zero, multiply by two, then add one.
