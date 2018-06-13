@@ -59,9 +59,9 @@ For example, `abstract "x" (F "x")` outputs `Abs (B 0)`, because we passed 0
 then wrapped the final result in an `Abs`. 
 
 "Do this everywhere" usually means
-`[transform](https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:transform) :: Plated a => (a -> a) -> a -> a` is appropriate. Though
+[transform](https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:transform) `:: Plated a => (a -> a) -> a -> a` is appropriate. Though
 in this case, it doesn't give us any way to count the number of `Abs` it
-passes. Instead we will use `[transformM](https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:transformM) :: (Monad m, Plated a) => (a -> m a) -> a -> m a`
+passes. Instead we will use [transformM](https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:transformM) `:: (Monad m, Plated a) => (a -> m a) -> a -> m a`
 with [State](https://hackage.haskell.org/package/mtl/docs/Control-Monad-State.html).
 
 Here's how that looks:
