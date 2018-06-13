@@ -49,7 +49,6 @@ data Expr
 
 instance Plated Expr where
   plate = gplate
-  {-# inline plate #-}
 ```
 
 The core of the `bound`-like API will be two functions:
