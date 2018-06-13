@@ -23,6 +23,8 @@ instances of `Plated` for types which contain a `Scope`. When it comes
 to choosing between `bound` and `Plated`, I choose `Plated` - because we
 can use it to build functionality similar to `bound`.
 
+## Write some code!
+
 Let's get some boilerplate out of the road. Here is a datatype for
 lambda calculus, with De Bruijn indices (`B`), as well as free variables
 (`F`). Notice that lambda abstraction (`Abs`) doesn't give a name to the
