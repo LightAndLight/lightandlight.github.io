@@ -25,6 +25,9 @@ can use it to build functionality similar to `bound`.
 
 ## Write some code!
 
+### Warning: the code in this post is subtly broken. See the
+[reddit thread](https://www.reddit.com/r/haskell/comments/8qs2gc/turning_bottomup_into_topdown_with_reverse_state/)
+
 Let's get some boilerplate out of the road. Here is a datatype for
 lambda calculus, with De Bruijn indices (`B`), as well as free variables
 (`F`). Notice that lambda abstraction (`Abs`) doesn't give a name to the
