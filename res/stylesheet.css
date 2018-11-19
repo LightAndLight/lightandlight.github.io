@@ -34,15 +34,20 @@ blockquote {
 
 h1 {
 	font-family: "Source Serif Pro", serif;
-	font-size: 2em;
+	font-size: 2.5em;
 	font-weight: 300;
 	margin: 1em;
-    text-align: center;
+  text-align: center;
 }
 
 h2 {
+	font-size: 1.75em;
 	font-family: "Source Serif Pro", serif;
 	font-weight: 300;
+}
+
+h3 {
+	  font-size: 1.25em;
 }
 
 .centered {
@@ -54,9 +59,10 @@ h2 {
 }
 
 p {
+    font-size: 1.25em;
     margin-bottom: 1.5em;
-	margin-left: 1em;
-	margin-right: 1em;
+	  margin-left: 1em;
+	  margin-right: 1em;
     margin-top: 1.5em;
 }
 
@@ -71,8 +77,8 @@ nav {
 	font-family: "Source Serif Pro", serif;
 	font-size: 1.5em;
 	margin-bottom: 1em;
-    	margin-left: auto;
-    	margin-right: auto;
+  margin-left: auto;
+ 	margin-right: auto;
 	margin-top: 1em;
 	text-align: center;
 	max-width: 30em;
@@ -86,12 +92,17 @@ pre {
 }
 
 code {
+    font-size: 1.25em;
     background: #f2f2f2;
     border: 1px solid #dddddd;
     border-radius: 0.25em;
     padding-left: 0.2em;
     padding-right: 0.2em;
     white-space: pre-wrap;
+}
+
+p > code {
+    font-size: 1em;
 }
 
 pre > code {
@@ -110,14 +121,15 @@ pre > code {
 }
 
 nav a {
-	color: #2f2f2f;
-	text-decoration: none;
+    font-size: 1.25em;
+	  color: #2f2f2f;
+	  text-decoration: none;
     display: inline-block;
     padding-bottom: 1em;
 }
 
 nav a:hover {
-	color: #4f86c6;
+	  color: #4f86c6;
 }
 
 section {
@@ -135,19 +147,38 @@ footer {
 	text-align: center;
 }
 
-@media screen and (max-width: 327px) {
-	nav {
-		font-size: 1em;
-		font-weight: 400;
-	}
-}
+@media (max-width: 45em) {
+	  nav {
+		    font-size: 1.25em;
+	  }
 
-@media screen and (max-width: 403px) {
-        body {
-                width: 96%;
-        }
+    h1 {
+		    font-size: 2em;
+	  }
 
-	.large {
-		font-size: 2em;
-	}
+    h2 {
+		    font-size: 1.5em;
+	  }
+
+    p {
+		    font-size: 1.1em;
+	  }
+
+    pre {
+        overflow: scroll;
+    }
+
+    pre > code {
+        white-space: pre;
+    }
+
+    body {
+        margin: 0 0 0 0;
+        width: 90%;
+        padding: 1em;
+    }
+
+	  .large {
+		    font-size: 2em;
+	  }
 }
