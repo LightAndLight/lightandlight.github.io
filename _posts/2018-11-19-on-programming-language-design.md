@@ -9,7 +9,7 @@ tags:
 ---
 
 In his [propositions as types
-talk](https://www.youtube.com/watch?v=IOiZatlZtGU), Philip Wadler constrasts
+talk](https://www.youtube.com/watch?v=IOiZatlZtGU), Philip Wadler contrasts
 programming languages that have been 'invented' with those that have been
 'discovered'. ["And you can tell!" he exclaims, receiving giggles from the
 audience](https://www.youtube.com/watch?v=IOiZatlZtGU&t=28m12s). Regardless of
