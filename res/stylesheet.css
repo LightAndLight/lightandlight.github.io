@@ -58,8 +58,12 @@ h3 {
     font-size: 3em; 
 }
 
+p, li, code {
+    font-size: 1.4em;
+}
+
 p, li {
-    font-size: 1.25em;
+  hypens: auto;
 }
 
 p {
@@ -67,6 +71,7 @@ p {
 	  margin-left: 1em;
 	  margin-right: 1em;
     margin-top: 1.5em;
+    line-height: 1.4em;
 }
 
 .date {
@@ -95,7 +100,6 @@ pre {
 }
 
 code {
-    font-size: 1.25em;
     background: #f2f2f2;
     border: 1px solid #dddddd;
     border-radius: 0.25em;
@@ -105,6 +109,10 @@ code {
 }
 
 p > code {
+    font-size: 1em;
+}
+
+em > code {
     font-size: 1em;
 }
 
@@ -147,7 +155,7 @@ nav a:hover {
 section {
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 45em;
+	max-width: 50em;
 }
 
 article {
@@ -159,7 +167,18 @@ footer {
 	text-align: center;
 }
 
-@media (max-width: 45em) {
+@media (max-width: 800px) {
+    p, li, code{
+        font-size: 1.25em;
+    }
+
+    p, li {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 650px) {
 	  nav {
 		    font-size: 1.25em;
 	  }
@@ -172,8 +191,8 @@ footer {
 		    font-size: 1.5em;
 	  }
 
-    p, li {
-        font-size: 1.1em;
+    p, li, code {
+        font-size: 1.15em;
     }
 
     pre {
@@ -185,8 +204,6 @@ footer {
     }
 
     body {
-        margin: 0 0 0 0;
-        width: 90%;
         padding: 1em;
     }
 
