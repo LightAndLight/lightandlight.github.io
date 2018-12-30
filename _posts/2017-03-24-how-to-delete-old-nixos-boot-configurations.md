@@ -19,17 +19,29 @@ working state and try something different.
 If you don't need to have access to all your old configurations, you
 can delete them:
 
-1. Delete the old (excludes the current) package configurations for the
+1. `sudo nix-collect-garbage -d`
+
+2. `sudo nixos-rebuild switch`
+
+---
+
+*30 December 2018*
+
+I don't know if I was confused when I first wrote this, or if the process has
+improved since then. Either way, these instructions are more complex
+than necessary, so I've updated them.
+
+1. ~~Delete the old (excludes the current) package configurations for the
    NixOS system `sudo nix-env -p /nix/var/nix/profiles/system
-   --delete-generations old`
+   --delete-generations old`~~
  
-2. Collect garbage `nix-collect-garbage -d`
+2. ~~Collect garbage `nix-collect-garbage -d`~~
 
-3. View the remaining generation `nix-env -p /nix/var/nix/profiles/system
-   --list-generations`. Take note of this for the next step.
+3. ~~View the remaining generation `nix-env -p /nix/var/nix/profiles/system
+   --list-generations`. Take note of this for the next step.~~
 
-4. Remove unnecessary boot loader entries. I use `systemd-boot`, so all
+4. ~~Remove unnecessary boot loader entries. I use `systemd-boot`, so all
    my entries are located in `/boot/loader/entries`. To remove all the
    old entries, run `sudo bash -c "cd /boot/loader/entries; ls | grep
    -v <current-generation-name> | xargs rm"` (you might want to back up
-   the entries somewhere to be safe)
+   the entries somewhere to be safe)~~
