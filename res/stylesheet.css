@@ -64,6 +64,7 @@ p, li, code {
 
 p, li {
   hypens: auto;
+  word-break: break-word;
 }
 
 p {
