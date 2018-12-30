@@ -63,7 +63,7 @@ p, li, code {
 }
 
 p, li {
-  hypens: auto;
+  hyphens: auto;
   word-break: break-word;
 }
 
