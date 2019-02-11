@@ -6,7 +6,7 @@ layout: page
 {% endif %}
 
 {% for post in site.posts %}
-    {% if (post.tags contains page.tag) or (page.tag == "all") %}
+    {% if post.tags contains page.tag or page.tag == "all" %}
     <article>
         <header>
             <h1><a href="{{ post.url }}" class="heading">{{ post.title }}</a></h1>
