@@ -11,5 +11,5 @@ in
   stdenv.mkDerivation {
     name = jekyll_env.name;
     buildInputs = [ jekyll_env ];
-    shellHook = "exec ${jekyll_env}/bin/jekyll serve --watch";
+    shellHook = "exec ${jekyll_env}/bin/jekyll serve --watch --drafts";
   }
