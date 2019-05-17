@@ -127,7 +127,19 @@ em > code {
     font-size: 1em;
 }
 
+li {
+    padding-bottom: 1em;
+}
+
 li > code {
+    font-size: 1em;
+}
+
+li > div > pre > code {
+    font-size: 1em;
+}
+
+li > pre > code {
     font-size: 1em;
 }
 

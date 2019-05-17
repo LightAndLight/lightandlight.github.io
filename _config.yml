@@ -16,5 +16,8 @@ social:
         - www.github.com/lightandlight
 
 defaults:
-    - scope:
+    -
+      scope:
         path: "talks"
+      values:
+        layout: "default"
