@@ -151,7 +151,7 @@ times you extract the tail, there will always be another stream waiting for you.
 ### Using them
 
 There is a universal way to destruct datatypes, and there is a universal way to *construct* *codatatypes*.
-For lack of a better term, you can call copattern matching. Here's how you would construct a
+For lack of a better term, you can call it 'copattern matching'. Here's how you would construct a
 `Pair Int Bool`:
 
 ```
