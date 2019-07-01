@@ -114,6 +114,17 @@ Hopefully this is all familiar to you. I've covered all this so that it contrast
 Codatatypes are the dual to datatypes. Formally, this means a lot of things that I don't yet understand. What
 follows is how this duality arises in practise.
 
+To begin, I'd like to share some hand-wavy intuition for the concepts I'm
+discussing.
+
+Datatypes *are*. They're finite, fully-evaluated structures. They're inert; they just exist and won't ever
+"do anything". Haskell doesn't have true 'datatypes' in this sense because its constructors don't force their 
+arguments to be evaluated, which means you can hide computations inside them. Haskell lets you partially 
+apply constructors, which further diverges from what I've laid out here.
+
+Codatatypes *do*. They have 'potential energy'; they have the capacity to do more work when prodded. Haskell's
+'datatypes' are more codata-like in this respect because they can contain suspended computations.
+
 ### Defining them
 
 Since datatypes are defined by their constructors, codatatypes will be defined by their *destructors*.
@@ -212,13 +223,3 @@ For example, `(cocase Lambda Int Int of { apply[x] -> x + 1 }).apply[2]` selects
 
 So lambdas can be defined as codatatypes. Their destructor corresponds to function application, and 
 copattern matching corresponds to abstraction. This is awesome!
-
-### Postscript: Some wishy-washy statements of intuition
-
-Datatypes *are*. They're finite, fully-evaluated structures. They're inert; they just exist and won't ever
-"do anything". Haskell doesn't have true 'datatypes' in this sense because its constructors don't force their 
-arguments to be evaluated, which means you can hide computations inside them. Haskell lets you partially 
-apply constructors, which further diverges from what I've laid out here.
-
-Codatatypes *do*. They have 'potential energy'; they have the capacity to do more work when prodded. Haskell's
-'datatypes' are more codata-like in this respect because they can contain suspended computations.
