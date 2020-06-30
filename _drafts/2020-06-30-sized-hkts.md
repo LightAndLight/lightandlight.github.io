@@ -88,12 +88,33 @@ fn incrTwo(x: Two<int32>) -> Two<int32> { x.map(|n| n + 1) }
 fn incrThree(x: Three<int32>) -> Three<int32> { x.map(|n| n + 1) }
 ```
 
-To remedy this, there first needs to be a way to abstract over the type constructors, so that the code can
-be written once and for all:
+To remedy this, there must first be a way to abstract over the type constructors, so that the code can
+be written *once* and for all:
 
 ```
-fn incr<F>(x: F<int32>) -> F<int32> { x.map(|n| n + 1) } // when F<?> has map
+fn incr<F>(x: F<int32>) -> F<int32> { x.map(|n| n + 1) } // when F<A> has map, for all types A
 ```
+
+Then, there must be some way to rule out invalid types. For example, replacing `F` with `bool` in `F<int32>`
+is invalid, because `bool<int32>` is not a type. This is the job of kinds.
+
+Kinds describe the 'shape' of types (and type constructors) in the same way that types describe the 'shape' 
+of values. A type's kind determines whether or not it takes any parameters. Here's the syntax of kinds:
+
+```
+kind ::=
+  Type
+  kind -> kind
+```
+
+Types that take no arguments (like `bool`, `char`, and `String`) have kind `Type`. Types that take one argument,
+like `One`, have kind `Type -> Type`. In the code for `incr` above, `F` implicitly has kind `Type -> Type`. Types
+that take more than one argument are represented in [curried form](https://en.wikipedia.org/wiki/Currying). This
+means that `Two` has kind `Type -> Type -> Type`, not `(Type, Type) -> Type`. `Three` has kind `Type -> Type -> Type -> Type`,
+and so on.
+
+Curried type constructors are standard in this setting, but not *necessary*. The results in this article could
+also be applied to a setting with uncurried type constructors, at cost to expressiveness or implementation complexity.
 
 ### Type Classes
 
