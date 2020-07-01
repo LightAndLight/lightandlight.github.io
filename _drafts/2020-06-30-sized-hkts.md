@@ -15,7 +15,7 @@ tags:
         sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
         that improve runtime performance. Modern languages in this setting support generic types, but so far
         these languages only allow parameterisation over types, not type constructors. In this article I describe
-        how to permit parameterisation over arbitrary type constructs, while still retaining compile-time calculation
+        how to enable parameterisation over arbitrary type constructs, while still retaining compile-time calculation
         of datatype sizes.
     </p>
   </div>
@@ -28,6 +28,8 @@ tags:
               <a href="#background">Background</a>
           </li>
           <ul style="list-style-type: none">
+              <li><a href="#generics">Generics</a></li>
+              <li><a href="#sizing">Sizing</a></li>
               <li><a href="#kinds">Kinds</a></li>
               <li><a href="#type-classes">Type Classes</a></li>
           </ul>
@@ -39,21 +41,53 @@ tags:
 
 ## Background
 
-### Kinds
+### Generics
 
-Many typed languages support some form of generic (parameterised) datatypes. In Rust, for example, one
-can define the type of pairs as `struct Pair<A,B>(fst: A, snd: B)`. In this definition, `A` and `B` are type 
+Many typed languages support some form of generic (parameterised) datatypes. This ability to abstract
+over types is known as 'parametric polymorphism' (polymorphism for short). In Rust, for example, one
+can define type of polymorphic pairs as `struct Pair<A, B>(fst: A, snd: B)`. In this definition, `A` and `B` are type 
 variables (or type parameters), and can be substituted for other types: 
-`Pair<bool, bool>`, `Pair<bool, char>`, and `Pair<String, int32>`
-are all valid pairs.
+`Pair<bool, bool>`, `Pair<bool, char>`, and `Pair<String, int32>` are all valid pairs.
 
 The name of a type, without any parameters, is known as a type constructor. `Pair` is not a type on its own; 
-`Pair<A,B>` (for some types `A` and `B`) is. The number of types required to 'complete' a type constructor is known
+`Pair<A, B>` (for some types `A` and `B`) is. The number of types required to 'complete' a type constructor is known
 as its arity (so `Pair` has arity 2). The arity of a type constructor must always be respected; it's an error to 
 provide greater or fewer type parameters than are expected. For example, `Pair<bool>` and 
 `Pair<char, int32, String>` are invalid.
 
-A consequence of all this is that in such languages, type variables can only stand for types. But there
+### Sizing
+
+When using C++ or Rust, the compiler will calculate how many bytes of memory each datatype requires. Simple
+types like `int32` and `bool` have a constant size; 4 bytes and 1 byte respectively. The size of datatypes 
+built using of other simple types is easy to calculate. The simplest way to calculate the size of a struct 
+is to sum the sizes of the fields, and the simplest way to calculate the size of an enum (or tagged union)
+is to find the largest variant, and add 1 (for a tag byte). This is rarely the exact formula used by production
+compilers, because they take [alignment](https://en.wikipedia.org/wiki/Data_structure_alignment) into account.
+This article will assume the simple sizing formula, because the results can easily be adapted to more nuanced
+formulae.
+
+The size of a datatype like `struct TwoInts(int32, int32)` is known immediately at its definition. `TwoInts`
+requires 8 bytes of memory. On the other hand, the size of generic types is not always known at their definition.
+What is the size of `Pair<A, B>`? It's the size of `A` plus the size of `B`, for some unknown `A` and `B`.
+
+This difficulty is usually addressed by only generating code for datatypes and functions when all the generic
+types have been substituted. If the program contants a `Pair(true, true)`, then the compiler will generate
+a new type `struct PairBoolBool(fst: bool, snd: bool)` whose size is statically known. If `Pair(true, true)`
+is passed to a function `fn swap<A, B>(p: Pair<A, B>) -> Pair<B, A>`, then the compiler generates a new
+function `fn swapBoolBool(p: PairBoolBool) -> PairBoolBool`. Because this function only uses types with known
+sizes, the code for memory allocation and calling conventions can be generated correctly.
+
+There are also generic types that *don't* depend on the size of their parameters. An example of
+this is the pointer, commonly known in Rust as `Box<A>`. A pointer has the same size (often 4 or 8 bytes depending
+on your CPU) regardless of what it points to. But in order to allocate a new pointer, the size of the item must
+be known.
+
+For each generic datatype or function, the compiler keeps track of which type variables are important for sizing
+calculations. The specifics of this is discussed in [Type Classes](#type-classes).
+
+### Kinds
+
+A consequence of all this is that in these languages, type variables can only stand for types. But there
 are good reasons to have type variables that stand for type constructors, too:
 
 ```
@@ -116,6 +150,40 @@ and so on.
 Curried type constructors are standard in this setting, but not *necessary*. The results in this article could
 also be applied to a setting with uncurried type constructors, at cost to expressiveness or implementation complexity.
 
+Kinds put types and type constructors on equal footing. For the remainder of the article, both concepts will be
+referred to as types. The kind becomes the distinguishing feature. For example, "type constructor of arity 2" would
+be replaced by "type of kind `Type -> Type -> Type`".
+
+Some final jargon: types with a kind other than `Type` are known as 'higher-kinded types', and parameterising
+over higher-kinded types is known as 'higher-kinded polymorphism'.
+
 ### Type Classes
+
+Rust uses [traits](https://blog.rust-lang.org/2015/05/11/traits.html) to coordinate sizing calculations. Each
+datatype implicitly recieves an implementation of the `Sized` trait, and every type variable that is relevant for
+a sizing calculation is given a `Sized` bound. This means that trait resolution, an already useful feature, can
+be re-used to perform size calculations.
+
+Closely related to traits is functional programming concept of type classes. There are differences between the two,
+but those differences don't impact the results of this article. Type classes will prove a more convenient language
+in which to discuss these ideas.
+
+A type class (or trait) can be considered a predicate on types. A type class constraint (or trait bound) is an assertion
+that the predicate must be true. For each constraint that is satisfied, there is corresponding 'evidence' that the
+predicate is true.
+
+When a type `T` has a `Sized` constraint, it is being asserted that the statement "`T` has a known size" is true. When
+this statement satisfied (for instance, when `T` is `int32`), evidence is produced, which in this case is *the actual size*
+of `T` (when `T` is `int32`, the evidence, *its size*, is the number `4`).
+
+Generic types like `Two<A>` have a size that depends on their type parameter. In the language of constraints, it can
+be said that "`A` is sized" *implies* "`Two<A>` is sized". If `A` is `int32`, then its size is `4`, which implies that
+`Two<int32>` has a size of `4 + 4 = 8`. Similarly, of `Pair` it can be said that "`A` is sized *and* `B` is sized" implies 
+"`Pair<A, B>` is sized".
+
+Note that type *constructors* don't have a size. In other words, only types of kind `Type` have a size. A type constructor
+such as `Two` (of kind `Type -> Type`) has a size *function*. Given the sizes of the type constructor's parameters,
+a size function computes the size of the resulting datatype. `Two`'s size function is `\a -> a + a`. `Pair`'s size
+function `\a -> b -> a + b` (it could also be `\(a, b) -> a + b` in an uncurried setting).
 
 ## Solution
