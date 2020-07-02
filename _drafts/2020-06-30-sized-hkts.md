@@ -6,6 +6,13 @@ permalink: /sized-hkts/
 date: 2020-06-30 08:00:00 +1000
 tags:
     - programming
+excerpt: |
+  Memory-sensitive languages like C++ and Rust use compile-time information to calculate
+  sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
+  that improve runtime performance. Modern languages in this setting support generic types, but so far
+  these languages only allow parameterisation over types, not type constructors. In this article I describe
+  how to enable parameterisation over arbitrary type constructs, while still retaining compile-time calculation
+  of datatype sizes.
 ---
 
 <div style="display: flex">
@@ -32,8 +39,10 @@ tags:
               <li><a href="#sizing">Sizing</a></li>
               <li><a href="#kinds">Kinds</a></li>
               <li><a href="#type-classes">Type Classes</a></li>
+              <li><a href="#problem-statement">Problem Statement</a></li>
           </ul>
           <li><a href="#solution">Solution</a></li>
+          <li><a href="#references">References</a></li>
       </ul>
     </div>
   </div>
@@ -71,7 +80,8 @@ requires 8 bytes of memory. On the other hand, the size of generic types is not 
 What is the size of `Pair<A, B>`? It's the size of `A` plus the size of `B`, for some unknown `A` and `B`.
 
 This difficulty is usually addressed by only generating code for datatypes and functions when all the generic
-types have been substituted. If the program contants a `Pair(true, true)`, then the compiler will generate
+types have been replaced with concrete types. This process is known as monomorphisation. If the program contants a 
+`Pair(true, true)`, then the compiler will generate
 a new type `struct PairBoolBool(fst: bool, snd: bool)` whose size is statically known. If `Pair(true, true)`
 is passed to a function `fn swap<A, B>(p: Pair<A, B>) -> Pair<B, A>`, then the compiler generates a new
 function `fn swapBoolBool(p: PairBoolBool) -> PairBoolBool`. Because this function only uses types with known
@@ -83,14 +93,14 @@ on your CPU) regardless of what it points to. But in order to allocate a new poi
 be known.
 
 For each generic datatype or function, the compiler keeps track of which type variables are important for sizing
-calculations. The specifics of this is discussed in [Type Classes](#type-classes).
+calculations. The specifics of this is discussed in the [Type Classes](#type-classes) section.
 
 ### Kinds
 
 A consequence of all this is that in these languages, type variables can only stand for types. But there
 are good reasons to have type variables that stand for type constructors, too:
 
-```
+```rust
 enum One<A>(A)
 
 impl <A> One<A>{
@@ -114,7 +124,7 @@ Here are some 1-arity container types. The only difference between these datatyp
 they contain. They all support a `map` operation, which applies a function to all the datatype's elements. Functions
 that use `map` need to be implemented once for each type, even when their implementations are identical:
 
-```
+```rust
 fn incrOne(x: One<int32>) -> One<int32> { x.map(|n| n + 1) }
 
 fn incrTwo(x: Two<int32>) -> Two<int32> { x.map(|n| n + 1) }
@@ -125,12 +135,12 @@ fn incrThree(x: Three<int32>) -> Three<int32> { x.map(|n| n + 1) }
 To remedy this, there must first be a way to abstract over the type constructors, so that the code can
 be written *once* and for all:
 
-```
+```rust
 fn incr<F>(x: F<int32>) -> F<int32> { x.map(|n| n + 1) } // when F<A> has map, for all types A
 ```
 
 Then, there must be some way to rule out invalid types. For example, replacing `F` with `bool` in `F<int32>`
-is invalid, because `bool<int32>` is not a type. This is the job of kinds.
+is invalid, because `bool<int32>` is not a type. This is the job of kinds[^1].
 
 Kinds describe the 'shape' of types (and type constructors) in the same way that types describe the 'shape' 
 of values. A type's kind determines whether or not it takes any parameters. Here's the syntax of kinds:
@@ -164,7 +174,7 @@ datatype implicitly recieves an implementation of the `Sized` trait, and every t
 a sizing calculation is given a `Sized` bound. This means that trait resolution, an already useful feature, can
 be re-used to perform size calculations.
 
-Closely related to traits is functional programming concept of type classes. There are differences between the two,
+Closely related to traits is the functional programming concept of type classes[^1]. There are differences between the two,
 but those differences don't impact the results of this article. Type classes will prove a more convenient language
 in which to discuss these ideas.
 
@@ -172,18 +182,65 @@ A type class (or trait) can be considered a predicate on types. A type class con
 that the predicate must be true. For each constraint that is satisfied, there is corresponding 'evidence' that the
 predicate is true.
 
-When a type `T` has a `Sized` constraint, it is being asserted that the statement "`T` has a known size" is true. When
-this statement satisfied (for instance, when `T` is `int32`), evidence is produced, which in this case is *the actual size*
-of `T` (when `T` is `int32`, the evidence, *its size*, is the number `4`).
+When a type `T` has a `Sized` constraint, it is being asserted that the statement "`T` has a known size" is true. For
+brevity, this will be written as `Sized T`. When this statement satisfied (for instance, when `T` is `int32`), evidence 
+is produced, which in this case is *the actual size* of `T` (when `Sized int32` is satisfied, the evidence
+is the number `4` - the size of `int32`).
 
-Generic types like `Two<A>` have a size that depends on their type parameter. In the language of constraints, it can
-be said that "`A` is sized" *implies* "`Two<A>` is sized". If `A` is `int32`, then its size is `4`, which implies that
-`Two<int32>` has a size of `4 + 4 = 8`. Similarly, of `Pair` it can be said that "`A` is sized *and* `B` is sized" implies 
-"`Pair<A, B>` is sized".
+Generic types like `Two<A>` have a size that depends on their type parameter. In terms of constraints, it can
+be said that `Sized A` *implies* `Sized Two<A>`. If `A` is `int32`, then its size is `4`, which implies that
+`Two<int32>` has a size of `4 + 4 = 8`. Similarly, of `Pair` it can be said that `Sized A` implies (`Sized B` implies 
+`Sized Pair<A, B>`). Again, there is a choice between a curried an uncurried version; it could also be said that
+(`Sized A` *and* `Sized B`) implies `Sized Pair<A, B>`, but the again curried version will be used for convenience.
 
 Note that type *constructors* don't have a size. In other words, only types of kind `Type` have a size. A type constructor
 such as `Two` (of kind `Type -> Type`) has a size *function*. Given the sizes of the type constructor's parameters,
 a size function computes the size of the resulting datatype. `Two`'s size function is `\a -> a + a`. `Pair`'s size
 function `\a -> b -> a + b` (it could also be `\(a, b) -> a + b` in an uncurried setting).
 
+### Problem Statement
+
+With the background out of the way, the specific problem can be stated:
+
+When a type of kind `Type` is relevant for a size calculation, it is given a `Sized` constraint, which will be
+satisfied with a concrete size as evidence. What is the equivalent notion of constraint and evidence for
+higher-kinded types that contribute to size calculations?
+
 ## Solution
+
+An elegant solution to this problem can found by introducing quantified class constraints[^2]. Quantified constraints 
+are an extension to type classes that add implication and quantification to the language of constraints, and corresponding
+notions of evidence.
+
+Here's new syntax of quantified size constraints:
+
+```
+constraint ::=
+  Sized type               (size constraint)
+  constraint => constraint (implication constraint)
+  forall A. constraint     (quantification constraint)
+```
+
+The evidence for a constraint `c1 => c2` is a function that takes evidence for `c1` and produces evidence for `c2`, and the
+evidence for `forall A. c` is just the evidence for `c`. The evidence for quantification constraints is a bit more nuanced
+in general, but this description is accurate when only considering size constraints.
+
+Concretely, this means that the sizing rules for higher-kinded types can now be expressed using constraints. It is now the
+case that `forall A. Sized A => Sized Two<A>`, and the evidence for this constraint is the function `\a -> a + a`.
+The relevant constraint for `Pair` is `forall A. forall B. Sized A => Sized B => Sized Pair<A, B>` with evidence function
+`\a b -> a + b`.
+
+This extends to types of *any* kind. For all types, there is a mechanical way to derive an appropriate size constraint based
+only on type's kind;
+`T` of kind `Type` leads to `Sized T`, `U` of kind `Type -> Type` leads to `forall A. Sized A => Sized T<A>`, and so on. In 
+datatypes and functions, any size-relevant type variables can be assigned a size constraint in this way, and the compiler 
+will use this extra information when monomorphising definitions.
+
+[sized-hkts](https://github.com/LightAndLight/sized-hkts) is a minimal compiler that implements these ideas. It supports 
+higher-kinded polymorphism, functions and algebraic datatypes, and compiles to C. Kinds and size constraints are inferred,
+requiring no annotations from the user.
+
+## References
+
+[^1]: Jones, M. P. (1995). A system of constructor classes: overloading and implicit higher-order polymorphism. *Journal of functional programming*, 5(1), 1-35.
+[^2]: Bottu, G. J., Karachalias, G., Schrijvers, T., Oliveira, B. C. D. S., & Wadler, P. (2017). Quantified class constraints. *ACM SIGPLAN Notices*, 52(10), 148-161.
