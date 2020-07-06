@@ -240,6 +240,72 @@ will use this extra information when monomorphising definitions.
 higher-kinded polymorphism, functions and algebraic datatypes, and compiles to C. Kinds and size constraints are inferred,
 requiring no annotations from the user.
 
+Here's some example code that illustrates the 
+[higher-kinded data](https://reasonablypolymorphic.com/blog/higher-kinded-data/) pattern ([source](https://github.com/LightAndLight/sized-hkts/blob/master/examples/ex2.src), [generated C code](https://github.com/LightAndLight/sized-hkts/blob/master/examples/ex2.out)):
+
+```
+enum ListF f a { Nil(), Cons(f a, ptr (ListF f a)) }
+enum Maybe a { Nothing(), Just(a) }
+struct Identity a = Identity(a)
+
+fn validate<a>(xs: ListF Maybe a) -> Maybe (ListF Identity a) {
+  match xs {
+    Nil() => Just(Nil()),
+    Cons(mx, rest) => match mx {
+      Nothing() => Nothing(),
+      Just(x) => match validate(*rest) {
+        Nothing() => Nothing(),
+        Just(nextRest) => Just(Cons(Identity(x), new[nextRest]))
+      }
+    }
+  }
+}
+
+fn main() -> int32 {
+  let
+    a = Nil();
+    b = Cons(Nothing(), new[a]);
+    c = Cons(Just(1), new[b])
+  in
+    match validate(c) {
+      Nothing() => 11,
+      Just(xs) => match xs {
+        Nil() => 22,
+        Cons(x, rest) => x.0
+      }
+    }
+}
+```
+
+This code defines a linked list whose elements are wrapped in a generic 'container' type. It defines two possible
+container types: `Maybe`, which is a possibly-empty container, and `Identity`, the single-element container.
+`validate` takes a list whose elements are wrapped in `Maybe` and tries to replace all the `Just`s with `Identity`s.
+If any of the elements of the list are `Nothing`, then the whole function returns nothing.
+
+Points of interest in the generated code include:
+
+* 5 types are generated, corresponding to: 
+  `ListF Maybe int32`, `ListF Identity int32`, `Maybe int32`, `Identity int32`, and `Maybe (ListF Identity int32)`
+* Only 1 version of `validate` is generated, because it is only used at one instantiation of `a`.
+* The generated code makes no use of `sizeof`; the datatype sizes are known after typechecking and inlined during
+  code generation. The compiler knows that `ListF Maybe int32` is naively `14` bytes wide 
+  (`1 + max(1, 1 + 4) + 8`), whereas  `ListF Identity int32` is `13` bytes wide (`max(1, 1 + 4) + 8`).
+* The datatype sizes are not necessarily consistent with `sizeof`, because they ignore alignment for simplicity.
+  At this point, factoring alignment into the size calculations is straightforward.
+  
+## Conclusions
+
+Quantified class constraints provide an elegant framework for statically-sized higher-kinded types. On its own, this
+can raise the abstraction ceiling for high-performance languages, but it also serves as the groundwork for 'zero-cost' 
+versions of functional programming abstractions such as Functor, Applicative, and Traversable.
+
+This work shows that it would be possible for Rust to support for higher-kinded types in a reasonable manner, but
+there are some less theoretical reasons why that might not be a good idea in practise. Adding 'quantified trait bounds'
+would require new syntax, and represents an an additional concept for users to learn. Adding a kind system to Rust
+would also be a controversial change; choosing to keep types uncurried would disadvantage prospective users of the
+system, and changing to uncurried types would require rethinking of syntax and educational materials to maintain Rust's
+high standard of user experience.
+
 ## References
 
 [^1]: Jones, M. P. (1995). A system of constructor classes: overloading and implicit higher-order polymorphism. *Journal of functional programming*, 5(1), 1-35.
