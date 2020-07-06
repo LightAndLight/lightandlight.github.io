@@ -25,6 +25,9 @@ excerpt: |
         how to enable parameterisation over arbitrary type constructs, while still retaining compile-time calculation
         of datatype sizes.
     </p>
+    <p>
+        The code for this project can be found <a href="https://github.com/LightAndLight/sized-hkts">here</a>.
+    </p>
   </div>
 
   <div style="min-width: 30%; margin-left: auto; margin: 1em;">
@@ -42,6 +45,7 @@ excerpt: |
               <li><a href="#problem-statement">Problem Statement</a></li>
           </ul>
           <li><a href="#solution">Solution</a></li>
+          <li><a href="#conclusion">Conclusion</a></li>
           <li><a href="#references">References</a></li>
       </ul>
     </div>
@@ -293,13 +297,13 @@ Points of interest in the generated code include:
 * The datatype sizes are not necessarily consistent with `sizeof`, because they ignore alignment for simplicity.
   At this point, factoring alignment into the size calculations is straightforward.
   
-## Conclusions
+## Conclusion
 
 Quantified class constraints provide an elegant framework for statically-sized higher-kinded types. On its own, this
 can raise the abstraction ceiling for high-performance languages, but it also serves as the groundwork for 'zero-cost' 
 versions of functional programming abstractions such as Functor, Applicative, and Traversable.
 
-This work shows that it would be possible for Rust to support for higher-kinded types in a reasonable manner, but
+This work shows it's definitely possible for Rust to support higher-kinded types in a reasonable manner, but
 there are some less theoretical reasons why that might not be a good idea in practise. Adding 'quantified trait bounds'
 would require new syntax, and represents an an additional concept for users to learn. Adding a kind system to Rust
 would also be a controversial change; choosing to keep types uncurried would disadvantage prospective users of the
