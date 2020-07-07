@@ -114,6 +114,7 @@ pre {
     border: 1px solid #dddddd;
     border-radius: 0.25em;
     padding: 1em;
+    overflow: scroll;
 }
 
 code {
@@ -194,10 +195,6 @@ footer {
 }
 
 @media (max-width: 800px) {
-    p, li, code{
-        font-size: 1.25em;
-    }
-
     p, li {
         margin-left: 0;
         margin-right: 0;
@@ -225,14 +222,6 @@ footer {
     h2 {
 		    font-size: 1.5em;
 	  }
-
-    p, li, code {
-        font-size: 1.15em;
-    }
-
-    pre {
-        overflow: scroll;
-    }
 
     pre > code {
         white-space: pre;
