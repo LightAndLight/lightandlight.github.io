@@ -3,7 +3,7 @@ layout: post
 title: Statically Sized Higher-kinded Polymorphism
 author: ielliott95
 permalink: /sized-hkts/
-date: 2020-06-30 08:00:00 +1000
+date: 2020-07-37 15:00:00 +1000
 tags:
     - programming
 excerpt: |
