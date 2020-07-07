@@ -114,6 +114,7 @@ pre {
     border: 1px solid #dddddd;
     border-radius: 0.25em;
     padding: 1em;
+    overflow: scroll;
 }
 
 code {
@@ -174,14 +175,38 @@ footer {
 	text-align: center;
 }
 
-@media (max-width: 800px) {
-    p, li, code{
-        font-size: 1.25em;
-    }
+.intro-wrapper {
+    display: flex;
+    flex-direction: row;
+}
 
+.contents-wrapper {
+    min-width: 30%;
+    margin-left: auto;
+    margin: 1em;
+}
+
+.contents {
+    background: #f2f2f2;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    border: 1px solid #dddddd;
+    border-radius: 0.25em;
+}
+
+@media (max-width: 800px) {
     p, li {
         margin-left: 0;
         margin-right: 0;
+    }
+
+    .intro-wrapper {
+        flex-direction: column;
+    }
+
+    .contents-wrapper {
+        min-width: 100%;
+        margin: 0;
     }
 }
 
@@ -197,14 +222,6 @@ footer {
     h2 {
 		    font-size: 1.5em;
 	  }
-
-    p, li, code {
-        font-size: 1.15em;
-    }
-
-    pre {
-        overflow: scroll;
-    }
 
     pre > code {
         white-space: pre;
