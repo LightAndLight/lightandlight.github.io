@@ -79,16 +79,17 @@ compilers, because they take [alignment](https://en.wikipedia.org/wiki/Data_stru
 This article will assume the simple sizing formula, because the results can easily be adapted to more nuanced
 formulae.
 
-The size of a datatype like `struct TwoInts(int32, int32)` is known immediately at its definition. `TwoInts`
-requires 8 bytes of memory. On the other hand, the size of generic types is not always known at their definition.
-What is the size of `Pair<A, B>`? It's the size of `A` plus the size of `B`, for some unknown `A` and `B`.
+The size of a datatype like `struct TwoInts(x: int32, y: int32)` is known immediately at its definition. `TwoInts`
+requires 8 bytes of memory. On the other hand, the size of a generic datatype is not always known at its definition.
+What is the size of `struct Pair<A, B>(fst: A, snd: B)`? It's the size of `A` plus the size of `B`, for some 
+unknown `A` and `B`.
 
 This difficulty is usually addressed by only generating code for datatypes and functions when all the generic
-types have been replaced with concrete types. This process is known as monomorphisation. If the program contants a 
+types have been replaced with concrete types. This process is known as monomorphisation. If the program contains a 
 `Pair(true, true)`, then the compiler will generate
 a new type `struct PairBoolBool(fst: bool, snd: bool)` whose size is statically known. If `Pair(true, true)`
 is passed to a function `fn swap<A, B>(p: Pair<A, B>) -> Pair<B, A>`, then the compiler generates a new
-function `fn swapBoolBool(p: PairBoolBool) -> PairBoolBool`. Because this function only uses types with known
+function `fn swapBoolBool(p: PairBoolBool) -> PairBoolBool`. Because this new function only uses types with known
 sizes, the code for memory allocation and calling conventions can be generated correctly.
 
 There are also generic types that *don't* depend on the size of their parameters. An example of
@@ -105,22 +106,22 @@ A consequence of all this is that in these languages, type variables can only st
 are good reasons to have type variables that stand for type constructors, too:
 
 ```rust
-enum One<A>(A)
+struct One<A>(A)
 
 impl <A> One<A>{
-  map<B>(f: Fn(A) -> B) -> One<B> { ... }
+  map<B, F: Fn(A) -> B>(self, f: F) -> One<B> { ... }
 }
 
-enum Two<A>(A, A)
+struct Two<A>(A, A)
 
 impl <A> Two<A>{
-  map<B>(f: Fn(A) -> B) -> Two<B> { ... }
+  map<B, F: Fn(A) -> B>(self, f: F) -> Two<B> { ... }
 }
 
-enum Three<A>(A, A, A)
+struct Three<A>(A, A, A)
 
 impl <A> Three<A>{
-  map<B>(f: Fn(A) -> B) -> Three<B> { ... }
+  map<B, F: Fn(A) -> B>(self, f: F) -> Three<B> { ... }
 }
 ```
 
@@ -174,7 +175,7 @@ over higher-kinded types is known as 'higher-kinded polymorphism'.
 ### Type Classes
 
 Rust uses [traits](https://blog.rust-lang.org/2015/05/11/traits.html) to coordinate sizing calculations. Each
-datatype implicitly recieves an implementation of the `Sized` trait, and every type variable that is relevant for
+datatype implicitly receives an implementation of the `Sized` trait, and every type variable that is relevant for
 a sizing calculation is given a `Sized` bound. This means that trait resolution, an already useful feature, can
 be re-used to perform size calculations.
 
@@ -187,15 +188,15 @@ that the predicate must be true. For each constraint that is satisfied, there is
 predicate is true.
 
 When a type `T` has a `Sized` constraint, it is being asserted that the statement "`T` has a known size" is true. For
-brevity, this will be written as `Sized T`. When this statement satisfied (for instance, when `T` is `int32`), evidence 
-is produced, which in this case is *the actual size* of `T` (when `Sized int32` is satisfied, the evidence
+brevity, this will be written as `Sized T`. When this statement satisfied (for instance, when `T` is `int32`), the
+evidence is produced is *the actual size* of `T` (when `Sized int32` is satisfied, the evidence
 is the number `4` - the size of `int32`).
 
 Generic types like `Two<A>` have a size that depends on their type parameter. In terms of constraints, it can
 be said that `Sized A` *implies* `Sized Two<A>`. If `A` is `int32`, then its size is `4`, which implies that
-`Two<int32>` has a size of `4 + 4 = 8`. Similarly, of `Pair` it can be said that `Sized A` implies (`Sized B` implies 
-`Sized Pair<A, B>`). Again, there is a choice between a curried an uncurried version; it could also be said that
-(`Sized A` *and* `Sized B`) implies `Sized Pair<A, B>`, but the again curried version will be used for convenience.
+`Two<int32>` has a size of `4 + 4 = 8`. Similarly, of `Pair` it can be said that `Sized A` implies [ `Sized B` implies 
+`Sized Pair<A, B>` ]. There is a choice between a curried an uncurried version; it could also be said that
+[ `Sized A` *and* `Sized B` ] implies `Sized Pair<A, B>`, but the curried version will be used for convenience.
 
 Note that type *constructors* don't have a size. In other words, only types of kind `Type` have a size. A type constructor
 such as `Two` (of kind `Type -> Type`) has a size *function*. Given the sizes of the type constructor's parameters,
@@ -229,7 +230,8 @@ The evidence for a constraint `c1 => c2` is a function that takes evidence for `
 evidence for `forall A. c` is just the evidence for `c`. The evidence for quantification constraints is a bit more nuanced
 in general, but this description is accurate when only considering size constraints.
 
-Concretely, this means that the sizing rules for higher-kinded types can now be expressed using constraints. It is now the
+Concretely, this means that the sizing rules for higher-kinded types can now be expressed using constraints, and size
+calculations involving higher-kinded types can be performed using type class resolution. It is now the
 case that `forall A. Sized A => Sized Two<A>`, and the evidence for this constraint is the function `\a -> a + a`.
 The relevant constraint for `Pair` is `forall A. forall B. Sized A => Sized B => Sized Pair<A, B>` with evidence function
 `\a b -> a + b`.
@@ -245,7 +247,8 @@ higher-kinded polymorphism, functions and algebraic datatypes, and compiles to C
 requiring no annotations from the user.
 
 Here's some example code that illustrates the 
-[higher-kinded data](https://reasonablypolymorphic.com/blog/higher-kinded-data/) pattern ([source](https://github.com/LightAndLight/sized-hkts/blob/master/examples/ex2.src), [generated C code](https://github.com/LightAndLight/sized-hkts/blob/master/examples/ex2.out)):
+[higher-kinded data](https://reasonablypolymorphic.com/blog/higher-kinded-data/) pattern
+([source](https://github.com/LightAndLight/sized-hkts/blob/master/examples/ex2.src), [generated C code](https://github.com/LightAndLight/sized-hkts/blob/master/examples/ex2.out)):
 
 ```
 enum ListF f a { Nil(), Cons(f a, ptr (ListF f a)) }
@@ -304,8 +307,8 @@ can raise the abstraction ceiling for high-performance languages, but it also se
 versions of functional programming abstractions such as Functor, Applicative, and Traversable.
 
 This work shows it's definitely possible for Rust to support higher-kinded types in a reasonable manner, but
-there are some less theoretical reasons why that might not be a good idea in practise. Adding 'quantified trait bounds'
-would require new syntax, and represents an an additional concept for users to learn. Adding a kind system to Rust
+there are some less theoretical reasons why that might not be a good idea in practice. Adding 'quantified trait bounds'
+would require new syntax, and represents an additional concept for users to learn. Adding a kind system to Rust
 would also be a controversial change; choosing to keep types uncurried would disadvantage prospective users of the
 system, and changing to uncurried types would require rethinking of syntax and educational materials to maintain Rust's
 high standard of user experience.
