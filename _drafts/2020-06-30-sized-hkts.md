@@ -15,7 +15,7 @@ excerpt: |
   of datatype sizes.
 ---
 
-<div style="display: flex">
+<div class="intro-wrapper">
   <div>
     <p>
         Memory-sensitive languages like C++ and Rust use compile-time information to calculate
@@ -30,8 +30,8 @@ excerpt: |
     </p>
   </div>
 
-  <div style="min-width: 30%; margin-left: auto; margin: 1em;">
-    <div style="background: #f2f2f2; padding-left: 1.5em; padding-right: 1.5em; border: 1px solid #dddddd; border-radius: 0.25em;">
+  <div class="contents-wrapper">
+    <div class="contents">
       <h3>Contents</h3>
       <ul style="list-style-type: none">
           <li>
