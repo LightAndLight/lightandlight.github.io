@@ -287,7 +287,7 @@ fn main() -> int32 {
 This code defines a linked list whose elements are wrapped in a generic 'container' type. It defines two possible
 container types: `Maybe`, which is a possibly-empty container, and `Identity`, the single-element container.
 `validate` takes a list whose elements are wrapped in `Maybe` and tries to replace all the `Just`s with `Identity`s.
-If any of the elements of the list are `Nothing`, then the whole function returns nothing.
+If any of the elements of the list are `Nothing`, then the whole function returns `Nothing`.
 
 Points of interest in the generated code include:
 
