@@ -172,7 +172,20 @@ article {
 }
 
 footer {
-	text-align: center;
+    display: flex;
+    justify-content: center;
+    padding: 1em;
+}
+
+.footer-item {
+    margin-left: 0.375em;
+    margin-right: 0.375em;
+}
+
+.footer-icon {
+    vertical-align: middle;
+    width: 1em;
+    height: 1em;
 }
 
 .intro-wrapper {
