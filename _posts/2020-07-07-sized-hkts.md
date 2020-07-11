@@ -7,12 +7,14 @@ date: 2020-07-07 15:00:00 +1000
 tags:
     - programming
 excerpt: |
-  Memory-sensitive languages like C++ and Rust use compile-time information to calculate
-  sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
-  that improve runtime performance. Modern languages in this setting support generic types, but so far
-  these languages only allow parameterisation over types, not type constructors. In this article I describe
-  how to enable parameterisation over arbitrary type constructs, while still retaining compile-time calculation
-  of datatype sizes.
+  <p>
+    Memory-sensitive languages like C++ and Rust use compile-time information to calculate
+    sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
+    that improve runtime performance. Modern languages in this setting support generic types, but so far
+    these languages only allow parameterisation over types, not type constructors. In this article I describe
+    how to enable parameterisation over arbitrary type constructs, while still retaining compile-time calculation
+    of datatype sizes.
+  </p>
 ---
 
 <div class="intro-wrapper">
