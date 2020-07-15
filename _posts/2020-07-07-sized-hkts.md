@@ -312,7 +312,7 @@ This work shows it's definitely possible for Rust to support higher-kinded types
 there are some less theoretical reasons why that might not be a good idea in practice. Adding 'quantified trait bounds'
 would require new syntax, and represents an additional concept for users to learn. Adding a kind system to Rust
 would also be a controversial change; choosing to keep types uncurried would disadvantage prospective users of the
-system, and changing to uncurried types would require rethinking of syntax and educational materials to maintain Rust's
+system, and changing to curried types would require rethinking of syntax and educational materials to maintain Rust's
 high standard of user experience.
 
 ## References
