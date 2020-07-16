@@ -240,7 +240,7 @@ The relevant constraint for `Pair` is `forall A. forall B. Sized A => Sized B =>
 
 This extends to types of *any* kind. For all types, there is a mechanical way to derive an appropriate size constraint based
 only on type's kind;
-`T` of kind `Type` leads to `Sized T`, `U` of kind `Type -> Type` leads to `forall A. Sized A => Sized T<A>`, and so on. In 
+`T` of kind `Type` leads to `Sized T`, `U` of kind `Type -> Type` leads to `forall A. Sized A => Sized U<A>`, and so on. In 
 datatypes and functions, any size-relevant type variables can be assigned a size constraint in this way, and the compiler 
 will use this extra information when monomorphising definitions.
 
