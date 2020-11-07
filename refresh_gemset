@@ -1,0 +1,8 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -p bundler bundix zlib bashInteractive -i bash
+
+rm Gemfile.lock
+bundler install
+
+rm gemset.nix
+bundix
