@@ -10,7 +10,7 @@ tags:
 
 I'm an experienced Haskell programmer, and I've been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
-Rust. This article is a short description of that journey.
+Rust. This article is a short description of my journey.
 
 ---
 
@@ -118,7 +118,7 @@ fn map_freevars(f: &dyn Fn(usize) -> usize, e: &Expr) -> Expr {
 ```
 
 A `&dyn` reference is a pair of pointers; one pointer to a value of a type that implements the trait,
-and another pointer to the implementation of the trait for that type^1.
+and another pointer to the implementation of the trait for that type[^1].
 
 This code is perfectly usable, and I'd guess it's the 'idiomatic' Rust solution. But there's one final
 step I'd like to take, mostly for educational perposes, and for a small efficiency gain.
@@ -134,7 +134,7 @@ This structure is described by the following datatype:
 ```rust
 enum Origin<'a, F> {
     Unchanged(F),
-    LamNode(&'a Renaming<'a, F>)
+    LamNode(&'a Origin<'a, F>)
 }
 ```
 
@@ -151,6 +151,8 @@ impl <'a, F: Fn(usize) -> usize> Origin<'a, F> {
 }
 ```
 
+*Challenge: implement `Origin::apply` using constant stack space.*
+
 Now the `Origin::LamNode` constructor replaces the fresh closure in the `Lam` branch:
 
 ```rust
@@ -165,15 +167,10 @@ fn map_freevars<'a, F: Fn(usize) -> usize>(f: &'a Origin<'a, F>, e: &Expr) -> Ex
 
 This transformation is an example of [defunctionalisation](https://en.wikipedia.org/wiki/Defunctionalization).
 
-Here, the practical benefit is that `&Origin` is half the size of a `&dyn Fn(usize) -> usize`, (a single pointer 
+Here, the practical benefit is that `&Origin` is half the size of a `&dyn Fn(usize) -> usize` (a single pointer 
 instead of two), so recursing over a `Lam` node uses less stack space.
 
-*Challenge for the reader: implement `Origin::apply` using constant stack space*
-
-The interface to `map_freevars` can then be cleaned up by using the worker/wrapper pattern:
-
-```rust
-```
+The interface to `map_freevars` can then be cleaned up using the worker/wrapper pattern:
 
 ```rust
 fn map_freevars<F: Fn(usize) -> usize>(f: F, e: &Expr) -> Expr {
