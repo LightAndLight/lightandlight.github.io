@@ -1,7 +1,7 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -p bundler bundix zlib bashInteractive -i bash
 
-rm Gemfile.lock
+bundle config set --local frozen true
 bundler install
 
 rm gemset.nix
