@@ -9,40 +9,31 @@ tags:
 ---
 
 [Dream.In.Code](https://web.archive.org/web/20220105235917/https://www.dreamincode.net/) was a
-programming help forum that ran from 2001 to the beginning of 2022. It recently [shut
+programming help forum that ran from 2001 to the beginning of 2022. It was recently [shut
 down](https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/)
 due to hosting costs. My participation in Dream.In.Code, starting from 2009 and ending somewhere in
-2013, represents the beginning of my life as a programmer. Programming is now a *huge* part of my life. I'd like to acknowledge the role this forum played in my development.
+2013, represents the beginning of my life as a programmer. Over the past 10 or so years, programming
+has become a *huge* part of my life. I'd like to acknowledge the role this forum played in my development.
 
-I learned to program by posting there. It was the only place I could 
-get guidance about programming, because I knew no programmers in
-real life.
+Dream.In.Code has been thoroughly archived on web.archive.org, so I scraped
+the archives for my old posts. I was quite surprised by what I found. 
 
-web.archive.org showed that the form had been dilligently archived before
-it went offline.
+I had forgotten how much of a beginner I was when I started posting there. 
+My initial posts
+essentially asked, "I wrote this code and it doesn't work and I don't know why. Help?" 
+I barely ask a coherent question.
+Later, my questions became more targeted, like "How do I update all the items in an array?"
 
-I scraped web.archive.org for my old posts and I found about 20.
+What left an even stronger impression was the quality of answers I recieved. Every question I asked
+recieved patient, respectful responses. No one complained about my writing style (I was 13 at the time, and re-reading
+these posts caused some eye-rolls). No one berated me when I left out helpful debugging information
+like log files or compiler errors. No one made me feel bad for asking
+questions.
 
-I was surprised by how patient and kind everyone was.
+I think this was the best possible start I could have asked for.
 
-I was ~13 years old when I started posting there.
+When I was learning to code, I had no one to turn to "in real life". Posting a code snippet to a
+forum and asking, "pls halp" was all I could do. The members of Dream.In.Code turned that into a
+positive, constructive experience.
 
-Looking back at those initial posts: I didn't even
-know how to ask the questions that I needed answered. The best I could
-do was say, "my code is broken, please help".
-
-But every single time there were people giving patient, constructive
-responses.
-
-Posters tolerated my cringy teen writing style style ("so umm... my code doesn't work. halp pls? thx
-xD").
-
-Where can people go for that kind of interaction? StackOverflow is 
-definitely not the place.
-
-It might be my nostalgia talking, but reddit doesn't seem like the
-right sort of place either. It seems... colder.
-
-How would my programming journey have looked if I hadn't found a place like 
-dream.in.code?
-
+Thanks, Dream.In.Code
