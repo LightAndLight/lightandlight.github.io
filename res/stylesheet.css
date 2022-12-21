@@ -1,12 +1,15 @@
-//	palette:
-//	#2f2f2f - text
-//	#369392 - links
-//	#4f86c6 - ??
-//	#4fb0c6 - highlights
-//	#ffffff - background
-//      #f2f2f2 - grey background
-//      #dddddd - grey border
+/*
+palette:
 
+#2f2f2f - text
+#369392 - links
+#4f86c6 - ??
+#4fb0c6 - highlights
+#ffffff - background
+#f2f2f2 - grey background
+#dddddd - grey border
+
+*/
 
 html {
     background-color: #ffffff;
@@ -137,7 +140,6 @@ li {
 pre > code {
     padding: 0 0 0 0;
     border: none;
-    border-radius: none;
 }
 
 .heading {
