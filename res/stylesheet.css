@@ -86,7 +86,7 @@ p {
     margin-left: 1em;
     margin-right: 1em;
     margin-top: 1em;
-    line-height: 1.5em;
+    line-height: 170%;
 }
 
 li > p {
@@ -131,6 +131,7 @@ code {
     white-space: pre-wrap;
     hyphens: none;
     font-family: "Source Code Pro", monospace;
+    line-height: 145%;
 }
 
 li {
