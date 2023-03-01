@@ -43,6 +43,14 @@ these posts.
 
 ## Programming
 
+### Casey Muratori's blog
+
+<https://caseymuratori.com>
+
+Casey Muratori is a game developer. They've written a lot about API design, and
+I still benefit from re-reading posts such as [Semantic Compression](https://caseymuratori.com/blog_0015).
+Their posts on software performance also stand out in my mind.
+
 ### matklad's blog
 
 <https://matklad.github.io>
