@@ -5,14 +5,14 @@ palette:
 #369392 - links
 #4f86c6 - ??
 #4fb0c6 - highlights
-#ffffff - background
-#f2f2f2 - grey background
-#dddddd - grey border
+#f5f5ff - background
+#e9e9f2 - grey background
+#d0d0dd - grey border
 
 */
 
 html {
-    background-color: #ffffff;
+    background-color: #f5f5ff;
     color: #2f2f2f;
 }
 
@@ -37,17 +37,26 @@ a {
 hr {
     border: 0;
     height: 1px;
-    background: #dddddd;
+    background: #d0d0dd;
     margin-top: 1.25em;
     margin-bottom: 1.25em;
 }
 
 blockquote {
-    border-left: 0.25em solid #4fb0c6;
-    background-color: #f2f2f2;
-    padding-top: 0.25em;
-    padding-bottom: 0.25em;
+    overflow: hidden;
+    position: relative;
+    background-color: #e9e9f2;
+    border: 1px solid #d0d0dd;
+    border-radius: 0.25em;
     font-style: italic;
+}
+
+blockquote::before {
+    content: '';
+    position: absolute;
+    width: 0.25em;
+    height: 100%;
+    background-color: #4fb0c6;
 }
 
 h1 {
@@ -113,8 +122,8 @@ nav {
 }
 
 pre {
-    background: #f2f2f2;
-    border: 1px solid #dddddd;
+    background: #e9e9f2;
+    border: 1px solid #d0d0dd;
     border-radius: 0.25em;
     padding: 1em;
     overflow: auto;
@@ -123,8 +132,8 @@ pre {
 }
 
 code {
-    background: #f2f2f2;
-    border: 1px solid #dddddd;
+    background: #e9e9f2;
+    border: 1px solid #d0d0dd;
     border-radius: 0.166em;
     padding-left: 0.2em;
     padding-right: 0.2em;
@@ -213,10 +222,10 @@ footer {
 }
 
 .contents {
-    background: #f2f2f2;
+    background: #e9e9f2;
     padding-left: 1.5em;
     padding-right: 1.5em;
-    border: 1px solid #dddddd;
+    border: 1px solid #d0d0dd;
     border-radius: 0.25em;
 }
 
