@@ -68,9 +68,9 @@ h1 {
 }
 
 h2 {
-	font-size: 1.75em;
-	font-family: "Source Serif Pro", serif;
-	font-weight: 300;
+    font-size: 1.75em;
+    font-family: "Source Serif Pro", serif;
+    font-weight: 300;
 }
 
 h3 {
@@ -78,16 +78,16 @@ h3 {
 }
 
 .centered {
-    text-align: center; 
+    text-align: center;
 }
 
 .large {
-    font-size: 3em; 
+    font-size: 3em;
 }
 
 p, li {
-  hyphens: auto;
-  word-break: break-word;
+    hyphens: auto;
+    word-break: break-word;
 }
 
 p {
@@ -98,15 +98,15 @@ p {
     line-height: 170%;
 }
 
-li > p {
+li>p {
     margin-bottom: 0.5em;
     margin-top: 0.5em;
 }
 
 .date {
-	font-family: "Source Sans Pro", sans-serif;
-	font-weight: 400;
-	font-style: italic;
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 400;
+    font-style: italic;
 }
 
 nav {
@@ -147,19 +147,19 @@ li {
     padding-bottom: 0.5em;
 }
 
-pre > code {
+pre>code {
     padding: 0 0 0 0;
     border: none;
 }
 
 .heading {
-	color: #2f2f2f;
-	text-decoration: none;
+    color: #2f2f2f;
+    text-decoration: none;
 }
 
 .heading:hover {
-	color: #379392;
-	border-bottom: 1px solid ;
+    color: #379392;
+    border-bottom: 1px solid;
 }
 
 nav a {
@@ -171,18 +171,18 @@ nav a {
 }
 
 nav a:hover {
-	  color: #4f86c6;
+    color: #4f86c6;
 }
 
 section {
-	margin-left: auto;
-	margin-right: auto;
-	max-width: 50rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 50rem;
 }
 
 article {
-	border-bottom: 1px solid #2f2f2f;
-	word-wrap: break-word;
+    border-bottom: 1px solid #2f2f2f;
+    word-wrap: break-word;
 }
 
 footer {
@@ -246,19 +246,19 @@ footer {
 }
 
 @media (max-width: 650px) {
-	  nav {
-		    font-size: 1.25em;
-	  }
+    nav {
+        font-size: 1.25em;
+    }
 
     h1 {
-		    font-size: 2em;
-	  }
+        font-size: 2em;
+    }
 
     h2 {
-		    font-size: 1.5em;
-	  }
+        font-size: 1.5em;
+    }
 
-    pre > code {
+    pre>code {
         white-space: pre;
     }
 
@@ -266,9 +266,9 @@ footer {
         padding: 1em;
     }
 
-	  .large {
-		    font-size: 2em;
-	  }
+    .large {
+        font-size: 2em;
+    }
 
     .footer-icon {
         width: 1.25em;
@@ -278,4 +278,17 @@ footer {
     .footer-link-name {
         display: none;
     }
+}
+
+.mjx-chtml.MJXc-display {
+    font-size: 1em !important;
+}
+
+.math {
+    overflow-x: scroll;
+    background: #e9e9f2;
+    border: 1px solid #d0d0dd;
+    border-radius: 0.25em;
+    padding: 1em;
+    margin: 1em;
 }
