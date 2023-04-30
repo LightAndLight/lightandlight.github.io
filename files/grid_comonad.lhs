@@ -68,7 +68,7 @@ and
 
 ***
 
-[Literal Haskell source]({{ "/files/grid_comonad.lhs" | absolute_url }})
+[Literal Haskell source](../files/grid_comonad.lhs)
 
 \begin{code}
 import Control.Applicative (liftA2)

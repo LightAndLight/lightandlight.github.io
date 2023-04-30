@@ -1,0 +1,26 @@
+#! /usr/bin/env ipso
+
+main : IO ()
+main =
+  comp
+    bind branch <- io.map string.trim <| cmd.read `git branch --show-current`
+    println "Pulling $branch..."
+    cmd.run `git pull`
+    
+    cmd.run `git checkout published`
+    println "Pulling published..."
+    cmd.run `git pull origin published`
+
+    cmd.run `git merge $branch --no-edit`
+    
+    cmd.run `cabal run site -- rebuild`
+    cmd.run `rm -rf docs`
+    cmd.run `mv _site docs`
+    
+    cmd.run `git add docs`
+    cmd.run `git commit -m "publish"`
+    
+    println "Pushing published..."
+    cmd.run `git push`
+
+    cmd.run `git checkout $branch`

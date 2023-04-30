@@ -1,0 +1,4 @@
+* `$seo$` content in `templates/page.html`
+* syntax highlighting (skylighting) is crap
+* pandoc duplicates footnotes when they're referenced multiple times. bad for citations.
+  * adds a hseparator (no thanks!)

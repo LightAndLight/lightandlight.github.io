@@ -1,0 +1,24 @@
+$if(tag)$
+<header>
+    <h1 class="centered">Posts about $tag$:</h1>
+</header>
+$endif$
+
+$for(posts)$
+<article>
+    <header>
+        <h1><a href="$url$" class="heading">$title$</a></h1>
+        <p class="date">$date$</p>
+    </header>
+
+    $excerpt$
+
+    <footer style="text-align: center;">
+        <p>...
+            <br>
+            $partial("templates/tags-list.html")$
+            <br>
+        </p>
+    </footer>
+</article>
+$endfor$

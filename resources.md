@@ -1,7 +1,6 @@
 ---
-layout: page
 title: Resources
-permalink: /resources/
+permalink: /resources
 ---
 
 <h1 class="centered">Resources</h1>

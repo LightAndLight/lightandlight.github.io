@@ -1,15 +1,21 @@
-It's difficult to learn functional programming without hearing about
-continuations. Often they're mentioned while talking about
-boosting the performance of pure functional code, sometimes there's talk
-of control flow, and occasionally with 'time-travel' thrown in there to make
-it all seem more obscure. It's all true, but let's start from the beginning.
+---
+layout: post
+title: Continuations From the Ground Up
+author: ielliott95
+permalink: /continuations-from-the-ground-up
+tags:
+    - programming
+    - haskell
+---
 
-This post was generated from a [Literate Haskell file](../files/continuations.lhs) using Pandoc,
-so you can load it up into GHCI and play around if you want.
+It's difficult to learn functional programming without hearing about continuations. Often they're mentioned while talking about boosting the performance of pure functional code, sometimes there's talk of control flow, and occasionally with 'time-travel' thrown in there to make it all seem more obscure. It's all true, but let's start from the beginning.
 
-== Continuation Passing Style
+This post was generated from a [Literate Haskell file](../files/continuations.lhs) using Pandoc, so you can load it up into GHCI and play around if you want.
 
-\begin{code}
+Continuation Passing Style
+--------------------------
+
+``` haskell
 module CPS where
 
 import Control.Applicative
@@ -19,51 +25,42 @@ import Data.Maybe
 
 import qualified Data.Map as M
 import qualified System.Exit as E
-\end{code}
+```
 
-The main idea of this style is that the called function has control
-over how its return value is used. Usually, the caller will pass a function
-that tells the callee how to use its return value. Here's what that looks
-like:
+The main idea of this style is that the called function has control over how its return value is used. Usually, the caller will pass a function that tells the callee how to use its return value. Here's what that looks like:
 
-\begin{code}
+``` haskell
 add :: Num a => a -> a -> (a -> r) -> r
 add a b = \k -> k (a + b)
-\end{code}
+```
 
-`add` takes two numbers, plus a function that will take the result and do
-something (returning an unknown answer), then pass the result to this function.
-We call this 'extra function' a *continuation* because it specifies how the
-program should *continue*.
+`add` takes two numbers, plus a function that will take the result and do something (returning an unknown answer), then pass the result to this function. We call this 'extra function' a *continuation* because it specifies how the program should *continue*.
 
-It's possible to write any program using this style. I'm not going to prove it.
-As a challenge, let's restrict ourselves to write every function this way, with
-two exceptions:
+It's possible to write any program using this style. I'm not going to prove it. As a challenge, let's restrict ourselves to write every function this way, with two exceptions:
 
-\begin{code}
+``` haskell
 exitSuccess :: a -> IO ()
 exitSuccess _ = E.exitSuccess
 
 exitFailure :: Int -> IO ()
 exitFailure = E.exitWith . E.ExitFailure
-\end{code}
+```
 
-`exitSuccess` and `exitFailure` do not take a continuation, because the program
-always ends when they are called.
+`exitSuccess` and `exitFailure` do not take a continuation, because the program always ends when they are called.
 
 Let's define `mul` and `dvd`:
 
-\begin{code}
+``` haskell
 mul :: Num a => a -> a -> (a -> r) -> r
 mul a b = \k -> k (a * b)
 
 dvd :: Fractional a => a -> a -> (a -> r) -> r
 dvd a b = \k -> k (a / b)
-\end{code}
+```
 
 Now we can write some programs using this style.
 
-\begin{code}
+``` haskell
 -- Exits with status code 5
 prog_1 :: IO ()
 prog_1 = add 2 3 exitFailure
@@ -75,11 +72,11 @@ prog_2 = mul 10 10 exitSuccess
 -- Exits with status code (2 + 3) * 5 = 25
 prog_3 :: IO ()
 prog_3 = add 2 3 (\two_plus_three -> mul two_plus_three 5 exitFailure)
-\end{code}
+```
 
 We can factor out the continuation to make our program more modular:
 
-\begin{code}
+``` haskell
 -- Equivalent to \k -> k ((2 + 3) * 5)
 prog_4 :: (Int -> r) -> r
 prog_4 = \k -> add 2 3 (\two_plus_three -> mul two_plus_three 5 k)
@@ -87,14 +84,13 @@ prog_4 = \k -> add 2 3 (\two_plus_three -> mul two_plus_three 5 k)
 -- Equivalent to \k -> k ((2 + 3) * 5 + 5)
 prog_5 :: (Int -> r) -> r
 prog_5 = \k -> prog_4 (\res -> add res 5 k)
-\end{code}
+```
 
-In these kind of definitions, we'll call the `k` the *current continuation* to
-stand for *how the program will (currently) continue execution*.
+In these kind of definitions, we'll call the `k` the *current continuation* to stand for *how the program will (currently) continue execution*.
 
 Here's a more complex expression:
 
-\begin{code}
+``` haskell
 -- (2 + 3) * (7 + 9) + 5
 prog_6 :: Num a => (a -> r) -> r
 prog_6 = \k ->
@@ -102,24 +98,16 @@ prog_6 = \k ->
     add 7 9 (\sixteen ->
       mul five sixteen (\eighty ->
         add eighty 5 k)))
-\end{code}
+```
 
-In translating programs to continuation passing style,
-we transform a *tree* of computations into a *sequence* of computations. In
-doing so, we have *reified* the flow of the program. We now have a data
-structure in memory that represents the computations that make up the program. In
-this case, the data structure is a lot like a linked list- there is a head:
-'the computation that will be performed next', and a tail: 'the
-computations that will be performed on the result'. It's this ability to
-represent the flow of the program as a data structure that sets CPS programs
-apart from regular programs, which we will see later.
+In translating programs to continuation passing style, we transform a *tree* of computations into a *sequence* of computations. In doing so, we have *reified* the flow of the program. We now have a data structure in memory that represents the computations that make up the program. In this case, the data structure is a lot like a linked list- there is a head: 'the computation that will be performed next', and a tail: 'the computations that will be performed on the result'. It's this ability to represent the flow of the program as a data structure that sets CPS programs apart from regular programs, which we will see later.
 
-== Continuation Passing is Monadic
+Continuation Passing is Monadic
+-------------------------------
 
-Right now, writing CPS programs in Haskell is too verbose.
-Fortunately there are some familiar abstractions that will make it elegant:
+Right now, writing CPS programs in Haskell is too verbose. Fortunately there are some familiar abstractions that will make it elegant:
 
-\begin{code}
+``` haskell
 newtype Cont r a = Cont { runCont :: (a -> r) -> r }
 
 add' :: Num a => a -> a -> Cont r a
@@ -140,52 +128,48 @@ instance Applicative (Cont r) where
 
 instance Monad (Cont r) where
   ca >>= f = Cont $ \k -> runCont ca (\a -> runCont (f a) k)
-\end{code}
+```
 
-It turns out that the return type of these CPS programs, `(a -> r) -> r`, is a
-Monad. If you don't understand these implementations, meditate on them until
-you do. Here some hand-wave-y English explanations that may help:
+It turns out that the return type of these CPS programs, `(a -> r) -> r`, is a Monad. If you don't understand these implementations, meditate on them until you do. Here some hand-wave-y English explanations that may help:
 
-=== Functor
+### Functor
 
-`fmap`: Continue with the result of `c` by changing the result from an `a` to a
-`b` then sending that result to the current continuation.
+`fmap`: Continue with the result of `c` by changing the result from an `a` to a `b` then sending that result to the current continuation.
 
-=== Applicative
+### Applicative
 
 `pure`: Send an `a` to the current continuation
 
-`<*>`: Continue with the result of `cf` by continuing with the result of `ca`
-by sending (the result of `cf`) applied to (the result of `ca`) to the current
-continuation.
+`<*>`: Continue with the result of `cf` by continuing with the result of `ca` by sending (the result of `cf`) applied to (the result of `ca`) to the current continuation.
 
-=== Monad
-`>>=`: Continue with the result of `ca` by applying it to `f` and passing the
-current continuation on to the value `f` returned.
+### Monad
+
+`>>=`: Continue with the result of `ca` by applying it to `f` and passing the current continuation on to the value `f` returned.
 
 So now we can rewrite our previous verbose example:
 
-\begin{code}
+``` haskell
 prog_6' :: Cont r Int
 prog_6' = do
   five <- add' 2 3
   sixteen <- add' 7 9
   eighty <- mul' five sixteen
   add' eighty 5
-\end{code}
+```
 
 and run it:
 
-\begin{code}
+``` haskell
 prog_7 :: IO ()
 prog_7 = runCont prog_6' exitSuccess
-\end{code}
+```
 
-== callCC
+callCC
+------
 
 Consider the following CPS program:
 
-\begin{code}
+``` haskell
 prog_8 :: (Eq a, Fractional a) => a -> a -> a -> (Maybe a -> r) -> r
 prog_8 a b c = \k ->
   add b c
@@ -193,25 +177,17 @@ prog_8 a b c = \k ->
       if b_plus_c == 0
         then k Nothing
         else dvd a b_plus_c (k . Just))
-\end{code}
+```
 
-It adds `b` to `c`, then if `b + c` is zero, sends `Nothing` to the current
-continuation, otherwise divides `a` by `b + c` then continues by wrapping that
-in a `Just` and sending the `Just` result to the current continuation.
+It adds `b` to `c`, then if `b + c` is zero, sends `Nothing` to the current continuation, otherwise divides `a` by `b + c` then continues by wrapping that in a `Just` and sending the `Just` result to the current continuation.
 
-Because the current continuation is 'how the program will continue with the
-result of this function', sending a result to the current continuation early
-cause the function to *exit early*. In this sense, it's a bit like like a `jmp`
-or a `goto`.
+Because the current continuation is 'how the program will continue with the result of this function', sending a result to the current continuation early cause the function to *exit early*. In this sense, it's a bit like like a `jmp` or a `goto`.
 
-It is conceivable that somehow we can write a program like this using the
-`Cont` monad. This is where `callCC` comes in.
+It is conceivable that somehow we can write a program like this using the `Cont` monad. This is where `callCC` comes in.
 
-`callCC` stands for 'call with current continuation', and is the way we're going
-to bring the current continuation into scope when writing CPS programs. Here's
-an example of how the previous code snippet should look using `callCC`:
+`callCC` stands for 'call with current continuation', and is the way we're going to bring the current continuation into scope when writing CPS programs. Here's an example of how the previous code snippet should look using `callCC`:
 
-\begin{code}
+``` haskell
 prog_8' :: (Eq a, Fractional a) => a -> a -> a -> Cont r (Maybe a)
 prog_8' a b c = callCC $
   \k -> do
@@ -219,27 +195,20 @@ prog_8' a b c = callCC $
     if b_plus_c == 0
       then k Nothing
       else fmap Just $ dvd' a b_plus_c
-\end{code}
+```
 
 Here's how `callCC` is defined:
 
-\begin{code}
+``` haskell
 callCC :: ((a -> Cont r b) -> Cont r a) -> Cont r a
 callCC f = Cont $ \k -> runCont (f (\a -> Cont $ const (k a))) k
-\end{code}
+```
 
-We can see that the current continuation is permanently captured when it is
-used in the function passed to `f`, but it is also used when running the final result
-of `f`. So `k` might be called somewhere inside `f`, causing `f` to exit early, or it might not,
-in which case `k` is guaranteed to be called after `f` has finished.
+We can see that the current continuation is permanently captured when it is used in the function passed to `f`, but it is also used when running the final result of `f`. So `k` might be called somewhere inside `f`, causing `f` to exit early, or it might not, in which case `k` is guaranteed to be called after `f` has finished.
 
-Earlier I said that invoking the current continuation earlier is like jumping.
-This is a lot easier to show now that we can use it in our `Cont` monad. Calling
-the continuation provided by `callCC` will jump the program execution to
-immediately after the call to `callCC`, and set the result of the `callCC`
-continuation to the argument that was passed to the current continuation.
+Earlier I said that invoking the current continuation earlier is like jumping. This is a lot easier to show now that we can use it in our `Cont` monad. Calling the continuation provided by `callCC` will jump the program execution to immediately after the call to `callCC`, and set the result of the `callCC` continuation to the argument that was passed to the current continuation.
 
-\begin{code}
+``` haskell
 prog_9 = do
   five <- add' 2 3 
   res <- callCC $ \k ->
@@ -265,14 +234,14 @@ prog_11 = do
   -- if branch A was reached, `res` = 10
   -- if branch B was reached, `res` = 20
   add' five res
-\end{code}
+```
 
-== Another level of abstraction
+Another level of abstraction
+----------------------------
 
-We can also embed arbitrary effects in the return type of `Cont`. In other
-words, we can create a monad transformer.
+We can also embed arbitrary effects in the return type of `Cont`. In other words, we can create a monad transformer.
 
-\begin{code}
+``` haskell
 newtype ContT r m a = ContT { runContT :: (a -> m r) -> m r }
 
 callCC' :: ((a -> ContT r m b) -> ContT r m a) -> ContT r m a
@@ -290,28 +259,20 @@ instance Monad (ContT r m) where
 
 instance MonadTrans (ContT r) where
   lift ma = ContT $ \k -> ma >>= k
+```
 
-\end{code}
-
-Notice that the `Functor`, `Applicative` and `Monad` instances for `ContT r m`
-don't place any constraints on the `m`. This means that any type constructor of
-kind `(* -> *)` can be in the `m` position. The `MonadTrans` instance, however,
-does require `m` is a monad. It's a very simple definition- the result of
-running the lifted action is piped into the current continuation using `>>=`.
+Notice that the `Functor`, `Applicative` and `Monad` instances for `ContT r m` don't place any constraints on the `m`. This means that any type constructor of kind `(* -> *)` can be in the `m` position. The `MonadTrans` instance, however, does require `m` is a monad. It's a very simple definition- the result of running the lifted action is piped into the current continuation using `>>=`.
 
 Now that we have a fully-featured CPS monad, we can start doing magic.
 
-== The future, the past and alternate timelines
+The future, the past and alternate timelines
+--------------------------------------------
 
-The continuation that `callCC` provides access to is the current
-future of program execution as a single function. That's why this
-program-as-a-linear-sequence is so powerful. If you could save the current
-continuation and call it at a later time somewhere else in your (CPS) program,
-it would jump 'back in time' to the point after that particular `callCC`.
+The continuation that `callCC` provides access to is the current future of program execution as a single function. That's why this program-as-a-linear-sequence is so powerful. If you could save the current continuation and call it at a later time somewhere else in your (CPS) program, it would jump 'back in time' to the point after that particular `callCC`.
 
 To demonstrate this, and end with a bang, here's a simple boolean SAT solver.
 
-\begin{code}
+``` haskell
 -- Language of boolean expressions
 data Expr
   = Implies Expr Expr
@@ -424,11 +385,6 @@ sat expr = do
         Not a -> go a try_next_ref exit
         
         _ -> go (eval M.empty expr) try_next_ref exit
+```
 
-\end{code}
-
-The solver sets all the variables to `True`, and if the full expression
-evaluates to `False` it flips one to `False` and automatically re-evaluates the
-expression, repeating the process untill either it finally evaluates to `True`
-or all possible combinations of boolean values have been tested. It's not
-efficient, but it's a wonderful illustration of the elegance that CPS enables.
+The solver sets all the variables to `True`, and if the full expression evaluates to `False` it flips one to `False` and automatically re-evaluates the expression, repeating the process untill either it finally evaluates to `True` or all possible combinations of boolean values have been tested. It's not efficient, but it's a wonderful illustration of the elegance that CPS enables.

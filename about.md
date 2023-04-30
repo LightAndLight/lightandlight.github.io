@@ -1,7 +1,6 @@
 ---
-layout: page
 title: About Me
-permalink: /about/
+permalink: /about
 ---
 
 <h1 class="centered">About Me</h1>
