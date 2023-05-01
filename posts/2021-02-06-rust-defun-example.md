@@ -1,5 +1,4 @@
 ---
-layout: post
 title: An Example of Defunctionalisation in Rust
 author: ielliott95
 permalink: /rust-defun-example

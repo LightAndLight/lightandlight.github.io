@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Learning a Craft
 author: ielliott95
 permalink: /learning-a-craft

@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Configuring Agda's standard library on NixOS
 date: 2019-05-18 09:49:00+1000
 author: ielliott95

@@ -1,5 +1,4 @@
 ---
-layout: post
 permalink: /why-LINQ-is-broken
 title: Why LINQ (well, C#) is Broken
 author: ielliott95
