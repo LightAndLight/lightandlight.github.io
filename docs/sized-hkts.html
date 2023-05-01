@@ -22,6 +22,8 @@
   <script src="/res/script.js"></script>
 
   
+
+  
   <title>Statically Sized Higher-kinded Polymorphism - ielliott.io</title>
   
 
@@ -60,11 +62,11 @@ of datatype sizes.</p>
 <h3>
 Contents
 </h3>
-<ul style="list-style-type: none">
+<ul style="list-style-type: none; padding-left: 0;">
 <li>
 <a href="#background">Background</a>
 </li>
-<ul style="list-style-type: none">
+<ul style="list-style-type: none; padding-left: 1em;">
 <li>
 <a href="#generics">Generics</a>
 </li>
@@ -164,7 +166,7 @@ that use <code>map</code> need to be implemented once for each type, even when t
 be written <em>once</em> and for all:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> incr<span class="op">&lt;</span>F<span class="op">&gt;</span>(x<span class="op">:</span> F<span class="op">&lt;</span>int32<span class="op">&gt;</span>) <span class="op">-&gt;</span> F<span class="op">&lt;</span>int32<span class="op">&gt;</span> <span class="op">{</span> x<span class="op">.</span>map(<span class="op">|</span>n<span class="op">|</span> n <span class="op">+</span> <span class="dv">1</span>) <span class="op">}</span> <span class="co">// when F&lt;A&gt; has map, for all types A</span></span></code></pre></div>
 <p>Then, there must be some way to rule out invalid types. For example, replacing <code>F</code> with <code>bool</code> in <code>F&lt;int32&gt;</code>
-is invalid, because <code>bool&lt;int32&gt;</code> is not a type. This is the job of kinds<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+is invalid, because <code>bool&lt;int32&gt;</code> is not a type. This is the job of kinds<sup><a href="#reference-constructor-classes" id="reference-constructor-classes:1">1</a></sup>.</p>
 <p>Kinds describe the ‘shape’ of types (and type constructors) in the same way that types describe the ‘shape’
 of values. A type’s kind determines whether or not it takes any parameters. Here’s the syntax of kinds:</p>
 <pre><code>kind ::=
@@ -187,7 +189,7 @@ over higher-kinded types is known as ‘higher-kinded polymorphism’.</p>
 datatype implicitly receives an implementation of the <code>Sized</code> trait, and every type variable that is relevant for
 a sizing calculation is given a <code>Sized</code> bound. This means that trait resolution, an already useful feature, can
 be re-used to perform size calculations.</p>
-<p>Closely related to traits is the functional programming concept of type classes<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. There are differences between the two,
+<p>Closely related to traits is the functional programming concept of type classes<sup><a href="#reference-constructor-classes" id="reference-constructor-classes:2">1</a></sup>. There are differences between the two,
 but those differences don’t impact the results of this article. Type classes will prove a more convenient language
 in which to discuss these ideas.</p>
 <p>A type class (or trait) can be considered a predicate on types. A type class constraint (or trait bound) is an assertion
@@ -212,7 +214,7 @@ function <code>\a -&gt; b -&gt; a + b</code> (it could also be <code>\(a, b) -&g
 satisfied with a concrete size as evidence. What is the equivalent notion of constraint and evidence for
 higher-kinded types that contribute to size calculations?</p>
 <h2 id="solution">Solution</h2>
-<p>An elegant solution to this problem can found by introducing quantified class constraints<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Quantified constraints
+<p>An elegant solution to this problem can found by introducing quantified class constraints<sup><a href="#reference-quantified-constraints" id="reference-quantified-constraints:1">2</a></sup>. Quantified constraints
 are an extension to type classes that add implication and quantification to the language of constraints, and corresponding
 notions of evidence.</p>
 <p>Here’s new syntax of quantified size constraints:</p>
@@ -296,14 +298,14 @@ would also be a controversial change; choosing to keep types uncurried would dis
 system, and changing to curried types would require rethinking of syntax and educational materials to maintain Rust’s
 high standard of user experience.</p>
 <h2 id="references">References</h2>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p>Jones, M. P. (1995). A system of constructor classes: overloading and implicit higher-order polymorphism. <em>Journal of functional programming</em>, 5(1), 1-35.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Jones, M. P. (1995). A system of constructor classes: overloading and implicit higher-order polymorphism. <em>Journal of functional programming</em>, 5(1), 1-35.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Bottu, G. J., Karachalias, G., Schrijvers, T., Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <em>ACM SIGPLAN Notices</em>, 52(10), 148-161.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<ol type="1">
+<li><p><span id="reference-constructor-classes">Jones, M. P. (1995). A system of constructor classes:
+overloading and implicit higher-order polymorphism. <em>Journal of functional programming</em>, 5(1),
+1-35.</span> <a href="#reference-constructor-classes:1">↩︎<sup>1</sup></a> <a href="#reference-constructor-classes:2">↩︎<sup>2</sup></a></p></li>
+<li><p><span id="reference-quantified-constraints">Bottu, G. J., Karachalias, G., Schrijvers, T.,
+Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <em>ACM SIGPLAN Notices</em>,
+52(10), 148-161.</span> <a href="#reference-quantified-constraints:1">↩︎</a></p></li>
 </ol>
-</section>
   <footer>
     <p>
       
