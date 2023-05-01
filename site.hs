@@ -108,7 +108,15 @@ main = do
       route $ gsubRoute "js/" (const "res/")
       compile copyFileCompiler
 
-    match (fromList ["favicon.ico", "CNAME", "talks/*", "files/*"]) $ do
+    match "talks/*" $ do
+      route idRoute
+      compile copyFileCompiler
+
+    match "files/*" $ do
+      route idRoute
+      compile copyFileCompiler
+
+    match (fromList ["favicon.ico", "CNAME"]) $ do
       route idRoute
       compile copyFileCompiler
 
