@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Why LINQ (well, C#) is Broken - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>Why LINQ (well, C#) is Broken</h1>
+  <p class="date">24 October, 2016</p>
+  <p>LINQ is a system that provides a flexible query interface for .NET languages.
+It allows a user to write queries over arbitrary data using an in-built
+SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
+so any data structure that implements the correct methods can be used with LINQ.</p>
+<p>The essential methods for enabling LINQ support are <code>Select</code> and <code>SelectMany</code>,
+implemented as extension methods. They have the following types:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>B<span class="op">&gt;</span> Select<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">&gt;(</span><span class="kw">this</span> SomeData<span class="op">&lt;</span>A<span class="op">&gt;</span> a<span class="op">,</span> Func<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">&gt;</span> f<span class="op">)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>B<span class="op">&gt;</span> SelectMany<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">&gt;(</span><span class="kw">this</span> SomeData<span class="op">&lt;</span>A<span class="op">&gt;</span> a<span class="op">,</span> Func<span class="op">&lt;</span>A<span class="op">,</span>SomeData<span class="op">&lt;</span>B<span class="op">&gt;&gt;</span> f<span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>C<span class="op">&gt;</span> SelectMany<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">,</span>C<span class="op">&gt;(</span><span class="kw">this</span> SomeData<span class="op">&lt;</span>A<span class="op">&gt;</span> a<span class="op">,</span> Func<span class="op">&lt;</span>A<span class="op">,</span>SomeData<span class="op">&lt;</span>B<span class="op">&gt;&gt;</span> f<span class="op">,</span> Func<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">,</span>C<span class="op">&gt;</span> g<span class="op">)</span> <span class="co">// Overloaded to reduce levels of nesting</span></span></code></pre></div>
+<p>With implementations of these three methods, it is possible to write a query
+expression such as:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>A<span class="op">&gt;</span> myA <span class="op">=</span> <span class="op">...;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>B<span class="op">&gt;</span> myB <span class="op">=</span> <span class="op">...;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Func<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">,</span>C<span class="op">&gt;</span> f <span class="op">=</span> <span class="op">...;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>C<span class="op">&gt;</span> myC <span class="op">=</span> from a <span class="kw">in</span> myA</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                  from b <span class="kw">in</span> myB</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                  select <span class="fu">f</span><span class="op">(</span>a<span class="op">,</span>b<span class="op">);</span></span></code></pre></div>
+<p>which will be compiled to something like:
+<code>SomeData&lt;C&gt; output = justWord.SelectMany(a =&gt; myB, (a, b) =&gt; f(a, b));</code></p>
+<p>Readers who are familiar with Haskell or similar functional languages will
+notice that <code>Select</code> is <code>fmap</code>, <code>SelectMany</code> is <code>&gt;&gt;=</code> and the
+<code>from .. in .. select</code> syntax is equivalent to Monad comprehensions. The above
+code would be written in Haskell as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>myA <span class="ot">=</span> <span class="op">...</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>myB <span class="ot">=</span> <span class="op">...</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>f a b <span class="ot">=</span> <span class="op">...</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>myC <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> myA</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> myB</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span> <span class="op">$</span> f a b</span></code></pre></div>
+<p>LINQ was designed to bring Monad comprehensions to C#. And it does. Almost.</p>
+<p>Consider our query from earlier:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>C<span class="op">&gt;</span> myC <span class="op">=</span> from a <span class="kw">in</span> myA</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                  from b <span class="kw">in</span> myB</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                  select <span class="fu">f</span><span class="op">(</span>a<span class="op">,</span>b<span class="op">);</span></span></code></pre></div>
+<p>This seems like a common pattern. We don’t want to write this code over and
+over, so we abstract <code>myA</code>, <code>myB</code> and <code>f</code> and make the query into a method.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>SomeData<span class="op">&lt;</span>C<span class="op">&gt;</span> CombineWith<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">,</span>C<span class="op">&gt;(</span>SomeData<span class="op">&lt;</span>A<span class="op">&gt;</span> myA<span class="op">,</span> SomeData<span class="op">&lt;</span>B<span class="op">&gt;</span> myB<span class="op">,</span> Func<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">,</span>C<span class="op">&gt;</span> f<span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> from a <span class="kw">in</span> myA from b <span class="kw">in</span> myB select <span class="fu">f</span><span class="op">(</span>a<span class="op">,</span>b<span class="op">);</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Now say we define a new data type to use with LINQ, call it <code>OtherData&lt;A&gt;</code>, and
+implement <code>Select</code> and <code>SelectMany</code> appropriately. We also want to implement
+<code>CombineWith</code> because <code>from .. in .. from .. in .. select ..</code> is still a common
+pattern that we want to avoid writing:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>OtherData<span class="op">&lt;</span>C<span class="op">&gt;</span> CombineWith<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">,</span>C<span class="op">&gt;(</span>OtherData<span class="op">&lt;</span>A<span class="op">&gt;</span> myA<span class="op">,</span> OtherData<span class="op">&lt;</span>B<span class="op">&gt;</span> myB<span class="op">,</span> Func<span class="op">&lt;</span>A<span class="op">,</span>B<span class="op">,</span>C<span class="op">&gt;</span> f<span class="op">)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> from a <span class="kw">in</span> myA from b <span class="kw">in</span> myB select <span class="fu">f</span><span class="op">(</span>a<span class="op">,</span>b<span class="op">);</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>There is a pattern emerging. For every data type that we want to use with LINQ,
+one must reimplement all LINQ-specific methods specifically for that type.</p>
+<p>This is an issue because it grossly violates DRY (don’t repeat yourself).
+A well-written program should not have duplicated code - it makes maintenance
+more laborious and increases the chance of bugs.</p>
+<p>So in an effort to save ourselves time, we should abstract over this common
+pattern. We require a function that specifies
+&gt; for all generic classes <code>F&lt;???&gt;</code> implementing <code>Select</code> and <code>SelectMany</code>, given
+an instance of <code>F</code> containing <code>A</code>s, another instance of <code>F</code> containing <code>B</code>s,
+and a <code>Func&lt;A,B,C</code>, return an <code>F</code> containing <code>C</code>s</p>
+<p>It turns out that it’s actually impossible to write this method in C#. I’d like
+to write something like
+<code>F&lt;C&gt; CombineWith&lt;F&lt;?&gt;,A,B,C&gt;(F&lt;A&gt; myA, F&lt;B&gt; myB, Func&lt;A,B,C&gt; f)</code>, but C# only
+allows abstraction over non-generic types.</p>
+<p>To add a little more weight to this revelation, let’s imagine if we could
+not abstract over the contents of a list ie. the method
+<code>List&lt;A&gt; Sort&lt;A&gt;(List &lt;A&gt; input)</code> cannot be expressed in this language. Due to
+this limitation, we would have to create a new list class every time we needed
+a different element type inside the list, then reimplement <code>Sort</code> for each new
+class.
+&gt; <code>ListOfInt.Sort</code>
+<code>ListOfBool.Sort</code>
+<code>ListOfSomeData.Sort</code>
+…</p>
+<p>This is again a terrible violation of the “don’t repeat yourself” principle.
+You write <code>n</code> implementations of <code>Sort</code>, where <code>n</code> is the number of sortable
+classes. Imagine that each implementation used the
+<a href="http://envisage-project.eu/proving-android-java-and-python-sorting-algorithm-is-broken-and-how-to-fix-it/">proven incorrect version of TimSort</a>.
+If you wanted to implement the correct version, you would have to update <code>n</code>
+methods.</p>
+<p>Also consider the implementation of
+<code>List&lt;B&gt; Map&lt;A,B&gt;(List&lt;A&gt; input, Func&lt;A,B&gt; f)</code> in a generic-less language. You
+would have to write a different method for each inhabitant of <code>A</code> and <code>B</code>
+&gt; <code>ListOfInt.MapToListOfInt</code>
+<code>ListOfInt.MapToListOfBool</code>
+<code>ListOfInt.MapToListOfSomeData</code>
+<code>ListOfBool.MapToListOfBool</code>
+…</p>
+<p>You write <code>n^2</code> <code>Map</code> methods where <code>n</code> is the number of of mappable classes.</p>
+<p>More generally, in this generic-less language, you write <code>O(n^m)</code> where <code>m</code> is
+the sum of should-be-generic inputs and should-be-generic outputs, and <code>n</code> is
+the number of should-be-generic classes.</p>
+<p>This exponential growth of redundant nonsense also applies to our <code>CombineWith</code>
+issue. For every LINQ-able class, you have to write a separate implementation
+of <code>CombineWith</code>, even though it’s exactly the same code!</p>
+<p>Haskell (and other sane functional languages) uses a concept called “Higher
+Kinded Types” to address this problem. Every type has a “kind” (denoted <code>*</code>). In
+C#, every type must have kind <code>*</code>. Higher-kinded types are functions from kinds
+to kinds. Given data declaration that has a single type variable, say
+<code>Maybe a = Just a | Nothing</code>, we say that <code>Maybe</code> has kind <code>* -&gt; *</code>, which means
+that it is a higher-kinded type that takes a type of kind <code>*</code> and returns a type
+of kind <code>*</code>. In C#, every type must have kind <code>*</code> ie. if you have a defined the
+class <code>List&lt;A&gt;</code> then you get a compile error if you refer to <code>List</code> without
+the type argument.</p>
+<p>Let’s take another look the Haskell implementation of <code>CombineWith</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ot">combineWith ::</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> m a <span class="ot">-&gt;</span> m b <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> c) <span class="ot">-&gt;</span> m c</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>combineWith myA myB f <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> myA</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> myB</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span> <span class="op">$</span> f a b</span></code></pre></div>
+<p>In this function, and the definition of the Monad typeclass (read: interface)<code>m</code>
+implicitly has kind <code>* -&gt; *</code>. This function will work for any type that is
+an instance of Monad (read: implements the Monad interface). In Haskell, this
+code only needs to be written once. The cost of implementation and maintenance
+of a group of functions has gone from O(n^m) to O(1).</p>
+<p>Now you might say, “Well, I don’t use LINQ like that. I only use it for
+<code>IEnumerable</code> things”. This is akin to a user of our imaginary generic-less
+language saying “Well, I don’t use Sort like that. I only sort lists of
+integers”. It is agreed that a language without generics is counter to
+productivity. It follows that a language without higher-kinded types is also
+counter to productivity.</p>
+  <footer>
+    <p>
+      
+      <a href="/search-and-replace-in-multiple-files">Search and Replace in Multiple Files - Previous</a>
+      
+      |
+      
+      <a href="/introduction-to-unification">Next - Introduction to Unification</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+<a href="/tags/haskell/">haskell</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

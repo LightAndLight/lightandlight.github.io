@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>An Example of Defunctionalisation in Rust - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>An Example of Defunctionalisation in Rust</h1>
+  <p class="date"> 6 February, 2021</p>
+  <p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
+I recently ran into a little trouble when porting a simple function from Haskell to
+Rust. This article is a short description of my journey.</p>
+<hr />
+<p><a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De Bruijn indexed</a> terms are
+<a href="https://en.wikipedia.org/wiki/Functor">functorial</a> in their free variables.
+This means that given a datatype <code>Expr</code>, we can write a function
+<code>map_freevars : (Int -&gt; Int) -&gt; Expr -&gt; Expr</code> such that <code>map_freevars id == id</code>
+and <code>map_freevars f ∘ map_freevars g == map_freevars (f ∘ g)</code>. In Haskell, I’d
+implement this as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Expr</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Var</span> <span class="dt">Int</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">App</span> <span class="dt">Expr</span> <span class="dt">Expr</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Lam</span> <span class="dt">Expr</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ot">map_freevars ::</span> (<span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>) <span class="ot">-&gt;</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Expr</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>map_freevars f e <span class="ot">=</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> e <span class="kw">of</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Var</span> n <span class="ot">-&gt;</span> <span class="dt">Var</span> (f n)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">App</span> a b <span class="ot">-&gt;</span> <span class="dt">App</span> (map_freevars f a) (map_freevars f b)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Lam</span> b <span class="ot">-&gt;</span> <span class="dt">Lam</span> (map_freevars (\n <span class="ot">-&gt;</span> <span class="kw">if</span> n <span class="op">==</span> <span class="dv">0</span> <span class="kw">then</span> <span class="dv">0</span> <span class="kw">else</span> <span class="dv">1</span> <span class="op">+</span> f (n <span class="op">-</span> <span class="dv">1</span>)) b)</span></code></pre></div>
+<p>Now, here’s a direct translation from Haskell to Rust:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> Expr <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    Var(<span class="dt">usize</span>)<span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    App(<span class="dt">Box</span><span class="op">&lt;</span>Expr<span class="op">&gt;,</span> <span class="dt">Box</span><span class="op">&lt;</span>Expr<span class="op">&gt;</span>)<span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    Lam(<span class="dt">Box</span><span class="op">&lt;</span>Expr<span class="op">&gt;</span>)<span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> map_freevars<span class="op">&lt;</span>F<span class="op">:</span> <span class="bu">Fn</span>(<span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span><span class="op">&gt;</span>(f<span class="op">:</span> F<span class="op">,</span> e<span class="op">:</span> <span class="op">&amp;</span>Expr) <span class="op">-&gt;</span> Expr <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> e <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Var(n) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Var(f(<span class="op">*</span>n))<span class="op">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>App(a<span class="op">,</span> b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>App(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> a))<span class="op">,</span> <span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> b)))<span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Lam(b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Lam(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">|</span>n<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> n <span class="op">==</span> <span class="dv">0</span> <span class="op">{</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">0</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">1</span> <span class="op">+</span> f(n <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">},</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            b</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        )))<span class="op">,</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>This doesn’t typecheck because the call to <code>map_freevars(f, a)</code> takes ownership of <code>f</code>,
+which means <code>f</code> can no longer be used in the call to <code>map_freevars(f, b)</code>.</p>
+<p>To avoid this, <code>map_freevars</code> should <em>borrow</em> the mapping function:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> map_freevars<span class="op">&lt;</span>F<span class="op">:</span> <span class="bu">Fn</span>(<span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span><span class="op">&gt;</span>(f<span class="op">:</span> <span class="op">&amp;</span>F<span class="op">,</span> e<span class="op">:</span> <span class="op">&amp;</span>Expr) <span class="op">-&gt;</span> Expr <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> e <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Var(n) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Var(f(<span class="op">*</span>n))<span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>App(a<span class="op">,</span> b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>App(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> a))<span class="op">,</span> <span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> b)))<span class="op">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Lam(b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Lam(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;|</span>n<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> n <span class="op">==</span> <span class="dv">0</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">0</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">1</span> <span class="op">+</span> f(n <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">},</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            b</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        )))<span class="op">,</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>But this doesn’t compile either! The Rust compiler reports
+that it <code>reached the recursion limit while instantiating map_freevars::&lt;[closure@...]&gt;</code>.
+Rust generates all its closures at compile time, and this code causes the compiler to
+generate a countably infinite number of closures.</p>
+<p>For every known closure that is passed to <code>map_freevars</code> as <code>f</code>, Rust generates another
+closure for <code>|n| if n == 0 { 0 } else { 1 + f(n - 1) } }</code>. But <code>|n| if n == 0 { 0 } else { 1 + f(n - 1) } }</code>
+is also passed to <code>map_freevars</code>, so another closure needs to be generated. And <em>that</em> closure is
+also passed to <code>map_freevars</code>, so another closure needs to be generated. And so on.</p>
+<p>The next natural step is to use a <a href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html">trait object</a>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> map_freevars(f<span class="op">:</span> <span class="op">&amp;</span><span class="kw">dyn</span> <span class="bu">Fn</span>(<span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span><span class="op">,</span> e<span class="op">:</span> <span class="op">&amp;</span>Expr) <span class="op">-&gt;</span> Expr <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> e <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Var(n) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Var(f(<span class="op">*</span>n))<span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>App(a<span class="op">,</span> b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>App(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> a))<span class="op">,</span> <span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> b)))<span class="op">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Lam(b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Lam(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;|</span>n<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> n <span class="op">==</span> <span class="dv">0</span> <span class="op">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">0</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">1</span> <span class="op">+</span> f(n <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">},</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            b</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        )))<span class="op">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>A <code>&amp;dyn</code> reference is a pair of pointers; one pointer to a value of a type that implements the trait,
+and another pointer to the implementation of the trait for that type<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>This code is perfectly usable, and I’d guess it’s the ‘idiomatic’ Rust solution. But there’s one final
+step I’d like to take, mostly for educational perposes, and for a small efficiency gain.</p>
+<p>For all intents and purposes, there are only two possible ‘origins’ for <code>f</code>:</p>
+<ol type="1">
+<li>It was passed to <code>map_freevars</code> unchanged, either from a top-level call or from a recursive call at an
+<code>App</code> node</li>
+<li>It was wrapped in a closure before being passed to <code>map_freevars</code> at a <code>Lam</code> node</li>
+</ol>
+<p>This structure is described by the following datatype:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> Origin<span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    Unchanged(F)<span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    LamNode(<span class="op">&amp;</span><span class="ot">'a</span> Origin<span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">&gt;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>The <code>Origin</code> datatype can be interpreted as a function from <code>usize</code> to <code>usize</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">:</span> <span class="bu">Fn</span>(<span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span><span class="op">&gt;</span> Origin<span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> apply(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> n<span class="op">:</span> <span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span> <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Origin::</span>Unchanged(f) <span class="op">=&gt;</span> f(n)<span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Origin::</span>LamNode(f) <span class="op">=&gt;</span> <span class="cf">if</span> n <span class="op">==</span> <span class="dv">0</span> <span class="op">{</span> <span class="dv">0</span> <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> <span class="dv">1</span> <span class="op">+</span> f<span class="op">.</span>apply(n<span class="op">-</span><span class="dv">1</span>) <span class="op">}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><em>Challenge: implement <code>Origin::apply</code> using constant stack space.</em></p>
+<p>Now the <code>Origin::LamNode</code> constructor replaces the fresh closure in the <code>Lam</code> branch:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> map_freevars<span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">:</span> <span class="bu">Fn</span>(<span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span><span class="op">&gt;</span>(f<span class="op">:</span> <span class="op">&amp;</span><span class="ot">'a</span> Origin<span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">&gt;,</span> e<span class="op">:</span> <span class="op">&amp;</span>Expr) <span class="op">-&gt;</span> Expr <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> e <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Var(n) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Var(f<span class="op">.</span>apply(<span class="op">*</span>n))<span class="op">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>App(a<span class="op">,</span> b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>App(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> a))<span class="op">,</span> <span class="dt">Box</span><span class="pp">::</span>new(map_freevars(f<span class="op">,</span> b)))<span class="op">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Lam(b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Lam(<span class="dt">Box</span><span class="pp">::</span>new(map_freevars(<span class="op">&amp;</span><span class="pp">Origin::</span>LamNode(f))))<span class="op">,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>This transformation is an example of <a href="https://en.wikipedia.org/wiki/Defunctionalization">defunctionalisation</a>.</p>
+<p>Here, the practical benefit is that <code>&amp;Origin</code> is half the size of a <code>&amp;dyn Fn(usize) -&gt; usize</code> (a single pointer
+instead of two), so recursing over a <code>Lam</code> node uses less stack space.</p>
+<p>The interface to <code>map_freevars</code> can then be cleaned up using the worker/wrapper pattern:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> map_freevars<span class="op">&lt;</span>F<span class="op">:</span> <span class="bu">Fn</span>(<span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span><span class="op">&gt;</span>(f<span class="op">:</span> F<span class="op">,</span> e<span class="op">:</span> <span class="op">&amp;</span>Expr) <span class="op">-&gt;</span> Expr <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> go<span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">:</span> <span class="bu">Fn</span>(<span class="dt">usize</span>) <span class="op">-&gt;</span> <span class="dt">usize</span><span class="op">&gt;</span>(f<span class="op">:</span> <span class="op">&amp;</span><span class="ot">'a</span> Origin<span class="op">&lt;</span><span class="ot">'a</span><span class="op">,</span> F<span class="op">&gt;,</span> e<span class="op">:</span> <span class="op">&amp;</span>Expr) <span class="op">-&gt;</span> Expr <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">match</span> e <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Expr::</span>Var(n) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Var(f<span class="op">.</span>apply(<span class="op">*</span>n))<span class="op">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Expr::</span>App(a<span class="op">,</span> b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>App(<span class="dt">Box</span><span class="pp">::</span>new(go(f<span class="op">,</span> a))<span class="op">,</span> <span class="dt">Box</span><span class="pp">::</span>new(go(f<span class="op">,</span> b)))<span class="op">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Expr::</span>Lam(b) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Lam(<span class="dt">Box</span><span class="pp">::</span>new(go(<span class="op">&amp;</span><span class="pp">Origin::</span>LamNode(f))))<span class="op">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    go(<span class="op">&amp;</span><span class="pp">Origin::</span>Unchanged(f)<span class="op">,</span> e)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<hr />
+<p>I haven’t benchmarked the defunctionalised approach and compared it against the trait object
+implementation. If anyone has suggestions for easily measuring the time and memory usage of
+Rust programs, preferably by function, then please let me know.</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This is a form of existential quantification. The Haskell equivalent looks something like
+<code>data Some (c :: Constraint) where; Some :: c a =&gt; a -&gt; Some c</code><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  <footer>
+    <p>
+      
+      <a href="/docker-cleanup-commands">Docker Cleanup Commands - Previous</a>
+      
+      |
+      
+      <a href="/webgl-slower-than-canvas">Next - WebGL Slower Than Canvas?</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

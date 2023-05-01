@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Configuring Agda's standard library on NixOS - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>Configuring Agda's standard library on NixOS</h1>
+  <p class="date">17 May, 2019</p>
+  <p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
+difficult to get going the very first time. Hopefully this becomes a searchable reference
+to getting it all set up quickly.</p>
+<hr />
+<p>Prerequisites:</p>
+<ul>
+<li>Working NixOS installation</li>
+<li>Agda &gt;=2.5.1</li>
+</ul>
+<ol type="1">
+<li><p>Install <code>AgdaStdlib</code> globally</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># /etc/nixos/configuration.nix</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>environment.systemPackages = <span class="kw">with</span> pkgs<span class="op">;</span> <span class="op">[</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  AgdaStdLib</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">]</span>;</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div></li>
+<li><p>Link <code>/share/agda</code></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># /etc/nixos/configuration.nix</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>environment.pathsToLink = <span class="op">[</span> <span class="st">&quot;/share/agda&quot;</span> <span class="op">]</span>;</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div></li>
+<li><p>Rebuild: <code>sudo nixos-rebuild switch</code></p></li>
+<li><p>Navigate to or create <code>~/.agda</code></p></li>
+<li><p>Create 3 files in <code>~/.agda</code>: <code>defaults</code>, <code>libraries</code>, <code>standard-library.agda-lib</code></p>
+<pre class="shell_session"><code>[isaac:~/.agda]$ touch defaults
+[isaac:~/.agda]$ touch libraries
+[isaac:~/.agda]$ touch standard-library.agda-lib</code></pre></li>
+<li><p>Edit <code>standard-library.agda-lib</code></p>
+<pre class="shell_session"><code>[isaac:~/.agda]$ cat &lt;&lt; EOF &gt;&gt; standard-library.agda-library
+&gt; name: standard-library
+&gt; include: /run/current-system/sw/share/agda/
+&gt; EOF</code></pre>
+<p>This says that there is a library located at the relevant NixOS path.</p></li>
+<li><p>Edit <code>libraries</code></p>
+<pre class="shell_session"><code>[isaac:~/.agda]$ echo &quot;/home/isaac/.agda/standard-library.agda-lib&quot; &gt;&gt; libraries</code></pre>
+<p>This registers the <code>.agda-lib</code> file with Agda.</p></li>
+<li><p>Edit <code>defaults</code></p>
+<pre class="shell_session"><code>[isaac:~/.agda]$ echo &quot;standard-library&quot; &gt;&gt; defaults</code></pre>
+<p>This tells Agda to include the <code>standard-library</code> library by default.</p></li>
+</ol>
+<p>To check your installation, try compiling a simple Agda file:</p>
+<pre class="shell_session"><code>[isaac:~]$ cat &lt;&lt; EOF &gt;&gt; Test.agda
+&gt; module Test where
+&gt; open import Data.Nat
+&gt; EOF
+[isaac:~]$ agda Test.agda
+Checking Test (/home/isaac/Test.agda).
+</code></pre>
+<p>Let me know whether or not this works for you :)</p>
+  <footer>
+    <p>
+      
+      <a href="/conditional-probabilities-obnoxious-white-guys">Conditional Probabilities and Obnoxious White Guys - Previous</a>
+      
+      |
+      
+      <a href="/lambdas-are-codatatypes">Next - Lambdas are Codatatypes</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

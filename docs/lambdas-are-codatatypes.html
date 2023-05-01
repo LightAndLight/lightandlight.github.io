@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Lambdas are Codatatypes - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>Lambdas are Codatatypes</h1>
+  <p class="date"> 1 July, 2019</p>
+  <p>I was first clued into this a while ago by
+<a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>
+<h2 id="datatypes">Datatypes</h2>
+<h3 id="defining-them">Defining them</h3>
+<p>When you define a datatype, you list the ways to construct values of that type. For example,
+this definition:</p>
+<pre><code>data Bool : Type where { 
+  True;
+  False
+}</code></pre>
+<p>says there are two ways to construct a <code>Bool</code>: <code>True</code> and <code>False</code>.</p>
+<p>Similarly, this definition:</p>
+<pre><code>data These (a : Type) (b : Type) : Type where { 
+  This[a];
+  That[b];
+  These[a, b]
+} </code></pre>
+<p>gives three ways to construct a <code>These a b</code> (for any values of <code>a</code> and <code>b</code>). <code>This[0]</code> has type
+<code>These Int x</code>, for any <code>x</code>. <code>That[True]</code> has type <code>These x Bool</code> for any <code>x</code>. <code>These[0, True]</code> has
+type <code>These Int Bool</code>.</p>
+<p>I want to note that constructors aren’t functions; they have a fixed number of arguments and must
+be fully applied.</p>
+<p>Datatypes can also be defined recursively:</p>
+<pre><code>data List (a : Type) : Type where {
+  Nil;
+  Cons[a, List a]
+}</code></pre>
+<h3 id="using-them">Using them</h3>
+<p>The way you construct a value of a datatype is unique to that datatype; there are a finite number of
+constructors, and each represents a different way to build a value of that type. In contrast, there is
+a universal way to <em>destruct</em> values: pattern matching.</p>
+<p>If some expression <code>x</code> has type <code>Bool</code> then we can destruct <code>x</code> using pattern matching:</p>
+<pre><code>case x of {
+  True -&gt; ...;
+  False -&gt; ...
+}</code></pre>
+<p>A pattern match acknowledges all the ways that a value could have been constructed, and provides
+a branch for each possible case. When constructors carry around other values
+(like those of <code>These</code> or <code>List</code>), pattern matching is used to write programs that extract and
+process the inner values:</p>
+<pre><code>case y of {
+  This[a] -&gt; f a;
+  That[b] -&gt; g b;
+  These[c, d] -&gt; h c d
+}</code></pre>
+<p>When a program is running, the value that is being matched will eventually reduce to a constructor form:</p>
+<pre><code>case (These 0 True) of {
+  This[a] -&gt; f a;
+  That[b] -&gt; g b;
+  These[c, d] -&gt; h c d
+}</code></pre>
+<p>at which point, the appropriate branch is selected and the contents of the constructor are substituted
+to the right of the <code>-&gt;</code>. The above code will pick the <code>These</code> branch, substituting <code>0</code> for <code>c</code> and <code>True</code>
+for <code>d</code>, so that the final result is <code>h 0 True</code>.</p>
+<p>Pattern matching is enough to process non-recursive datatypes, but recursive datatypes require recursive
+function definitions:</p>
+<pre><code>sum : List Int -&gt; Int
+sum n =
+  case n of {
+    Nil -&gt; 0;
+    Cons[x, xs] -&gt; x + sum xs
+  }</code></pre>
+<p>Hopefully this is all familiar to you. I’ve covered all this so that it contrasts with <em>codatatypes</em>.</p>
+<h2 id="codatatypes">Codatatypes</h2>
+<p>Codatatypes are the dual to datatypes. Formally, this means a lot of things that I don’t yet understand. What
+follows is how this duality arises in practise.</p>
+<p>To begin, I’d like to share some hand-wavy intuition for the concepts I’m
+discussing.</p>
+<p>Datatypes <em>are</em>. They’re finite, fully-evaluated structures. They’re inert; they just exist and won’t ever
+“do anything”. Haskell doesn’t have true ‘datatypes’ in this sense because its constructors don’t force their
+arguments to be evaluated, which means you can hide computations inside them. Haskell lets you partially
+apply constructors, which further diverges from what I’ve laid out here.</p>
+<p>Codatatypes <em>do</em>. They have ‘potential energy’; they have the capacity to do more work when prodded. Haskell’s
+‘datatypes’ are more codata-like in this respect because they can contain suspended computations.</p>
+<h3 id="defining-them-1">Defining them</h3>
+<p>Since datatypes are defined by their constructors, codatatypes will be defined by their <em>destructors</em>.</p>
+<p>This definition:</p>
+<pre><code>codata Pair (a : Type) (b : Type) : Type where {
+  fst : a;
+  snd : b
+}</code></pre>
+<p>says that there are two ways to <em>destruct</em> a <code>Pair a b</code> (for any <code>a</code> and <code>b</code>). If some expression <code>x</code> has
+type <code>Pair a b</code>, then <code>x.fst</code> has type and <code>a</code>, and <code>x.snd</code> has type a <code>b</code>.</p>
+<p><code>Pair</code> really is pair, it has just been defined by the ways you can pull things out of it- you can either
+extract the first thing, or you can extract the second.</p>
+<p>I also want to note that destructors aren’t functions, either. You can’t partially apply a destructor, and
+they’re not first-class.</p>
+<p>Codatatypes can also be recursive:</p>
+<pre><code>codata Stream (a : Type) : Type where {
+  head : a;
+  tail : Stream a
+}</code></pre>
+<p>A stream is like an infinite list; every stream value contains a head and a tail, and no matter how many
+times you extract the tail, there will always be another stream waiting for you.</p>
+<h3 id="using-them-1">Using them</h3>
+<p>There is a universal way to destruct datatypes, and there is a universal way to <em>construct</em> <em>codatatypes</em>.
+For lack of a better term, you can call it ‘copattern matching’. Here’s how you would construct a
+<code>Pair Int Bool</code>:</p>
+<pre><code>cocase Pair Int Bool of {
+  fst -&gt; 0;
+  snd -&gt; True
+}</code></pre>
+<p>A copattern match acknowledges every way it could be destructed, and provides a branch for each case.
+Remember, copattern matching <em>constructs</em> values. The above code is a value that produces <code>0</code> when
+destructed using <code>fst</code>, and <code>True</code> when destructed using <code>snd</code>. It is defining a pair of <code>0</code> with <code>True</code>.</p>
+<p>When a program is running, a value that is being destructed will eventually reduce to a copattern match form.
+So <code>x.fst</code> might reduce to <code>(cocase Pair Int Bool of { fst -&gt; 0; snd -&gt; True }).fst</code>. At this point,
+the appropriate branch in the copattern match will be chosen, and the right hand side of the <code>-&gt;</code> will be
+selected. In this case, <code>(cocase Pair Int Bool of { fst -&gt; 0; snd -&gt; True }).fst</code> reduces to <code>0</code>.</p>
+<p>Recursive codatatypes like <code>Stream</code> need to be constructed by recursive definitions:</p>
+<pre><code>countFrom : Int -&gt; Stream Int
+countFrom n =
+  cocase Stream Int of {
+    head -&gt; n;
+    tail -&gt; countFrom (n+1)
+  }</code></pre>
+<p><code>countFrom 0</code> produces an infinite stream of integers starting at <code>0</code>. However, it doesn’t spin forever,
+trying to construct the entire stream in one go. This is because a lone copattern match won’t reduce; reduction
+only continues after a destructor has been applied and the correct branch has been selected. Because of
+this, codatatypes can represent infinite values that are only generated on demand.</p>
+<p>Datatype constructors can carry around values, and so can codatatype <em>destructors</em>.
+Here’s what that looks like:</p>
+<pre><code>codata Lambda (a : Type) (b : Type) : Type where {
+  apply[a] : b
+}</code></pre>
+<p>There is one way to destruct a value of type <code>Lambda a b</code> called <code>apply</code>, and this destructor takes a
+parameter. If <code>f</code> has type <code>Lambda a b</code>, and <code>x</code> has type <code>a</code>, then <code>f.apply[x]</code> has type <code>b</code>.</p>
+<p>To create a value of type <code>Lambda a b</code>, you would use a copattern match:</p>
+<pre><code>cocase Lambda a b of {
+  apply[x] -&gt; ...
+}</code></pre>
+<p>The destructor’s parameter is abstract and is to be filled by the value that the destructor will be carrying.
+For example, <code>(cocase Lambda Int Int of { apply[x] -&gt; x + 1 }).apply[2]</code> selects the appropriate branch
+(there’s only one), and substitutes <code>2</code> for <code>x</code> to the right of the <code>-&gt;</code>. It steps to <code>2 + 1</code>.</p>
+<p>So lambdas can be defined as codatatypes. Their destructor corresponds to function application, and
+copattern matching corresponds to abstraction. This is awesome!</p>
+  <footer>
+    <p>
+      
+      <a href="/agda-nixos">Configuring Agda's standard library on NixOS - Previous</a>
+      
+      |
+      
+      <a href="/sized-hkts">Next - Statically Sized Higher-kinded Polymorphism</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Introduction to Unification - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>Introduction to Unification</h1>
+  <p class="date"> 7 January, 2017</p>
+  <p>Unification is a vital process in the implementation of Hindley-Damas-Milner
+type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
+it is mentioned in passing as assumed knowledge, so here is an explanation of
+unification in with a little help from the HM type theory.</p>
+<h2 id="what-is-unification">What is Unification?</h2>
+<p>Unification is a method of solving equations by substitution. This sentence alone
+doesn’t give enough information to implement an algorithm, so let’s define some
+vocabulary to write a more rigorous definition.</p>
+<p><code>term</code>: A term is an abstract syntax tree representing the language that will be used.
+In order for unification to proceed, term must have some value that represents a
+<code>variable</code>, and some values that represent <code>constants</code>- the idea being that <code>variables</code>
+can be replaced during unification, but constants cannot.</p>
+<p><code>equation</code>: An equation is a pair of terms, written <code>term_1 = term_2</code>.</p>
+<p><code>syntactic equality</code>: Two terms are syntactically equal if their ASTs match
+exactly.</p>
+<p><code>equivalence</code>: Two terms are equivalent if there exists some substitution that would
+make them syntactically equal.</p>
+<p><code>solved</code>: An equation is solved if the left and right hand sides are syntactically
+equal.</p>
+<p><code>substitution</code>: A substitution is a set of mappings from variables to terms, written
+<code>{ var_1 =&gt; term_1, ..., var_i =&gt; term_i }</code>.</p>
+<p><code>application</code>: A substitution can be <code>applied</code> to a value containing variables - written <code>subs(value)</code>:</p>
+<ul>
+<li>term: by replacing variables with terms per each mapping</li>
+<li>equation: by applying the substitution to both sides</li>
+<li>set of equations: by applying the substitution to each element in the set</li>
+<li>substitution: by applying the substitution to the right hand side of each mapping</li>
+</ul>
+<p>Applying an empty substitution to a value does not change the value.
+For reasons that will be explained later, a substitution is only valid if every
+variable on the left side of mapping does <em>not</em> occur in the term on the right
+side of the respective mapping.</p>
+<p><code>minimal</code>: A substitution is minimal if no variables in the right hand sides of
+any mapping occur on any left hand side of any mapping. In other words, if
+applying the substitution is idempotent: <code>subs(subs(value)) = subs(value)</code></p>
+<p>With this vocabulary, we can now better define unification:</p>
+<p><em>Given a set of equations <code>eqs</code>, find a minimal substitution <code>sub</code> such that
+every equation in <code>sub(eqs)</code> is solved</em></p>
+<h2 id="hindley-milner">Hindley-Milner</h2>
+<p>Unification is the backbone of type inference in the HM type theory. The actual
+type inference algorithm is not important here- just how unification works on
+HM terms.</p>
+<p>A term in HM is defined as <code>term := term -&gt; term | primitive | variable</code> where
+<code>primitive</code> is an element of a set of primitive types and <code>variable</code> is a string.
+respectively. To satisfy the requirements of unification, primitives are constants
+and variables are, of course, variables.</p>
+<p>Examples of syntactically equal HM terms:</p>
+<ul>
+<li><code>a</code> and <code>a</code></li>
+<li><code>primitive</code> and <code>primitive</code></li>
+<li><code>a -&gt; a</code> and <code>a -&gt; a</code></li>
+</ul>
+<p>Examples of equivalent HM terms:</p>
+<ul>
+<li><code>a</code> and <code>c</code></li>
+<li><code>primitive</code> and <code>d</code></li>
+<li><code>(a -&gt; b) -&gt; c</code> and <code>d -&gt; e</code></li>
+</ul>
+<p>When conducting type inference for an expression, its type is initially set to a
+new variable. A set of equations is generated by traversing the expression’s AST,
+then these equations are then unified, which yields a solution for the
+expression’s type variable.</p>
+<h2 id="an-algorithm">An Algorithm</h2>
+<p>A simple unification algorithm can be described as follows:</p>
+<pre><code>unify(equations):
+  solutions := {}
+  ix := 0
+  while ix &lt; equations.length:
+    equation := equations[ix]
+    if solved(equation):
+      ix++
+      continue
+
+    substitution := {}  
+    if is_variable(equation.lhs):
+      if occurs(equation.lhs, equation.rhs):
+        error(&quot;Variable occurred on both sides of an equation&quot;)
+      substitution := {current.lhs =&gt; current.rhs}
+      ix++
+    elif is_variable(equation.rhs):
+      swap_sides(equations[ix])
+    elif equivalent(equation.lhs, equation.rhs):
+      substitution := unify(implied_equations(equation))
+    else:
+      error(&quot;Cannot unify non-equivalent terms&quot;)
+
+    substitution.apply(solutions)
+    substitution.apply(equations)
+    solutions.union(substitution)
+
+  return solutions</code></pre>
+<p>In essence the algorithm is “rearrange an equation so it is a solution, update
+everything according to this knowledge, remember the solution and continue”.
+<a href="https://en.wikipedia.org/wiki/System_of_linear_equations#Elimination_of_variables">Sounds like something we did a lot in school…</a></p>
+<h3 id="why-check-occurs">Why check <code>occurs</code>?</h3>
+<p>This algorithm requires a substitution to ‘eliminate’ a variable from the problem.
+If a variable could also be on the right side of a substitution then it would
+not be eliminated, constructing an infinite solution.</p>
+<p>To demonstrate, let’s unify the HM equations <code>{a = b -&gt; c, a = d, b = d, a = c}</code> without
+the occurs check:</p>
+<pre><code>equations = {a = b -&gt; c, a = d, b = d, a = c}
+solutions = {}
+
+equations = {b -&gt; c = d, b = d, b -&gt; c = c} (removed a = b -&gt; c, applied a =&gt; b -&gt; c)
+solutions = {a =&gt; b -&gt; c} (added a =&gt; b -&gt; c)
+
+equations = {b = b -&gt; c, b -&gt; c = c} (removed b -&gt; c = d, applied d = b -&gt; c)
+solutions = {a =&gt; b -&gt; c, d =&gt; b -&gt; c} (added d =&gt; b -&gt; c)
+
+equations = {(b -&gt; c) -&gt; c = c} (removed b = b -&gt; c, applied b = b -&gt; c)
+solutions = {a =&gt; (b -&gt; c) -&gt; c, d =&gt; (b -&gt; c) -&gt; c, b =&gt; b -&gt; c} (applied then added b =&gt; b -&gt; c)
+
+equations = {}
+solutions = {a =&gt; (b -&gt; (b -&gt; c) -&gt; c) -&gt; c, d =&gt; (b -&gt; (b -&gt; c) -&gt; c) -&gt; (b -&gt; c) -&gt; c, b =&gt; b -&gt; (b -&gt; c) -&gt; c, c = (b -&gt; c) -&gt; c} (applied then added c =&gt; (b -&gt; c) -&gt; c)
+
+apply solutions to original equations - remember that the solutions should solve all the original equations:
+
+a = b -&gt; c
+b -&gt; (b -&gt; c) -&gt; c = b -&gt; c (using a =&gt; ...)
+b -&gt; (b -&gt; (b -&gt; c) -&gt; c) -&gt; (b -&gt; c) -&gt; c = b -&gt; (b -&gt; c) -&gt; c (using c =&gt; ...)
+
+no matter how many times we do this the equation will never be solved...</code></pre>
+<p>Omitting the occurs check does <em>not</em> unify the equations according our definition.</p>
+<h2 id="resources">Resources</h2>
+<p>The <a href="https://en.wikipedia.org/wiki/Unification_(computer_science)">Wikipedia entry for Unification</a>
+is amazing and goes into much more depth.</p>
+  <footer>
+    <p>
+      
+      <a href="/why-LINQ-is-broken">Why LINQ (well, C#) is Broken - Previous</a>
+      
+      |
+      
+      <a href="/how-to-delete-old-nixos-boot-configurations">Next - How to delete old NixOS boot configurations</a>
+      
+
+      <br><br>
+
+      tags:
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

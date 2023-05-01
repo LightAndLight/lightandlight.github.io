@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>How to delete old NixOS boot configurations - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>How to delete old NixOS boot configurations</h1>
+  <p class="date">24 March, 2017</p>
+  <p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
+configuration management. Your system configuration is specified in a
+set of files, and can run a command to update your system to the current
+specification. A consequence of this is that your entire system
+configuration can be versioned.</p>
+<p>Every time you rebuild your NixOS configuration, a new entry is added to
+the bootloader. This is helpful if you ever make a configuration change
+that breaks on your machine because you can reboot into the last known
+working state and try something different.</p>
+<p>If you don’t need to have access to all your old configurations, you
+can delete them:</p>
+<ol type="1">
+<li><p><code>sudo nix-collect-garbage -d</code></p></li>
+<li><p><code>sudo nixos-rebuild switch</code></p></li>
+</ol>
+<hr />
+<p><em>30 December 2018</em></p>
+<p>I don’t know if I was confused when I first wrote this, or if the process has
+improved since then. Either way, these instructions are more complex
+than necessary, so I’ve updated them.</p>
+<ol type="1">
+<li><p><del>Delete the old (excludes the current) package configurations for the
+NixOS system <code>sudo nix-env -p /nix/var/nix/profiles/system    --delete-generations old</code></del></p></li>
+<li><p><del>Collect garbage <code>nix-collect-garbage -d</code></del></p></li>
+<li><p><del>View the remaining generation <code>nix-env -p /nix/var/nix/profiles/system    --list-generations</code>. Take note of this for the next step.</del></p></li>
+<li><p><del>Remove unnecessary boot loader entries. I use <code>systemd-boot</code>, so all
+my entries are located in <code>/boot/loader/entries</code>. To remove all the
+old entries, run <code>sudo bash -c "cd /boot/loader/entries; ls | grep    -v &lt;current-generation-name&gt; | xargs rm"</code> (you might want to back up
+the entries somewhere to be safe)</del></p></li>
+</ol>
+  <footer>
+    <p>
+      
+      <a href="/introduction-to-unification">Introduction to Unification - Previous</a>
+      
+      |
+      
+      <a href="/continuations-from-the-ground-up">Next - Continuations From the Ground Up</a>
+      
+
+      <br><br>
+
+      tags:
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

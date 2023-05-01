@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://blog.ielliott.io/</loc>
+  </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/404</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/about</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/resources</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/web-resources-i-enjoy</loc>
+        
+          <lastmod>2023-01-10T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/2022-project-review</loc>
+        
+          <lastmod>2022-12-22T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/rip-dreamincode</loc>
+        
+          <lastmod>2022-07-06T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/webgl-slower-than-canvas</loc>
+        
+          <lastmod>2021-05-20T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/rust-defun-example</loc>
+        
+          <lastmod>2021-02-06T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/docker-cleanup-commands</loc>
+        
+          <lastmod>2020-11-07T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/sized-hkts</loc>
+        
+          <lastmod>2020-07-07T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/lambdas-are-codatatypes</loc>
+        
+          <lastmod>2019-07-01T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/agda-nixos</loc>
+        
+          <lastmod>2019-05-17T23:49+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys</loc>
+        
+          <lastmod>2019-05-05T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/learning-a-craft</loc>
+        
+          <lastmod>2019-02-11T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/writing</loc>
+        
+          <lastmod>2018-12-29T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/on-programming-language-design</loc>
+        
+          <lastmod>2018-11-21T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/topsy-turvy-reverse-state</loc>
+        
+          <lastmod>2018-06-13T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/comonad-transformers-in-the-wild</loc>
+        
+          <lastmod>2018-02-25T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/continuations-from-the-ground-up</loc>
+        
+          <lastmod>2017-06-06T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations</loc>
+        
+          <lastmod>2017-03-24T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/introduction-to-unification</loc>
+        
+          <lastmod>2017-01-07T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/why-LINQ-is-broken</loc>
+        
+          <lastmod>2016-10-24T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/search-and-replace-in-multiple-files</loc>
+        
+          <lastmod>2015-07-25T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/the-programming-thought-process-fizzbuzz</loc>
+        
+          <lastmod>2015-03-04T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/a-practical-introduction-to-monad-transformers</loc>
+        
+          <lastmod>2015-02-01T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/tags/haskell</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/tags/mathematics</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/tags/philosophy</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/tags/programming</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/tags/rationality</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/tags/self-improvement</loc>
+        
+    </url>
+  
+    <url>
+        <loc>https://blog.ielliott.io/tags/tools</loc>
+        
+    </url>
+  
+</urlset>

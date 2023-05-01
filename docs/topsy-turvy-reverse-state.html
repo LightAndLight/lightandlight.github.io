@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Turning bottom-up into top-down with Reverse State - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>Turning bottom-up into top-down with Reverse State</h1>
+  <p class="date">13 June, 2018</p>
+  <p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
+Bruijn indices</a> mindlessly easy. I also love
+<a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
+for all sorts of whole-program transformations. I think they’re two
+indispensible tools for working with programming languages.
+Unfortunately, they’re not compatible.</p>
+<p>The <a href="https://hackage.haskell.org/package/bound/docs/Bound.html#t:Scope">Scope
+datatype</a>
+in <code>bound</code> is very safe. The type prevents you from creating invalid De
+Bruijn terms, like <code>λ. 3</code>. This means that you can’t write useful
+instances of <code>Plated</code> for types which contain a <code>Scope</code>. When it comes
+to choosing between <code>bound</code> and <code>Plated</code>, I choose <code>Plated</code> - because we
+can use it to build functionality similar to <code>bound</code>.</p>
+<h2 id="write-some-code">Write some code!</h2>
+<h3 id="warning-the-code-in-this-post-is-subtly-broken.-see-the-reddit-thread">Warning: the code in this post is subtly broken. See the <a href="https://www.reddit.com/r/haskell/comments/8qs2gc/turning_bottomup_into_topdown_with_reverse_state/">reddit thread</a></h3>
+<p>Let’s get some boilerplate out of the road. Here is a datatype for
+lambda calculus, with De Bruijn indices (<code>B</code>), as well as free variables
+(<code>F</code>). Notice that lambda abstraction (<code>Abs</code>) doesn’t give a name to the
+function argument, which means that only <code>B</code>s can reference them. This
+is called the “locally nameless” approach.</p>
+<p><a href="../files/reverse-state.lhs">Literate Haskell source</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">{-# language DeriveGeneric #-}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">Control.Lens.Plated</span> (<span class="dt">Plated</span>(..), gplate, transformM)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">GHC.Generics</span> (<span class="dt">Generic</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">qualified</span> <span class="dt">Control.Monad.RevState</span> <span class="kw">as</span> <span class="dt">Reverse</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">qualified</span> <span class="dt">Control.Monad.State</span> <span class="kw">as</span> <span class="dt">State</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Expr</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">F</span> <span class="dt">String</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">B</span> <span class="dt">Int</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">App</span> <span class="dt">Expr</span> <span class="dt">Expr</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Abs</span> <span class="dt">Expr</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Show</span>, <span class="dt">Generic</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Plated</span> <span class="dt">Expr</span> <span class="kw">where</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  plate <span class="ot">=</span> gplate</span></code></pre></div>
+<p>The core of the <code>bound</code>-like API will be two functions:</p>
+<ul>
+<li><code>abstract :: String -&gt; Expr -&gt; Expr</code></li>
+<li><code>instantiate :: Expr -&gt; Expr -&gt; Maybe Expr</code></li>
+</ul>
+<p>Let’s do <code>abstract</code> first.</p>
+<p><code>abstract name expr</code> finds all the <code>F name</code> nodes in an <code>expr</code> and
+replaces them with the appropriate De Bruijn index, then wraps the final
+result in an <code>Abs</code>. The “appropriate index” is the number of <code>Abs</code>
+constructors that we passed on the way.</p>
+<p>For example, <code>abstract "x" (F "x")</code> evaluates to <code>Abs (B 0)</code>, because we
+passed zero <code>Abs</code> constructors to get to the <code>"x"</code>, then wrapped the final
+result in an <code>Abs</code>. <code>abstract "y" (Abs (App (B 0) (F "y")))</code> evaluates to
+<code>Abs (Abs (App (B 0) (B 1)))</code> because we passed one <code>Abs</code> to get to the
+<code>"y"</code>, then wrapped the final result in an <code>Abs</code>.</p>
+<p>“Do this everywhere” usually means
+<a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:transform">transform</a> <code>:: Plated a =&gt; (a -&gt; a) -&gt; a -&gt; a</code> is appropriate. Though
+in this case, it doesn’t give us any way to count the number of <code>Abs</code> it
+passes. Instead we will use <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html#v:transformM">transformM</a> <code>:: (Monad m, Plated a) =&gt; (a -&gt; m a) -&gt; a -&gt; m a</code>
+with <a href="https://hackage.haskell.org/package/mtl/docs/Control-Monad-State.html">State</a>.</p>
+<p>Here’s how that looks:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">abstract_attempt_1 ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Expr</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>abstract_attempt_1 name <span class="ot">=</span> <span class="dt">Abs</span> <span class="op">.</span> <span class="fu">flip</span> State.evalState <span class="dv">0</span> <span class="op">.</span> transformM fun</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    fun ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">State.State</span> <span class="dt">Int</span> <span class="dt">Expr</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    fun (<span class="dt">F</span> name')</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">|</span> name <span class="op">==</span> name' <span class="ot">=</span> <span class="dt">B</span> <span class="op">&lt;$&gt;</span> State.get</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">=</span> <span class="fu">pure</span> <span class="op">$</span> <span class="dt">F</span> name'</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    fun (<span class="dt">Abs</span> expr) <span class="ot">=</span> <span class="dt">Abs</span> expr <span class="op">&lt;$</span> State.modify (<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    fun expr <span class="ot">=</span> <span class="fu">pure</span> expr</span></code></pre></div>
+<p>If you see a free variable with the name we’re abstracting over, replace
+it with a De Bruijn index corresponding to the number of binders we’ve
+seen. If you see an <code>Abs</code>, increment the counter. If you see something
+else, don’t do anything special.</p>
+<p>This is the right idea, but it doesn’t work because the <code>transform</code>
+family of functions act from the bottom up. When it sees a free variable
+it can abstract over, it will replace it with <code>B 0</code>, then go upwards
+through the tree, incrementing the counter. This is the <em>reverse</em> of
+what we want.</p>
+<h2 id="etats">etatS</h2>
+<p>Enter <a href="http://hackage.haskell.org/package/rev-state/docs/Control-Monad-Trans-RevState.html">Reverse
+State</a>.
+In reverse state, <code>get</code> accesses the state of the computation <em>after</em>
+it, not before it. Using regular state,
+<code>execState (modify (+1) *&gt; modify (*2)) 0</code> will evaluate to <code>2</code>, because
+you set the state to zero, add one, then multiply by two. Using reverse
+state, the output is <code>1</code>, because you set the state to zero, multiply by
+two, then add one.</p>
+<p>This means that if we swap regular state for reverse state in
+<code>abstract</code>, <code>get</code> refers to a state which is only calculated <em>after</em>
+bubbling all the way to the top, and counting all the <code>Abs</code>
+constructors.</p>
+<p>So the correct code looks like this:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">abstract ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Expr</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>abstract name <span class="ot">=</span> <span class="dt">Abs</span> <span class="op">.</span> <span class="fu">flip</span> Reverse.evalState <span class="dv">0</span> <span class="op">.</span> transformM fun</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    fun ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Reverse.State</span> <span class="dt">Int</span> <span class="dt">Expr</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    fun (<span class="dt">F</span> name')</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">|</span> name <span class="op">==</span> name' <span class="ot">=</span> <span class="dt">B</span> <span class="op">&lt;$&gt;</span> Reverse.get</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">=</span> <span class="fu">pure</span> <span class="op">$</span> <span class="dt">F</span> name'</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    fun (<span class="dt">Abs</span> expr) <span class="ot">=</span> <span class="dt">Abs</span> expr <span class="op">&lt;$</span> Reverse.modify (<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    fun expr <span class="ot">=</span> <span class="fu">pure</span> expr</span></code></pre></div>
+<p>The logic remains the same, except now the state transformations run
+backwards.</p>
+<p>Now for <code>instantiate</code>.</p>
+<p><code>instantiate (Abs body) x</code> substitutes <code>x</code> into
+the appropriate positions in <code>body</code>, and wraps the final result in a
+<code>Just</code>. If the first argument to <code>instantiate</code> is not an <code>Abs</code>, then the
+result is <code>Nothing</code>. We substitute <code>x</code> everywhere we find a <code>B</code> that
+contains the number of binders we have passed.</p>
+<p>For example, <code>instantiate (Abs (B 0)) (F "x")</code> evaluates to
+<code>Just (F "x")</code>, because we found a <code>B 0</code> when we had passed zero binders
+(the outer <code>Abs</code> doesn’t count).
+<code>instantiate (Abs (Abs (App (B 0) (B 1)))) (F "y")</code> evaluates to
+<code>Just (Abs (App (B 0) (F "y")))</code>, because we found a <code>B 1</code> when we had
+passed one binder. The <code>B 0</code> is not replaced because at that point, we
+had passed one binder, and zero is not one.</p>
+<p>We have the same problem as with <code>abstract</code>: counting binders proceeds
+from the top down, but <code>transformM</code> works from the bottom up. We can use
+reverse state again to solve this. Here’s the code:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">instantiate ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Expr</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>instantiate (<span class="dt">Abs</span> body) x <span class="ot">=</span> <span class="dt">Just</span> <span class="op">$</span> Reverse.evalState (transformM fun body) <span class="dv">0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    fun ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Reverse.State</span> <span class="dt">Int</span> <span class="dt">Expr</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    fun (<span class="dt">B</span> n) <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      n' <span class="ot">&lt;-</span> Reverse.get</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> <span class="op">$</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> n <span class="op">==</span> n'</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">then</span> x</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">else</span> <span class="dt">B</span> n</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    fun (<span class="dt">Abs</span> expr) <span class="ot">=</span> <span class="dt">Abs</span> expr <span class="op">&lt;$</span> Reverse.modify (<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    fun expr <span class="ot">=</span> <span class="fu">pure</span> expr</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>instantiate _ _ <span class="ot">=</span> <span class="dt">Nothing</span></span></code></pre></div>
+<p>And there we have it: a <code>bound</code>-like API for a datatype using <code>Plated</code>.</p>
+<p>I think there are two pressing issues when comparing this code to
+<code>bound</code>: correctness and generalisation. This approach allows you to
+write bogus terms, like <code>Abs (B 3)</code>, whereas <code>bound</code> does not. I’m okay
+with this, because I highly value the tools <code>Plated</code> provides.
+Additionally, the <code>bound</code> combinators work over any term as long as it
+is a <code>Monad</code>, so <code>abstract</code> and <code>instantiate</code> only have to be written
+once, whereas we haven’t presented any means for generalisation of the
+<code>Plated</code> approach.</p>
+<p>This is easily fixed: in a follow-up post, I’ll
+write about how we can use Backpacky Prisms to provide <code>abstract</code>
+and <code>instantiate</code> as library functions.</p>
+  <footer>
+    <p>
+      
+      <a href="/comonad-transformers-in-the-wild">Comonad Transformers in the Wild - Previous</a>
+      
+      |
+      
+      <a href="/on-programming-language-design">Next - On Programming Language Design</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+<a href="/tags/haskell/">haskell</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

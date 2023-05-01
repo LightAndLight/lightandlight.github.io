@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>WebGL Slower Than Canvas? - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>WebGL Slower Than Canvas?</h1>
+  <p class="date">20 May, 2021</p>
+  <p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
+where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
+against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
+(in frames per second) than the Canvas version.</p>
+<p>After much searching I was able to diagnose and fix the problem, which came
+down to graphics drivers and browser rendering settings. If your problem is
+similar to mine, here’s how you might be able to solve it:</p>
+<ol type="1">
+<li><p>Check GPU driver status in the browser.</p>
+<p>In Firefox, navigate to <code>about:support</code>. <code>Ctrl+F Graphics</code>. Look at the <code>WebGL 1 Driver {Renderer,Version}</code>
+rows. If you don’t see your GPU manufacturer and model in these rows, then you need to install
+the correct drivers.</p>
+<p>For reference, I’m running a Nvidia GeForce RTX2070. Without drivers, my driver renderer was <code>VMware, Inc. -- llvmpipe (LLVM 9.0.1, 256 bits)</code>
+and my driver version was <code>3.1 Mesa 20.1.10</code>.</p></li>
+<li><p>Install GPU drivers.</p>
+<p>I’m on NixOS, so this was as simple as adding</p>
+<pre><code>nixpkgs.config.allowUnfree = true;
+services.xserver.videoDrivers = [ &quot;nvidia&quot; ];</code></pre>
+<p>to my <code>configuration.nix</code>, then running <code>sudo nixos-rebuild switch &amp;&amp; reboot</code>.</p></li>
+<li><p>Confirm driver installation.</p>
+<p>Repeat step 1. If you still can’t see your GPU manufacturer and model, then I can’t help you.</p>
+<p>After step 2, my driver renderer was <code>NVIDIA Corporation -- GeForce RTX 2070/PCIe/SSE2</code> and driver version was
+<code>4.6.0 NVIDIA 455.38</code>.</p></li>
+<li><p>Enable <a href="https://hacks.mozilla.org/2017/10/the-whole-web-at-maximum-fps-how-webrender-gets-rid-of-jank/">WebRender</a>.</p>
+<p>In the Graphics section of <code>about:support</code>, check the <code>Compositing</code> row. If it says <code>WebRender</code>, then you’re
+done. If it says <code>Basic</code>, then you need to enable WebRender.</p>
+<p>Navigate to <code>about:config</code>, move past the warning, and search for <code>gfx.webrender.enabled</code>. Set it to <code>true</code> and
+restart Firefox. Confirm this change by checking <code>Compositing</code> row in <code>about:support</code>.</p></li>
+</ol>
+<p>Before, each <a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">requestAnimationFrame</a> call
+lasted 14-15ms in my Canvas implementation, but the app was running well below 60fps. Each frame lasted ~10ms in my WebGL implementation,
+but the framerate was even worse than the Canvas version!</p>
+<p>After following these instructions, both my Canvas implementation and WebGL implementation run at 60fps. Canvas’ frame
+duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms. Yay!</p>
+  <footer>
+    <p>
+      
+      <a href="/rust-defun-example">An Example of Defunctionalisation in Rust - Previous</a>
+      
+      |
+      
+      <a href="/rip-dreamincode">Next - RIP Dream.In.Code</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

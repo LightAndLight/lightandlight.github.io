@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>2022 Project Review - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>2022 Project Review</h1>
+  <p class="date">22 December, 2022</p>
+  <p>Here’s a review of all<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the programming projects I worked on in my spare time this year.
+I’m quite satisfied with the work I did. I learned a lot
+and had some cool ideas that I will continue to build on. I’m glad I wrote this review, because
+there’s some stuff in here that I’m quite proud of that I had forgotten about. This year was a
+pretty long one for me.</p>
+<h2 id="ipso"><code>ipso</code></h2>
+<p><em>Ongoing</em></p>
+<p><a href="https://github.com/LightAndLight/ipso" class="uri">https://github.com/LightAndLight/ipso</a></p>
+<p><code>ipso</code> is a scripting language that I started working on a bit over 2 years ago. My goal for this
+project is to have a scripting language that I <em>actually enjoy</em> using. So far I haven’t found a
+language that I find satisfactory for small administrative programs; Bash and Python have no types,
+and Haskell is a bit slow and old for interpreted use, for example. <code>ipso</code> is my attempt at an answer.</p>
+<p>This year I set up a website (<a href="https://ipso.dev" class="uri">https://ipso.dev</a>) and published my first few <a href="https://github.com/LightAndLight/ipso/releases">releases on
+GitHub</a>.</p>
+<p>Some of this year’s features and milestones that I’m proud of:</p>
+<ul>
+<li><a href="https://github.com/LightAndLight/ipso/issues/170">REPL</a></li>
+<li><a href="https://github.com/LightAndLight/ipso/pull/177"><code>Debug</code> instances for extensible records and
+variants</a> (<a href="https://ipso.dev/docs/reference.html#debugging">reference
+docs</a>)</li>
+<li><a href="https://github.com/LightAndLight/ipso/issues/95">Nested pattern matching</a></li>
+<li><a href="https://github.com/LightAndLight/ipso/blob/main/.github/workflows/uploadToCache">Using <code>ipso</code> in a CI script</a></li>
+</ul>
+<p>The language itself is pretty stable now, so now my focus will be on writing standard library functions.</p>
+<h2 id="ray-tracing-in-one-weekend"><code>ray-tracing-in-one-weekend</code></h2>
+<p><em>January</em></p>
+<p><a href="https://github.com/LightAndLight/ray-tracing-in-one-weekend" class="uri">https://github.com/LightAndLight/ray-tracing-in-one-weekend</a></p>
+<p><img src="https://github.com/LightAndLight/ray-tracing-in-one-weekend/raw/main/render.png" width="100%"></p>
+<p>An implementation of Peter Shirley’s <a href="https://raytracing.github.io/">Ray Tracing in One Weekend</a>
+with some extra features. It was super fun. It’s incredibly satisfying to go from a bunch of math to
+beautiful images.</p>
+<p>The most striking thing I learned was <a href="https://en.wikipedia.org/wiki/Monte_Carlo_integration">Monte Carlo
+integration</a>. It’s a way to compute integrals
+using random numbers. Ray tracing uses it to approximate the colour of a point on a surface. Every
+point on a surface has a specific, well-defined colour, and that colour can be the result of
+contributions from an extremely large number incident rays. The point’s colour can be expressed as
+an integral, and we use Monte Carlo integration to compute the integral with a varying level of
+accuracy. For a preview render, we can use few samples, and quickly produce a noisy image. For a full
+render we can use many samples, which will take longer, but will give a very accurate result.</p>
+<h2 id="sylva"><code>sylva</code></h2>
+<p><em>January</em></p>
+<p><a href="https://github.com/LightAndLight/sylva" class="uri">https://github.com/LightAndLight/sylva</a></p>
+<p>“Sylva” means “forest” in Latin (according to Google Translate). I was playing with some
+ideas about wikis / “document-based knowledge graphs”.</p>
+<p>There were tree things I wanted to combine:</p>
+<ul>
+<li>A web-based user interface</li>
+<li>Using a Git repository for versioning documents</li>
+<li>Preventing dead links within the “wiki”</li>
+</ul>
+<p>This was just a sketch and I don’t plan to do anything with it.</p>
+<h2 id="editor-vue"><code>editor-vue</code></h2>
+<p><em>March</em></p>
+<p><a href="https://github.com/LightAndLight/editor-vue" class="uri">https://github.com/LightAndLight/editor-vue</a></p>
+<p>A while ago I built a toy <a href="https://github.com/LightAndLight/edit-log">structural code editor</a> using
+Haskell (GHCJS), and the <code>reflex</code> FRP library. I wasn’t happy with the performance. I heard about
+<a href="https://vuejs.org/">vue.js</a> and was curious what it would be like to use it instead of <code>reflex</code>. I
+rebuilt some of the code editor using <code>vue.js</code> with TypeScript, enough to get a sense of the coding
+style and performance of the app. I was impressed by the performance improvements, and found
+TypeScript tolerable (and much, much better than plain JavaScript).</p>
+<h2 id="nix-docs"><code>nix-docs</code></h2>
+<p><em>March / April</em></p>
+<p><a href="https://github.com/LightAndLight/nix-docs" class="uri">https://github.com/LightAndLight/nix-docs</a></p>
+<p><code>nix-docs</code> is an ongoing experiment with reference documentation for some important Nix functions. Most Nix documentation is prose paragraphs, which is pretty bad for reference docs. Reference docs
+need to be skimmable, terse, and interlinked. Here’s the <code>nix-docs</code> page for
+<code>mkDerivation</code>: <a href="https://blog.ielliott.io/nix-docs/mkDerivation" class="uri">https://blog.ielliott.io/nix-docs/mkDerivation.html</a>.</p>
+<p>This year I updated the styling to match the new <a href="https://nixos.org/">NixOS</a> design and wrote a documentation generator for the content (my first iteration was hand-edited HTML that I copied
+from the Nixpkgs manual).</p>
+<h2 id="ccc"><code>ccc</code></h2>
+<p><em>May</em></p>
+<p><a href="https://github.com/LightAndLight/ccc" class="uri">https://github.com/LightAndLight/ccc</a></p>
+<p><code>ccc</code> stands for <a href="https://ncatlab.org/nlab/show/cartesian+closed+category">cartesian closed
+category</a>. I was inspired by <a href="https://www.typetheoryforall.com/2022/05/09/17-The-Lost-Elegance-of-Computation-(Conal-Elliott).html">this podcast with Conal
+Elliott</a>,
+and revisited his <a href="http://conal.net/papers/compiling-to-categories/">compiling to categories</a> and
+<a href="http://conal.net/papers/calculating-compilers-categorically/">calculating compilers categorically</a>
+papers. One important insight from “calculating compilers categorically” is that translating lambda
+expressions into CCC syntax sort of “sequentialises” them. The composition operation in a category
+implies an order of operations: <code>g ∘ f</code> is often read as <code>g</code> after <code>f</code>. It seems to me that CCC
+syntax is closer to our <a href="https://doi.org/10.1145/359576.359579">word-at-a-time</a>-style imperative CPUs.</p>
+<p>This leads to the first idea I explored in <code>ccc</code> was: using CCC syntax as an intermediate
+representation for lambda calculus. This worked out really well; I learned that the lambda to CCC
+translation also performs closure conversion, which is another reason that CCC syntax is easier to
+compile to imperative code.</p>
+<p>The second idea builds on the first. Once we have a program in CCC syntax, a compiler can be defined
+as a functor from CCC syntax to another cartesian closed category. I think Conal mentioned this in
+the podcast episode. I wrote a messy <a href="https://github.com/LightAndLight/ccc/blob/68d0214a778a19f04ee7c96a973749bd0d09d4d1/src/SSA.hs">SSA
+compiler</a>
+as a functor from CCC syntax arrows to “SSA builder arrows” (Haskell functions of type
+<code>SSA -&gt; SSA</code>). It was pretty straightforward because CCC syntax is sequential and closure-converted.</p>
+<p>The last idea was to apply these techniques to
+<a href="https://en.wikipedia.org/wiki/Substructural_logic">substructural</a> lambda calculi (i.e. <a href="https://en.wikipedia.org/wiki/Affine_logic">affine</a> and
+<a href="https://en.wikipedia.org/wiki/Linear_logic">linear</a> lambda calculus). Linear lambda calculus has
+its own categorical syntax (<a href="https://ncatlab.org/nlab/show/symmetric+monoidal+category">closed symmetric monoidal
+category</a> - call it CSMC for short),
+so I wrote a
+<a href="https://github.com/LightAndLight/ccc/blob/68d0214a778a19f04ee7c96a973749bd0d09d4d1/proofs/Linear.agda">program</a>
+that translates lambda calculus to CSMC syntax, and rejects lambda calculus terms that have
+non-linear variable usages. I then used the same program structure to translate lambda terms to
+<a href="https://ncatlab.org/nlab/show/semicartesian+monoidal+category">semicartesian monoidal category</a>
+syntax, which is just CSMC syntax with a <a href="https://ncatlab.org/nlab/show/terminal+object">terminal
+object</a>.
+<a href="https://github.com/LightAndLight/ccc/blob/68d0214a778a19f04ee7c96a973749bd0d09d4d1/proofs/Affine.agda">That translation</a>
+allows unused variables while rejecting variable duplication, which makes it affine. The <a href="https://github.com/LightAndLight/ccc/blob/68d0214a778a19f04ee7c96a973749bd0d09d4d1/proofs/Unrestricted.agda">final
+translation</a>
+adds a <code>dup : a -&gt; a ⊗ a</code> arrow to the semicartesian monoidal category, which gets us back to a
+cartesian closed category (but with a slightly different syntax) and unrestricted lambda calculus.</p>
+<p>This journey lead to a style for checking lambda calculus that works for linear, affine,
+and unrestricted lambda calculus. I think would be interesting to create a type checker that checks
+in this style. My intuition says such a type checker might be easier to parallelise.</p>
+<p>I also noticed that the <a href="https://github.com/LightAndLight/ccc/blob/68d0214a778a19f04ee7c96a973749bd0d09d4d1/proofs/Unrestricted.agda#L35-L49">CCC
+syntax</a>
+I settled on is explicit about parallel computations. While composition (<code>f ∘ g</code>) can be thought of as <code>f</code> after
+<code>g</code>, the tensor operator (<code>f ⊗ g</code>) can be thought of as <code>f</code> and <code>g</code> in parallel. There’s a sense in
+which this CCC syntax “reveals” parallelism that’s inherient in the lambda calculus. I’m curious
+what it would be like to write a multi-core parallel evaluator based on this.</p>
+<h2 id="march"><code>march</code></h2>
+<p><em>June</em></p>
+<p><a href="https://github.com/LightAndLight/march" class="uri">https://github.com/LightAndLight/march</a></p>
+<p>I wanted to check for broken local links markdown documents, and create
+a “move” command that works like <code>mv</code> but also renames links. I finished the former but not the latter.</p>
+<h2 id="bidirectional-typechecking-with-unification"><code>bidirectional-typechecking-with-unification</code></h2>
+<p><em>June</em></p>
+<p><a href="https://github.com/LightAndLight/bidirectional-typechecking-with-unification" class="uri">https://github.com/LightAndLight/bidirectional-typechecking-with-unification</a></p>
+<p>This work was inspired by <a href="https://www.haskellforall.com/2022/06/the-appeal-of-bidirectional-type.html">an article about the limitations of unification-based type
+checking</a>. It seemed to
+claim that <a href="https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system">Hindley-Milner</a> / unification-based type checking is very limited, and presented a
+dichotomy between bidirectional typing and unification that I don’t agree with.</p>
+<p>I wrote a Hindley-Milner-based type checker for a language with subtyping by applying bidirectional
+principles. It has higher-rank polymorphism, existential types, optional record fields, and default
+record fields, which are all powered by the same subtyping mechanism. Unification and instantiation
+are also performed by the subtyping mechanism.</p>
+<p>The key insight is to allow the subtyping check to transform terms. A type <code>A</code> is a subtype of <code>B</code>
+when values of type <code>A</code> can be used where values of type <code>B</code> are expected. This is often written as
+<code>A :&gt; B</code>, and in code as something like <code>isSubtypeOf : Type -&gt; Type -&gt; Bool</code>. My type checker
+returns evidence that the subtyping relation holds, which could be written as
+<code>(a : A) :&gt; B  ~&gt; b</code>, and as a function: <code>isSubtypeOf : (Expr, Type) -&gt; Type -&gt; Maybe Expr</code>. The
+bidirectional style means ensures that “checking” types drives subtyping. This is
+all perfectly compatible with unification-based inference.</p>
+<p>This deserves a much clearer explanation in its own blog post. I think it’s a promising result
+for programming language design.</p>
+<h2 id="little"><code>little</code></h2>
+<p><em>June / July</em></p>
+<p><a href="https://github.com/LightAndLight/little" class="uri">https://github.com/LightAndLight/little</a></p>
+<p><code>little</code> is my first attempt at a <a href="https://doi.org/10.1093/comjnl/27.2.97">Knuth-style literate
+programming</a> system. I want to write documents about code
+that are also the source truth for the code. Systems like <a href="https://www.haskell.org/onlinereport/literate.html">literate Haskell</a> are unsatisfying
+to me because I have to present the code to the reader in the same order that the code appears
+in the source file. For example, all literate Haskell articles will begin with a preamble of imports
+(<a href="https://blog.ielliott.io/continuations-from-the-ground-up/">example article</a>). I want to present
+code to the reader in a non-linear fashion, in a way that supports my explanation. I imagine that
+I’d often put import declarations in an appendix, for instance.</p>
+<p><code>little doc</code> generates a document that I can publish on
+the web, and <code>little code</code> generates the codebase that is described in the document. Another fun use
+case is “self-documenting shell scripts”
+(<a href="https://github.com/LightAndLight/little/blob/main/examples/script.lit">example</a>). Rather than
+commenting a bash script, you can write a literate document that describes a bash script, and give
+the document a shebang line.</p>
+<p><code>little</code> uses XML for its markup, so that I can use whatever “presentation” markup I want (Markdown,
+LaTex, HTML, etc.). I was surprised by how “not terrible” it felt to use XML for this. I have a
+strong bias against XML in general, and now that bias has gained some nuance. XML feels alright for
+<em>markup</em>, that is, for extra information in documents that are mostly text which
+people will consume by reading. That’s what it was designed for; it’s the eXtensible <em>Markup</em>
+Language. What I now object to is the use of XML as a data format.
+<a href="https://www.devever.net/~hl/xml">This article</a> has a good heuristic for distinguishing the two uses: if
+you remove all the tags from your XML document, will it still make sense to a reader? I’ve tried to
+apply this heuristic to the syntax of <code>little</code>.</p>
+<p>The code is pretty crappy, so if I continued to work on this I’d rewrite it. I’m optimistic about
+what I created so far, though.</p>
+<h2 id="mininix"><code>mininix</code></h2>
+<p><em>August</em></p>
+<p><a href="https://github.com/LightAndLight/mininix" class="uri">https://github.com/LightAndLight/mininix</a></p>
+<p><code>mininix</code> is an attempt at understanding how Nix-style build systems work by writing a small one. It
+includes a content-addressable store, a build database (using sqlite), a parallel build executor and a typed build language.</p>
+<p>I also wanted to improve on the naming of concepts (i.e. use a better word than “derivation”), and
+to keep typeability in mind from the start (Nix is very very untyped. Would types affect the build
+system’s design?).</p>
+<p>One idea I’d like to explore here is a sort of “local” version of Nix. Instead of having a global
+store, have a per-project store for build artifacts similar to <code>cabal</code>’s <code>dist[-newstyle]</code>
+directories and
+<code>cargo</code>’s <code>target</code> directory.</p>
+<p>I’m also interested in whether we can have build systems that reuse existing package declarations.
+For example, if you want to use Nix to package a Haskell project, you need to convert your
+<code>.cabal</code> file to a Nix expression (or do <a href="https://nixos.wiki/wiki/Import_From_Derivation">import from
+derivation</a>, which I fundamentally disagree with).
+What if there was a way to use the <code>.cabal</code> file without the grossness of import-from-derivation?</p>
+<h2 id="top-down-hindley-milner"><code>top-down-hindley-milner</code></h2>
+<p><em>September</em></p>
+<p><a href="https://github.com/LightAndLight/top-down-hindley-milner" class="uri">https://github.com/LightAndLight/top-down-hindley-milner</a></p>
+<p>This project shows a sort of “upside down” approach to Hindley-Milner type inference.
+This work was inspired by some inaccurate type errors that <code>ipso</code> generated, and this algorithm is
+my solution.</p>
+<p><a href="https://ncatlab.org/nlab/show/bidirectional+typechecking">Bidirectional type
+checking</a> separates inference from
+checking, and this distinction is important in contrasting “normal” Hindley-Milner to the “top-down”
+approach. Roughly speaking, Hindley-Milner constructs types through inference in a bottom-up
+manner, and my algorithm refines types through checking from the top down.</p>
+<p>In Hindley-Milner, all the work is done by inference and checking is the trivial case of
+inference followed by unification with an expected type. In the “top-down” style, checking does all
+the work, and inference is performed by checking against a fresh metavariable.</p>
+<p>I want to combine this work with <a href="#bidirectional-typechecking-with-unification">the subtyping work</a> I mentioned earier.</p>
+<h2 id="hover-pill"><code>hover-pill</code></h2>
+<p><em>October</em></p>
+<p><a href="https://github.com/LightAndLight/hover-pill" class="uri">https://github.com/LightAndLight/hover-pill</a></p>
+<p><code>hover-pill</code> is a game I created to learn the <a href="https://bevyengine.org/">Bevy</a> game engine. You can
+try an early build <a href="https://blog.ielliott.io/hover-pill/">here</a>. It’s a 3D puzzle/platformer where
+you fly around as a capsule-shaped object (I’m not a 3D artist) trying to reach the green goal square.</p>
+<p>I haven’t done any game development for years, so this project was very refreshing. Once I had
+all the mechanics working, I asked my girlfriend to test the levels I designed. Each time
+she completed a level, I created a slightly more difficult one. She enjoyed playing it, and I’m glad that in the end I created
+something fun.</p>
+<p>Bevy uses <a href="https://wgpu.rs/"><code>wgpu</code></a> for graphics, which combined with Rusts awesome
+cross-compilation support means it was pretty easy for me to develop on my desktop (with x86_64 and Vulkan), and
+then compile a WASM and WebGL version for the web. It was a pleasant surprise, coming from Haskell
+and GHCJS.</p>
+<p>This was my first time using an
+<a href="https://en.wikipedia.org/wiki/Entity_component_system">entity-component-system</a> framework, and I
+enjoyed it. <a href="https://dataorienteddesign.com/dodbook/">Data-Oriented Design</a> helped me understand the
+history behind the patterns. I think there are ideas here that apply outside of game development,
+but I don’t know what they are yet. On example (and I think it’s where I learned about the DoD book)
+is <a href="https://ziglang.org/download/0.8.0/release-notes.html#Reworked-Memory-Layout">this</a> explanation
+of a “data-oriented” performance improvement in the Zig compiler.</p>
+<h2 id="wgpu-mandelbrot"><code>wgpu-mandelbrot</code></h2>
+<p><em>October</em></p>
+<p><a href="https://github.com/LightAndLight/wgpu-mandelbrot" class="uri">https://github.com/LightAndLight/wgpu-mandelbrot</a></p>
+<p><img src="https://github.com/LightAndLight/wgpu-mandelbrot/raw/main/images/screenshot-2.png" width="100%" /></p>
+<p>After <a href="#hover-pill">hover-pill</a> I wanted to learn more about graphics APIs and GPU programming. I realised that computing the mandelbrot set was an
+“embarrassingly parallel” problem, so it would be a good fit for GPU programming.</p>
+<p>The mandelbrot renderer runs in realtime. It has a satisfying “blooming” effect as the iteration
+count ticks up and more points are coloured. The mandelbrot
+calculations are performed in a compute shader, and the colours are assigned using a
+<a href="https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set#Histogram_coloring">histogram algorithm</a>
+on the CPU. I couldn’t figure out how to do histogram colouring on the GPU.</p>
+<p>To make sense of the WebGPU API, I created this diagram which displays all relevant (Web)GPU
+resources and their relationships:</p>
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Ffile%2FIr3gsGIELdVBwYgVkCiHvE%2Fwebgpu%3Fnode-id%3D0%253A1%26t%3DUIEhGQEzO3ObVrhi-1" allowfullscreen>
+</iframe>
+<p>I have a much better sense of GPU programming fundamentals, and I think the careful design of WebGPU helped.
+It’s higher level than Vulkan, but more explicit than OpenGL. I’ve done a Vulkan tutorial and forgot
+almost all of it. Having learned the fundamentals <code>wgpu</code>, I think the Vulkan API would make a lot more sense
+to me now.</p>
+<h2 id="hedge"><code>hedge</code></h2>
+<p><em>December</em></p>
+<p><a href="https://github.com/LightAndLight/hedge" class="uri">https://github.com/LightAndLight/hedge</a></p>
+<p><code>hedge</code> is a library that makes it easier for me to write web information systems with Haskell. I’ve
+been developing a sense of style and a set of patterns around writing Haskell web apps,
+in particular
+using <a href="https://hackage.haskell.org/package/servant">servant</a> and focusing on server-side rendered resources, and <code>hedge</code> is
+kind of my “kitchen sink” for things that support the style.</p>
+<p>I might create a command-line program for setting up a new project, adding endpoints, and other
+forms of boilerplate I find.</p>
+<p>I’m not sure if it will ever lead to something I could call a “framework”, like
+<a href="https://rubyonrails.org/">Rails</a>. Right now I have the sense that it would be more like a <a href="https://en.wikipedia.org/wiki/A_Pattern_Language">pattern
+language</a> with automated helpers.</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>that made it onto GitHub<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  <footer>
+    <p>
+      
+      <a href="/rip-dreamincode">RIP Dream.In.Code - Previous</a>
+      
+      |
+      
+      <a href="/web-resources-i-enjoy">Next - Web Resources I Enjoy</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

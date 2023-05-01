@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Continuations From the Ground Up - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>Continuations From the Ground Up</h1>
+  <p class="date"> 6 June, 2017</p>
+  <p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
+<p>This post was generated from a <a href="../files/continuations.lhs">Literate Haskell file</a> using Pandoc, so you can load it up into GHCI and play around if you want.</p>
+<h2 id="continuation-passing-style">Continuation Passing Style</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">CPS</span> <span class="kw">where</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">Control.Applicative</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">Control.Monad.Trans.Class</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">Data.IORef</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">Data.Maybe</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">qualified</span> <span class="dt">Data.Map</span> <span class="kw">as</span> <span class="dt">M</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">qualified</span> <span class="dt">System.Exit</span> <span class="kw">as</span> <span class="dt">E</span></span></code></pre></div>
+<p>The main idea of this style is that the called function has control over how its return value is used. Usually, the caller will pass a function that tells the callee how to use its return value. Here’s what that looks like:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">add ::</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>add a b <span class="ot">=</span> \k <span class="ot">-&gt;</span> k (a <span class="op">+</span> b)</span></code></pre></div>
+<p><code>add</code> takes two numbers, plus a function that will take the result and do something (returning an unknown answer), then pass the result to this function. We call this ‘extra function’ a <em>continuation</em> because it specifies how the program should <em>continue</em>.</p>
+<p>It’s possible to write any program using this style. I’m not going to prove it. As a challenge, let’s restrict ourselves to write every function this way, with two exceptions:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">exitSuccess ::</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>exitSuccess _ <span class="ot">=</span> E.exitSuccess</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ot">exitFailure ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>exitFailure <span class="ot">=</span> E.exitWith <span class="op">.</span> <span class="dt">E.ExitFailure</span></span></code></pre></div>
+<p><code>exitSuccess</code> and <code>exitFailure</code> do not take a continuation, because the program always ends when they are called.</p>
+<p>Let’s define <code>mul</code> and <code>dvd</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">mul ::</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mul a b <span class="ot">=</span> \k <span class="ot">-&gt;</span> k (a <span class="op">*</span> b)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">dvd ::</span> <span class="dt">Fractional</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>dvd a b <span class="ot">=</span> \k <span class="ot">-&gt;</span> k (a <span class="op">/</span> b)</span></code></pre></div>
+<p>Now we can write some programs using this style.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Exits with status code 5</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_1 ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>prog_1 <span class="ot">=</span> add <span class="dv">2</span> <span class="dv">3</span> exitFailure</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Exits successfully after multiplying 10 by 10</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_2 ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>prog_2 <span class="ot">=</span> mul <span class="dv">10</span> <span class="dv">10</span> exitSuccess</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">-- Exits with status code (2 + 3) * 5 = 25</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_3 ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>prog_3 <span class="ot">=</span> add <span class="dv">2</span> <span class="dv">3</span> (\two_plus_three <span class="ot">-&gt;</span> mul two_plus_three <span class="dv">5</span> exitFailure)</span></code></pre></div>
+<p>We can factor out the continuation to make our program more modular:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Equivalent to \k -&gt; k ((2 + 3) * 5)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_4 ::</span> (<span class="dt">Int</span> <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>prog_4 <span class="ot">=</span> \k <span class="ot">-&gt;</span> add <span class="dv">2</span> <span class="dv">3</span> (\two_plus_three <span class="ot">-&gt;</span> mul two_plus_three <span class="dv">5</span> k)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Equivalent to \k -&gt; k ((2 + 3) * 5 + 5)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_5 ::</span> (<span class="dt">Int</span> <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>prog_5 <span class="ot">=</span> \k <span class="ot">-&gt;</span> prog_4 (\res <span class="ot">-&gt;</span> add res <span class="dv">5</span> k)</span></code></pre></div>
+<p>In these kind of definitions, we’ll call the <code>k</code> the <em>current continuation</em> to stand for <em>how the program will (currently) continue execution</em>.</p>
+<p>Here’s a more complex expression:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- (2 + 3) * (7 + 9) + 5</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_6 ::</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>prog_6 <span class="ot">=</span> \k <span class="ot">-&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  add <span class="dv">2</span> <span class="dv">3</span> (\five <span class="ot">-&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    add <span class="dv">7</span> <span class="dv">9</span> (\sixteen <span class="ot">-&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      mul five sixteen (\eighty <span class="ot">-&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        add eighty <span class="dv">5</span> k)))</span></code></pre></div>
+<p>In translating programs to continuation passing style, we transform a <em>tree</em> of computations into a <em>sequence</em> of computations. In doing so, we have <em>reified</em> the flow of the program. We now have a data structure in memory that represents the computations that make up the program. In this case, the data structure is a lot like a linked list- there is a head: ‘the computation that will be performed next’, and a tail: ‘the computations that will be performed on the result’. It’s this ability to represent the flow of the program as a data structure that sets CPS programs apart from regular programs, which we will see later.</p>
+<h2 id="continuation-passing-is-monadic">Continuation Passing is Monadic</h2>
+<p>Right now, writing CPS programs in Haskell is too verbose. Fortunately there are some familiar abstractions that will make it elegant:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">Cont</span> r a <span class="ot">=</span> <span class="dt">Cont</span> {<span class="ot"> runCont ::</span> (a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r }</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ot">add' ::</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Cont</span> r a</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>add' a b <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> add a b</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ot">mul' ::</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Cont</span> r a</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>mul' a b <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> mul a b</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="ot">dvd' ::</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Cont</span> r a</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>dvd' a b <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> dvd a b</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Functor</span> (<span class="dt">Cont</span> r) <span class="kw">where</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmap</span> f c <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runCont c (k <span class="op">.</span> f)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Applicative</span> (<span class="dt">Cont</span> r) <span class="kw">where</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pure</span> a <span class="ot">=</span> <span class="dt">Cont</span> (<span class="op">$</span> a)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  cf <span class="op">&lt;*&gt;</span> ca <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runCont cf (\f <span class="ot">-&gt;</span> runCont ca (\a <span class="ot">-&gt;</span> k (f a)))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Monad</span> (<span class="dt">Cont</span> r) <span class="kw">where</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  ca <span class="op">&gt;&gt;=</span> f <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runCont ca (\a <span class="ot">-&gt;</span> runCont (f a) k)</span></code></pre></div>
+<p>It turns out that the return type of these CPS programs, <code>(a -&gt; r) -&gt; r</code>, is a Monad. If you don’t understand these implementations, meditate on them until you do. Here some hand-wave-y English explanations that may help:</p>
+<h3 id="functor">Functor</h3>
+<p><code>fmap</code>: Continue with the result of <code>c</code> by changing the result from an <code>a</code> to a <code>b</code> then sending that result to the current continuation.</p>
+<h3 id="applicative">Applicative</h3>
+<p><code>pure</code>: Send an <code>a</code> to the current continuation</p>
+<p><code>&lt;*&gt;</code>: Continue with the result of <code>cf</code> by continuing with the result of <code>ca</code> by sending (the result of <code>cf</code>) applied to (the result of <code>ca</code>) to the current continuation.</p>
+<h3 id="monad">Monad</h3>
+<p><code>&gt;&gt;=</code>: Continue with the result of <code>ca</code> by applying it to <code>f</code> and passing the current continuation on to the value <code>f</code> returned.</p>
+<p>So now we can rewrite our previous verbose example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_6' ::</span> <span class="dt">Cont</span> r <span class="dt">Int</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>prog_6' <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  five <span class="ot">&lt;-</span> add' <span class="dv">2</span> <span class="dv">3</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  sixteen <span class="ot">&lt;-</span> add' <span class="dv">7</span> <span class="dv">9</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  eighty <span class="ot">&lt;-</span> mul' five sixteen</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  add' eighty <span class="dv">5</span></span></code></pre></div>
+<p>and run it:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_7 ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>prog_7 <span class="ot">=</span> runCont prog_6' exitSuccess</span></code></pre></div>
+<h2 id="callcc">callCC</h2>
+<p>Consider the following CPS program:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_8 ::</span> (<span class="dt">Eq</span> a, <span class="dt">Fractional</span> a) <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> (<span class="dt">Maybe</span> a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>prog_8 a b c <span class="ot">=</span> \k <span class="ot">-&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  add b c</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    (\b_plus_c <span class="ot">-&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="kw">if</span> b_plus_c <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">then</span> k <span class="dt">Nothing</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">else</span> dvd a b_plus_c (k <span class="op">.</span> <span class="dt">Just</span>))</span></code></pre></div>
+<p>It adds <code>b</code> to <code>c</code>, then if <code>b + c</code> is zero, sends <code>Nothing</code> to the current continuation, otherwise divides <code>a</code> by <code>b + c</code> then continues by wrapping that in a <code>Just</code> and sending the <code>Just</code> result to the current continuation.</p>
+<p>Because the current continuation is ‘how the program will continue with the result of this function’, sending a result to the current continuation early cause the function to <em>exit early</em>. In this sense, it’s a bit like like a <code>jmp</code> or a <code>goto</code>.</p>
+<p>It is conceivable that somehow we can write a program like this using the <code>Cont</code> monad. This is where <code>callCC</code> comes in.</p>
+<p><code>callCC</code> stands for ‘call with current continuation’, and is the way we’re going to bring the current continuation into scope when writing CPS programs. Here’s an example of how the previous code snippet should look using <code>callCC</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_8' ::</span> (<span class="dt">Eq</span> a, <span class="dt">Fractional</span> a) <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Cont</span> r (<span class="dt">Maybe</span> a)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>prog_8' a b c <span class="ot">=</span> callCC <span class="op">$</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  \k <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    b_plus_c <span class="ot">&lt;-</span> add' b c</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> b_plus_c <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>      <span class="kw">then</span> k <span class="dt">Nothing</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>      <span class="kw">else</span> <span class="fu">fmap</span> <span class="dt">Just</span> <span class="op">$</span> dvd' a b_plus_c</span></code></pre></div>
+<p>Here’s how <code>callCC</code> is defined:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ot">callCC ::</span> ((a <span class="ot">-&gt;</span> <span class="dt">Cont</span> r b) <span class="ot">-&gt;</span> <span class="dt">Cont</span> r a) <span class="ot">-&gt;</span> <span class="dt">Cont</span> r a</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>callCC f <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runCont (f (\a <span class="ot">-&gt;</span> <span class="dt">Cont</span> <span class="op">$</span> <span class="fu">const</span> (k a))) k</span></code></pre></div>
+<p>We can see that the current continuation is permanently captured when it is used in the function passed to <code>f</code>, but it is also used when running the final result of <code>f</code>. So <code>k</code> might be called somewhere inside <code>f</code>, causing <code>f</code> to exit early, or it might not, in which case <code>k</code> is guaranteed to be called after <code>f</code> has finished.</p>
+<p>Earlier I said that invoking the current continuation earlier is like jumping. This is a lot easier to show now that we can use it in our <code>Cont</code> monad. Calling the continuation provided by <code>callCC</code> will jump the program execution to immediately after the call to <code>callCC</code>, and set the result of the <code>callCC</code> continuation to the argument that was passed to the current continuation.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>prog_9 <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  five <span class="ot">&lt;-</span> add' <span class="dv">2</span> <span class="dv">3</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> callCC <span class="op">$</span> \k <span class="ot">-&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- current continuation is never used, so `callCC` is redundant</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    mul' <span class="dv">4</span> <span class="dv">5</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- `res` = 20</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  add' five res</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>prog_10 <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  five <span class="ot">&lt;-</span> add' <span class="dv">2</span> <span class="dv">3</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> callCC <span class="op">$</span> \k <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    k <span class="dv">5</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    mul' <span class="dv">4</span> <span class="dv">5</span> <span class="co">-- this computation is never run</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- program jumps to here, `res` = 5</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  add' five res</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>prog_11 <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  five <span class="ot">&lt;-</span> add' <span class="dv">2</span> <span class="dv">3</span> </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> callCC <span class="op">$</span> \k <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> five <span class="op">&gt;</span> <span class="dv">10</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>      <span class="kw">then</span> k <span class="dv">10</span> <span class="co">-- branch A</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>      <span class="kw">else</span> mul' <span class="dv">4</span> <span class="dv">5</span> <span class="co">-- branch B</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- if branch A was reached, `res` = 10</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- if branch B was reached, `res` = 20</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  add' five res</span></code></pre></div>
+<h2 id="another-level-of-abstraction">Another level of abstraction</h2>
+<p>We can also embed arbitrary effects in the return type of <code>Cont</code>. In other words, we can create a monad transformer.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">ContT</span> r m a <span class="ot">=</span> <span class="dt">ContT</span> {<span class="ot"> runContT ::</span> (a <span class="ot">-&gt;</span> m r) <span class="ot">-&gt;</span> m r }</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ot">callCC' ::</span> ((a <span class="ot">-&gt;</span> <span class="dt">ContT</span> r m b) <span class="ot">-&gt;</span> <span class="dt">ContT</span> r m a) <span class="ot">-&gt;</span> <span class="dt">ContT</span> r m a</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>callCC' f <span class="ot">=</span> <span class="dt">ContT</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runContT (f (\a <span class="ot">-&gt;</span> <span class="dt">ContT</span> <span class="op">$</span> <span class="fu">const</span> (k a))) k</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Functor</span> (<span class="dt">ContT</span> r m) <span class="kw">where</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmap</span> f c <span class="ot">=</span> <span class="dt">ContT</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runContT c (k <span class="op">.</span> f)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Applicative</span> (<span class="dt">ContT</span> r m) <span class="kw">where</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pure</span> a <span class="ot">=</span> <span class="dt">ContT</span> (<span class="op">$</span> a)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  cf <span class="op">&lt;*&gt;</span> ca <span class="ot">=</span> <span class="dt">ContT</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runContT cf (\f <span class="ot">-&gt;</span> runContT ca (\a <span class="ot">-&gt;</span> k (f a)))</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Monad</span> (<span class="dt">ContT</span> r m) <span class="kw">where</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  ca <span class="op">&gt;&gt;=</span> f <span class="ot">=</span> <span class="dt">ContT</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runContT ca (\a <span class="ot">-&gt;</span> runContT (f a) k)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">MonadTrans</span> (<span class="dt">ContT</span> r) <span class="kw">where</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  lift ma <span class="ot">=</span> <span class="dt">ContT</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> ma <span class="op">&gt;&gt;=</span> k</span></code></pre></div>
+<p>Notice that the <code>Functor</code>, <code>Applicative</code> and <code>Monad</code> instances for <code>ContT r m</code> don’t place any constraints on the <code>m</code>. This means that any type constructor of kind <code>(* -&gt; *)</code> can be in the <code>m</code> position. The <code>MonadTrans</code> instance, however, does require <code>m</code> is a monad. It’s a very simple definition- the result of running the lifted action is piped into the current continuation using <code>&gt;&gt;=</code>.</p>
+<p>Now that we have a fully-featured CPS monad, we can start doing magic.</p>
+<h2 id="the-future-the-past-and-alternate-timelines">The future, the past and alternate timelines</h2>
+<p>The continuation that <code>callCC</code> provides access to is the current future of program execution as a single function. That’s why this program-as-a-linear-sequence is so powerful. If you could save the current continuation and call it at a later time somewhere else in your (CPS) program, it would jump ‘back in time’ to the point after that particular <code>callCC</code>.</p>
+<p>To demonstrate this, and end with a bang, here’s a simple boolean SAT solver.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Language of boolean expressions</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Expr</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Implies</span> <span class="dt">Expr</span> <span class="dt">Expr</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Iff</span> <span class="dt">Expr</span> <span class="dt">Expr</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">And</span> <span class="dt">Expr</span> <span class="dt">Expr</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Or</span> <span class="dt">Expr</span> <span class="dt">Expr</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Not</span> <span class="dt">Expr</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Val</span> <span class="dt">Bool</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Var</span> <span class="dt">String</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Show</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- Reduces a boolean expression to normal form, substituting variables</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">-- where possible. There are also some equivalences that are necessary to get</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">-- the SAT solver working e.g. Not (Not x) = x (I said it was a simple one!)</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>eval</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="ot">  ::</span> <span class="dt">M.Map</span> <span class="dt">String</span> <span class="dt">Expr</span> <span class="co">-- ^ Bound variables</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="ot">-&gt;</span> <span class="dt">Expr</span> <span class="co">-- ^ Input expression</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="ot">-&gt;</span> <span class="dt">Expr</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>eval env expr <span class="ot">=</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> expr <span class="kw">of</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Implies</span> p q <span class="ot">-&gt;</span> eval env <span class="op">$</span> <span class="dt">Or</span> (<span class="dt">Not</span> p) q</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Iff</span> p q <span class="ot">-&gt;</span> eval env <span class="op">$</span> <span class="dt">Or</span> (<span class="dt">And</span> p q) (<span class="dt">And</span> (<span class="dt">Not</span> p) (<span class="dt">Not</span> q))</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">And</span> a b <span class="ot">-&gt;</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> (eval env a, eval env b) <span class="kw">of</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        (<span class="dt">Val</span> <span class="dt">False</span>, _) <span class="ot">-&gt;</span> <span class="dt">Val</span> <span class="dt">False</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        (_, <span class="dt">Val</span> <span class="dt">False</span>) <span class="ot">-&gt;</span> <span class="dt">Val</span> <span class="dt">False</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>        (<span class="dt">Val</span> <span class="dt">True</span>, b') <span class="ot">-&gt;</span> b'</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        (a', <span class="dt">Val</span> <span class="dt">True</span>) <span class="ot">-&gt;</span> a'</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>        (a', b') <span class="ot">-&gt;</span> <span class="dt">And</span> a' b'</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Or</span> a b <span class="ot">-&gt;</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> (eval env a, eval env b) <span class="kw">of</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        (<span class="dt">Val</span> <span class="dt">True</span>, _) <span class="ot">-&gt;</span> <span class="dt">Val</span> <span class="dt">True</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        (_, <span class="dt">Val</span> <span class="dt">True</span>) <span class="ot">-&gt;</span> <span class="dt">Val</span> <span class="dt">True</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        (<span class="dt">Val</span> <span class="dt">False</span>, b') <span class="ot">-&gt;</span> b'</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>        (a', <span class="dt">Val</span> <span class="dt">False</span>) <span class="ot">-&gt;</span> a'</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>        (a', b')</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>          <span class="op">|</span> a' <span class="op">==</span> eval env (<span class="dt">Not</span> b') <span class="ot">-&gt;</span> <span class="dt">Val</span> <span class="dt">True</span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>          <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">-&gt;</span> <span class="dt">Or</span> a' b'</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Not</span> a <span class="ot">-&gt;</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> eval env a <span class="kw">of</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Val</span> <span class="dt">True</span> <span class="ot">-&gt;</span> <span class="dt">Val</span> <span class="dt">False</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Val</span> <span class="dt">False</span> <span class="ot">-&gt;</span> <span class="dt">Val</span> <span class="dt">True</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Not</span> a' <span class="ot">-&gt;</span> a'</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>        a' <span class="ot">-&gt;</span> <span class="dt">Not</span> a'</span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Val</span> b <span class="ot">-&gt;</span> <span class="dt">Val</span> b</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Var</span> name <span class="ot">-&gt;</span> fromMaybe (<span class="dt">Var</span> name) (M.lookup name env)</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co">-- Returns `Nothing` if the expression is not satisfiable</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="co">-- If the epxression is satisfiable returns `Just mapping` with a valid</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="co">-- variable mapping</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="ot">sat ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">ContT</span> r <span class="dt">IO</span> (<span class="dt">Maybe</span> (<span class="dt">M.Map</span> <span class="dt">String</span> <span class="dt">Expr</span>))</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>sat expr <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- A stack of continuations</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>  try_next_ref <span class="ot">&lt;-</span> lift <span class="op">$</span> newIORef [] </span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>  callCC' <span class="op">$</span> \exit <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Run `go` after reducing the expression to normal form without any</span></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- variable values</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">&lt;-</span> go (eval M.empty expr) try_next_ref exit</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>    <span class="kw">case</span> res <span class="kw">of</span></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>      <span class="co">-- If there was a failure, backtrack and try again</span></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Nothing</span> <span class="ot">-&gt;</span> backtrack try_next_ref exit</span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Just</span> vars <span class="ot">-&gt;</span> <span class="kw">case</span> eval vars expr <span class="kw">of</span></span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>        <span class="co">-- If the expression evaluates to true with the results of `go`, finish</span></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Val</span> <span class="dt">True</span> <span class="ot">-&gt;</span> exit res</span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>        <span class="co">-- Otherwise, backtrack and try again</span></span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>        _ <span class="ot">-&gt;</span> backtrack try_next_ref exit</span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- To backtrack: try to pop a continuation from the stack. If there are</span></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- none left, exit with failure. If there is a continuation then enter it.</span></span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>    backtrack try_next_ref exit <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>      try_next <span class="ot">&lt;-</span> lift <span class="op">$</span> readIORef try_next_ref</span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> try_next <span class="kw">of</span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>        [] <span class="ot">-&gt;</span> exit <span class="dt">Nothing</span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>        next<span class="op">:</span>rest <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>          lift <span class="op">$</span> writeIORef try_next_ref rest</span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>          next</span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- It's a tree traversal, but with some twists</span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>    go expr try_next_ref exit <span class="ot">=</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> expr <span class="kw">of</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>        <span class="co">-- Twist 1: When we encounter a variable, we first continue as if it's</span></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>        <span class="co">-- true, but also push a continuation on the stack where it is set to false</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Var</span> name <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>          res <span class="ot">&lt;-</span> callCC' <span class="op">$</span> \k <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>            lift <span class="op">$</span> modifyIORef try_next_ref (k (<span class="dt">Val</span> <span class="dt">False</span>) <span class="op">:</span>)</span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>            <span class="fu">pure</span> <span class="op">$</span> <span class="dt">Val</span> <span class="dt">True</span></span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>          <span class="co">-- When this program is first run, `res` = True. But if we pop and</span></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a>          <span class="co">-- enter the result of `k (Val False)`, we would end up back here</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>          <span class="co">-- again, with `res` = False</span></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>          <span class="fu">pure</span> <span class="op">$</span> <span class="dt">Just</span> (M.singleton name res)</span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Val</span> b <span class="ot">-&gt;</span> <span class="fu">pure</span> <span class="op">$</span> <span class="kw">if</span> b <span class="kw">then</span> <span class="dt">Just</span> M.empty <span class="kw">else</span> <span class="dt">Nothing</span></span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>        <span class="co">-- Twist 2: When we get to an Or, only one of the sides needs to be</span></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>        <span class="co">-- satisfied. So we first continue by checking the left side, but also</span></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>        <span class="co">-- push a continuation where we check the right side instead.</span></span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Or</span> a b <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>          side <span class="ot">&lt;-</span> callCC' <span class="op">$</span> \k <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>            lift <span class="op">$</span> modifyIORef try_next_ref (k b <span class="op">:</span>)</span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>            <span class="fu">pure</span> a</span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>          <span class="co">-- Similar to the `Var` example. First ruvn, `side` = a. But if later</span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>          <span class="co">-- we enter the saved continuation then we will return to this point</span></span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>          <span class="co">-- in the program with `side` = b</span></span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>          go side try_next_ref exit </span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a>        <span class="dt">And</span> a b <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>          a_res <span class="ot">&lt;-</span> go a try_next_ref exit</span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>          b_res <span class="ot">&lt;-</span> go b try_next_ref exit</span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>          <span class="fu">pure</span> <span class="op">$</span> liftA2 M.union a_res b_res</span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Not</span> a <span class="ot">-&gt;</span> go a try_next_ref exit</span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>        _ <span class="ot">-&gt;</span> go (eval M.empty expr) try_next_ref exit</span></code></pre></div>
+<p>The solver sets all the variables to <code>True</code>, and if the full expression evaluates to <code>False</code> it flips one to <code>False</code> and automatically re-evaluates the expression, repeating the process untill either it finally evaluates to <code>True</code> or all possible combinations of boolean values have been tested. It’s not efficient, but it’s a wonderful illustration of the elegance that CPS enables.</p>
+  <footer>
+    <p>
+      
+      <a href="/how-to-delete-old-nixos-boot-configurations">How to delete old NixOS boot configurations - Previous</a>
+      
+      |
+      
+      <a href="/comonad-transformers-in-the-wild">Next - Comonad Transformers in the Wild</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+<a href="/tags/haskell/">haskell</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>

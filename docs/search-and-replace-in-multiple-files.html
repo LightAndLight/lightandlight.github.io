@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Search and Replace in Multiple Files - ielliott.io</title>
+  
+
+  
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+  <section>
+    <article>
+  <h1>Search and Replace in Multiple Files</h1>
+  <p class="date">25 July, 2015</p>
+  <pre><code>$ sed -i &quot;s/pattern/replacement/g&quot; FILES</code></pre>
+<h2 id="the-story">The Story</h2>
+<p>Last semester I had to write a static website by hand with no templating
+resulting in a lot of duplicated code across multiple pages. I had already
+finished most of the project when I realised that the main page of the
+project should be named <code>index.html</code> instead of <code>home.html</code>. I renamed the
+file, but that left me with countless references to “home.html” that needed
+to be changed, and I wanted to change them all at once. Enter <code>sed</code>.</p>
+<p><code>sed</code> allows the user to write programs which operate on streams of text.
+It is run using the syntax</p>
+<pre><code>$ sed OPTIONS.. [SCRIPT] [FILENAME..]</code></pre>
+<p>To search and replace using <code>sed</code> we use the <code>s</code> command of the form
+<code>s/regex/replacement/flags</code>. Our <code>sed</code> script would become
+<code>s/home\.html/index.html/g</code>. The <code>.</code> needs to be escaped because <code>.</code> on its own
+matches any character in regex. The <code>g</code> flag means to replace every occurrence
+of the pattern, instead of just the first.</p>
+<p>By default, <code>sed</code> will only write the altered text to <code>stdout</code>, so we need to
+use the <code>-i</code> flag to make the alterations inside the source file.</p>
+<p>The final command is now</p>
+<pre><code>$ sed -i &quot;s/home\.html/index.html/g&quot; *.html</code></pre>
+<p>which will apply the sed program to all the HTML files in the directory. Easy!</p>
+  <footer>
+    <p>
+      
+      <a href="/the-programming-thought-process-fizzbuzz">The Programming Thought Process: Fizzbuzz - Previous</a>
+      
+      |
+      
+      <a href="/why-LINQ-is-broken">Next - Why LINQ (well, C#) is Broken</a>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming/">programming</a>
+
+<a href="/tags/tools/">tools</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+  <script>feather.replace()</script>
+</body>
+
+</html>
