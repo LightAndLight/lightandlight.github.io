@@ -23,10 +23,6 @@
   <script src="https://unpkg.com/feather-icons"></script>
   <script src="/res/script.js"></script>
 
-  $if(math)$
-  <script src="https://fred-wang.github.io/mathml-warning.js/mpadded-min.js"></script>
-  $endif$
-
   $if(title)$
   <title>$title$ - ielliott.io</title>
   $else$
@@ -34,6 +30,10 @@
   $endif$
 
   $seo$
+
+  $if(math)$
+  <script src="https://fred-wang.github.io/mathml-warning.js/mpadded-min.js"></script>
+  $endif$
 </head>
 
 <body>
