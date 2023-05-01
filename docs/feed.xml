@@ -10,7 +10,7 @@
         <email>isaace71295@gmail.com</email>
         
     </author>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <entry>
     <title>Web Resources I Enjoy</title>
     <link href="https://blog.ielliott.io/web-resources-i-enjoy" />
@@ -18,7 +18,7 @@
     <id>https://blog.ielliott.io/favourites</id>
     
     <published>2023-01-10T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
 conversation</a>,
@@ -56,7 +56,7 @@ interesting, in the hope that others might use it to find something new.</p>]]>
     <id>https://blog.ielliott.io/project-review</id>
     
     <published>2022-12-22T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>Reflections this year's hobby projects.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/2022-project-review">
@@ -331,7 +331,7 @@ language</a> with automated helpers.</p>
     <id>https://blog.ielliott.io/rip-dreamincode</id>
     
     <published>2022-07-06T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
 down</a>
@@ -374,7 +374,7 @@ positive, constructive experience.</p>
     <id>https://blog.ielliott.io/webgl-slower-than-canvas</id>
     
     <published>2021-05-20T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
@@ -424,7 +424,7 @@ duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms
     <id>https://blog.ielliott.io/rust-defun-example</id>
     
     <published>2021-02-06T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>]]></summary>
@@ -586,7 +586,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/docker-cleanup-commands</id>
     
     <published>2020-11-07T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/docker-cleanup-commands">
@@ -613,7 +613,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/sized-hkts</id>
     
     <published>2020-07-07T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
   sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
@@ -892,7 +892,7 @@ Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <e
     <id>https://blog.ielliott.io/lambdas-are-codatatypes</id>
     
     <published>2019-07-01T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>]]></summary>
     
@@ -1042,7 +1042,7 @@ copattern matching corresponds to abstraction. This is awesome!</p>]]>
     <id>https://blog.ielliott.io/agda-nixos</id>
     
     <published>2019-05-17T23:49:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>]]></summary>
@@ -1117,7 +1117,7 @@ Checking Test (/home/isaac/Test.agda).
     <id>https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys</id>
     
     <published>2019-05-05T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
 confronted by a white guy who felt ‘called out’ by some of her anecdotes. Apparently, she
@@ -1216,7 +1216,7 @@ don’t know how exactly this sort of thing happens — maybe I’ll explore tha
     <id>https://blog.ielliott.io/learning-a-craft</id>
     
     <published>2019-02-11T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
 was way too hard, so I decided I wanted to create browser-based static HTML
@@ -1327,7 +1327,7 @@ But that’s beside the point, isn’t it?</em></p>]]>
     <id>https://blog.ielliott.io/writing</id>
     
     <published>2018-12-29T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I think writing can help us think better.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/writing">
@@ -1397,7 +1397,7 @@ as an end in itself requires us to better understand those ideas.</p>]]>
     <id>https://blog.ielliott.io/on-programming-language-design</id>
     
     <published>2018-11-21T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
 programming languages that have been ‘invented’ with those that have been
@@ -1470,7 +1470,7 @@ coherent structure of computation.</p>]]>
     <id>https://blog.ielliott.io/topsy-turvy-reverse-state</id>
     
     <published>2018-06-13T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
 <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
@@ -1631,7 +1631,7 @@ and <code>instantiate</code> as library functions.</p>]]>
     <id>https://blog.ielliott.io/comonad-transformers-in-the-wild</id>
     
     <published>2018-02-25T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>A certain algorithmic puzzle website has a problem that goes like this…</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/comonad-transformers-in-the-wild">
@@ -1782,7 +1782,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/continuations-from-the-ground-up</id>
     
     <published>2017-06-06T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/continuations-from-the-ground-up">
@@ -2081,7 +2081,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations</id>
     
     <published>2017-03-24T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
@@ -2128,7 +2128,7 @@ the entries somewhere to be safe)</del></p></li>
     <id>https://blog.ielliott.io/introduction-to-unification</id>
     
     <published>2017-01-07T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
@@ -2270,7 +2270,7 @@ is amazing and goes into much more depth.</p>]]>
     <id>https://blog.ielliott.io/why-LINQ-is-broken</id>
     
     <published>2016-10-24T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
@@ -2407,7 +2407,7 @@ counter to productivity.</p>]]>
     <id>https://blog.ielliott.io/search-and-replace-in-multiple-files</id>
     
     <published>2015-07-25T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
 finished most of the project when I realised that the main page of the
@@ -2446,7 +2446,7 @@ use the <code>-i</code> flag to make the alterations inside the source file.</p>
     <id>https://blog.ielliott.io/the-programming-thought-process-fizzbuzz</id>
     
     <published>2015-03-04T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
@@ -2625,7 +2625,7 @@ improvement.</p>
     <id>https://blog.ielliott.io/a-practical-introduction-to-monad-transformers</id>
     
     <published>2015-02-01T00:00:00Z</published>
-    <updated>2023-05-01T09:40+00:00</updated>
+    <updated>2023-05-01T10:23+00:00</updated>
     <summary type="html"><![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>]]></summary>
