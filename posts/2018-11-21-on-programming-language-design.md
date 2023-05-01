@@ -1,5 +1,4 @@
 ---
-layout: post
 title: On Programming Language Design
 author: ielliott95
 permalink: /on-programming-language-design

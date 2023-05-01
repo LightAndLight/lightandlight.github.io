@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Docker Cleanup Commands
 author: ielliott95
 permalink: /docker-cleanup-commands

@@ -1,5 +1,4 @@
 ---
-layout: post
 permalink: /how-to-delete-old-nixos-boot-configurations
 title: How to delete old NixOS boot configurations
 author: ielliott95

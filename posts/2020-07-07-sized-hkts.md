@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Statically Sized Higher-kinded Polymorphism
 author: ielliott95
 permalink: /sized-hkts

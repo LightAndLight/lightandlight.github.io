@@ -1,5 +1,4 @@
 ---
-layout: post
 title: RIP Dream.In.Code
 author: ielliott95
 permalink: /rip-dreamincode

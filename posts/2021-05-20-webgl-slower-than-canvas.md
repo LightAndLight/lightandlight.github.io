@@ -1,5 +1,4 @@
 ---
-layout: post
 title: WebGL Slower Than Canvas?
 author: ielliott95
 permalink: /webgl-slower-than-canvas

@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Web Resources I Enjoy
 author: ielliott95
 permalink: /web-resources-i-enjoy

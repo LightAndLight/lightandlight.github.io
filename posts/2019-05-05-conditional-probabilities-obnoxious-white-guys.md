@@ -1,11 +1,11 @@
 ---
-layout: math-post
 title: Conditional Probabilities and Obnoxious White Guys
 author: ielliott95
 permalink: /conditional-probabilities-obnoxious-white-guys
 tags:
     - rationality
     - mathematics
+math: true
 ---
 
 In [this Twitter thread](https://twitter.com/DrEugeniaCheng/status/1124795257814691841),

@@ -1,5 +1,4 @@
 ---
-layout: post
 title: 2022 Project Review
 author: ielliott95
 permalink: /2022-project-review
