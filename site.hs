@@ -71,7 +71,7 @@ main = do
           >>= loadAndApplyTemplate "templates/post-list.html" (postListCtx posts Nothing)
           >>= loadAndApplyTemplate
             "templates/page.html"
-            (pageCtx <> constField "metadata" metadata.itemBody)
+            (bodyField "body" <> constField "metadata" metadata.itemBody)
           >>= prettifyUrls
 
     match (fromList ["about.md", "resources.md", "404.md"]) $ do
@@ -154,7 +154,10 @@ main = do
           >>= loadAndApplyTemplate "templates/post-list.html" (postListCtx postsForTag $ Just tag)
           >>= loadAndApplyTemplate
             "templates/page.html"
-            (pageCtx <> constField "metadata" metadata.itemBody)
+            ( constField "title" ("Posts about " <> tag)
+                <> bodyField "body"
+                <> constField "metadata" metadata.itemBody
+            )
           >>= prettifyUrls
 
     create ["sitemap.xml"] $ do

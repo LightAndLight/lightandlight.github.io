@@ -1,3 +1,10 @@
-* syntax highlighting (skylighting) is crap
-* pandoc duplicates footnotes when they're referenced multiple times. bad for citations.
-  * adds a hseparator (no thanks!)
+* write readme
+* write post about transition to Hakyll
+  * spent a lot of time massaging
+    * Jekyll was a lot more "just works" - seo/sitemap/feed plugins
+    * I had to organise my code and make it pretty
+    * Okay for me right now because I'm not working
+  * syntax highlighting (skylighting) is crap
+  * pandoc footnotes not greate
+    * duplicates footnotes when they're referenced multiple times. bad for citations.
+    * adds a hseparator (no thanks!)
