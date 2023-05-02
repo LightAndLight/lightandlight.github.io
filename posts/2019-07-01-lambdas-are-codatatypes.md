@@ -1,7 +1,6 @@
 ---
 title: Lambdas are Codatatypes
 date: 2019-07-01 00:00:00
-author: ielliott95
 permalink: /lambdas-are-codatatypes
 tags:
     - programming

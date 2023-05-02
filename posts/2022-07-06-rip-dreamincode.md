@@ -1,6 +1,5 @@
 ---
 title: RIP Dream.In.Code
-author: ielliott95
 permalink: /rip-dreamincode
 date: 2022-07-06 19:00:00 +1000
 tags:

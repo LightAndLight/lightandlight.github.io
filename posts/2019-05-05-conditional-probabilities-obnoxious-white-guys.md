@@ -1,6 +1,5 @@
 ---
 title: Conditional Probabilities and Obnoxious White Guys
-author: ielliott95
 permalink: /conditional-probabilities-obnoxious-white-guys
 tags:
     - rationality

@@ -1,6 +1,5 @@
 ---
 title: Docker Cleanup Commands
-author: ielliott95
 permalink: /docker-cleanup-commands
 date: 2020-11-07 12:55:00 +1000
 tags:

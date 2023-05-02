@@ -1,6 +1,5 @@
 ---
 title: Statically Sized Higher-kinded Polymorphism
-author: ielliott95
 permalink: /sized-hkts
 date: 2020-07-07 15:00:00 +1000
 tags:
@@ -31,22 +30,22 @@ excerpt: |
   </div>
 
   <div class="contents-wrapper">
-  <div class="contents">
-  <h3>Contents</h3>
-  <ul style="list-style-type: none; padding-left: 0;">
-    <li><a href="#background">Background</a></li>
-    <ul style="list-style-type: none; padding-left: 1em;">
-      <li><a href="#generics">Generics</a></li>
-      <li><a href="#sizing">Sizing</a></li>
-      <li><a href="#kinds">Kinds</a></li>
-      <li><a href="#type-classes">Type Classes</a></li>
-      <li><a href="#problem-statement">Problem Statement</a></li>
-    </ul>
-    <li><a href="#solution">Solution</a></li>
-    <li><a href="#conclusion">Conclusion</a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-  </div>
+    <div class="contents">
+      <h3>Contents</h3>
+      <ul style="list-style-type: none; padding-left: 0;">
+        <li><a href="#background">Background</a></li>
+        <ul style="list-style-type: none; padding-left: 1em;">
+          <li><a href="#generics">Generics</a></li>
+          <li><a href="#sizing">Sizing</a></li>
+          <li><a href="#kinds">Kinds</a></li>
+          <li><a href="#type-classes">Type Classes</a></li>
+          <li><a href="#problem-statement">Problem Statement</a></li>
+        </ul>
+        <li><a href="#solution">Solution</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+        <li><a href="#references">References</a></li>
+      </ul>
+    </div>
   </div>
 </div>
 

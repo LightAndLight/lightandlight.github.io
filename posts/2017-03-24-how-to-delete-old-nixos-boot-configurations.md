@@ -1,7 +1,6 @@
 ---
 permalink: /how-to-delete-old-nixos-boot-configurations
 title: How to delete old NixOS boot configurations
-author: ielliott95
 ---
 
 [NixOS](https://nixos.org/) is a Linux distribution with declarative

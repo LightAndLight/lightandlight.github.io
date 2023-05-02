@@ -1,6 +1,5 @@
 ---
 title: Continuations From the Ground Up
-author: ielliott95
 permalink: /continuations-from-the-ground-up
 tags:
     - programming

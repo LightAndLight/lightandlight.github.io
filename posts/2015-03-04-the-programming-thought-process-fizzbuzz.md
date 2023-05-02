@@ -1,6 +1,5 @@
 ---
 title: "The Programming Thought Process: Fizzbuzz"
-author: ielliott95
 permalink: /the-programming-thought-process-fizzbuzz
 tags:
     - programming

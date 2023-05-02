@@ -1,6 +1,5 @@
 ---
 title: An Example of Defunctionalisation in Rust
-author: ielliott95
 permalink: /rust-defun-example
 date: 2021-02-06 14:00:00 +1000
 tags:

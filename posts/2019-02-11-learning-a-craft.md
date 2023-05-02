@@ -1,6 +1,5 @@
 ---
 title: Learning a Craft
-author: ielliott95
 permalink: /learning-a-craft
 tags:
     - self-improvement

@@ -1,6 +1,5 @@
 ---
 title: WebGL Slower Than Canvas?
-author: ielliott95
 permalink: /webgl-slower-than-canvas
 date: 2021-05-20 09:45:00 +1000
 tags:
