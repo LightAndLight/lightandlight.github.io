@@ -30,19 +30,21 @@
   $endif$
 
   $seo$
-
-  $if(math)$
-  <script src="https://fred-wang.github.io/mathml-warning.js/mpadded-min.js"></script>
-  $endif$
 </head>
 
 <body>
   $partial("templates/header.html")$
   $partial("templates/nav.html")$
+
   <section>
+    $if(math)$
+    <script id="mathml-polyfill-script" src="/res/mathml-polyfill.js"></script>
+    $endif$
+
     $body$
   </section>
   $partial("templates/footer.html")$
+
   <script>feather.replace()</script>
 </body>
 
