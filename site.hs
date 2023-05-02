@@ -8,14 +8,19 @@ import Control.Monad ((<=<))
 import Data.List (isInfixOf, isPrefixOf, nub)
 import Data.Maybe (mapMaybe)
 import Data.Monoid (First (..))
+
+-- use the "With" variants of these functions instead
+
+import qualified Data.Text as Text
 import Data.Time.Clock (UTCTime, getCurrentTime)
 import Data.Time.Format (defaultTimeLocale, formatTime)
-import Hakyll hiding (pandocCompiler, readPandoc, writePandoc) -- use the "With" variants of these functions instead
+import Hakyll hiding (pandocCompiler, readPandoc, writePandoc)
 import System.FilePath (dropExtension, takeBaseName, takeExtension, (<.>), (</>))
-import Text.Pandoc (Block (..), Pandoc (..))
+import Text.Pandoc (Block (..), Pandoc (..), readHtml, runPure)
 import qualified Text.Pandoc as Pandoc
 import Text.Pandoc.Options
 import Text.Pandoc.Walk (query)
+import Text.Pandoc.Writers (writePlain)
 
 root :: String
 root = "https://blog.ielliott.io"
@@ -51,16 +56,37 @@ main = do
       route idRoute
       compile $ do
         posts <- recentFirst =<< loadAll "posts/*"
+
+        metadata <-
+          loadAndApplyTemplate
+            "templates/index-metadata.html"
+            ( constField "root" root
+                <> constField "url" "/"
+                <> constField "title" "blog.ielliott.io"
+                <> constField "description" "Isaac Elliott's personal blog."
+            )
+            =<< makeItem ("" :: String)
+
         makeItem ""
           >>= loadAndApplyTemplate "templates/post-list.html" (postListCtx posts Nothing)
-          >>= loadAndApplyTemplate "templates/page.html" pageCtx
+          >>= loadAndApplyTemplate
+            "templates/page.html"
+            (pageCtx <> constField "metadata" metadata.itemBody)
           >>= prettifyUrls
 
     match (fromList ["about.md", "resources.md", "404.md"]) $ do
       route $ setExtension "html"
       compile $ do
+        metadata <-
+          loadAndApplyTemplate
+            "templates/page-metadata.html"
+            (constField "root" root <> urlField "url" <> metadataField)
+            =<< makeItem ("" :: String)
+
         pandocCompilerWith pandocReaderOptions pandocWriterOptions
-          >>= loadAndApplyTemplate "templates/page.html" pageCtx
+          >>= loadAndApplyTemplate
+            "templates/page.html"
+            (pageCtx <> constField "metadata" metadata.itemBody)
           >>= prettifyUrls
 
     postInfos :: [(Identifier, PostInfo)] <- getPostInfos "posts/*"
@@ -72,14 +98,36 @@ main = do
         postPandocItem <- readPandocWith pandocReaderOptions =<< getResourceBody
         post <- saveSnapshot "content" $ writePandocWith pandocWriterOptions postPandocItem
 
-        _excerpt <- saveSnapshot "excerpt" =<< getExcerpt identifier postPandocItem
+        excerpt <- saveSnapshot "excerpt" =<< getExcerpt identifier postPandocItem
         _tags <- saveSnapshot "tags" =<< makeItem =<< getTags post.itemIdentifier
 
-        loadAndApplyTemplate
-          "templates/post.html"
-          (postCtx identifier postInfos)
-          post
-          >>= loadAndApplyTemplate "templates/page.html" pageCtx
+        let postCtx = mkPostCtx identifier postInfos
+
+        metadata <-
+          loadAndApplyTemplate
+            "templates/post-metadata.html"
+            ( dateField "date" "%0Y-%m-%dT%H:%M%Ez"
+                <> constField "root" root
+                <> constField "excerpt" excerpt.itemBody
+                <> functionField
+                  "plaintext"
+                  ( \args item -> do
+                      case args of
+                        [arg] ->
+                          case runPure $ writePlain pandocWriterOptions =<< readHtml pandocReaderOptions (Text.pack arg) of
+                            Left err -> error $ "error in function \"plaintext\" in " <> toFilePath item.itemIdentifier <> ": " <> show err
+                            Right string -> pure . Text.unpack $ Text.strip string
+                        _ ->
+                          error $
+                            "incorrect number of arguments to function \"plaintext\" in "
+                              <> toFilePath item.itemIdentifier
+                  )
+                <> postCtx
+            )
+            =<< makeItem ""
+
+        loadAndApplyTemplate "templates/post.html" postCtx post
+          >>= loadAndApplyTemplate "templates/page.html" (pageCtx <> constField "metadata" metadata.itemBody)
           >>= prettifyUrls
 
     tags :: [String] <- getAllTags "posts/*"
@@ -92,9 +140,21 @@ main = do
           postsWithTags <- traverse (\post -> (,) post <$> getTags post.itemIdentifier) posts
           recentFirst $ mapMaybe (\(post, postTags) -> if tag `elem` postTags then Just post else Nothing) postsWithTags
 
+        metadata <-
+          loadAndApplyTemplate
+            "templates/page-metadata.html"
+            ( constField "root" root
+                <> urlField "url"
+                <> constField "title" ("Posts about " <> tag)
+                <> constField "description" ("Posts about " <> tag <> ".")
+            )
+            =<< makeItem ("" :: String)
+
         makeItem ""
           >>= loadAndApplyTemplate "templates/post-list.html" (postListCtx postsForTag $ Just tag)
-          >>= loadAndApplyTemplate "templates/page.html" pageCtx
+          >>= loadAndApplyTemplate
+            "templates/page.html"
+            (pageCtx <> constField "metadata" metadata.itemBody)
           >>= prettifyUrls
 
     create ["sitemap.xml"] $ do
@@ -137,14 +197,12 @@ postInfoCtx =
       (\post -> traverse makeItem . (.itemBody) =<< loadSnapshot @[String] post.itemIdentifier "tags")
     <> metadataField
 
-postCtx :: Identifier -> [(Identifier, PostInfo)] -> Context String
-postCtx identifier postInfos =
+mkPostCtx :: Identifier -> [(Identifier, PostInfo)] -> Context String
+mkPostCtx identifier postInfos =
   bodyField "body"
     <> postInfoCtx
     <> maybe
-      ( boolField "has_previous" (const False)
-          <> boolField "has_previous" (const False)
-      )
+      (boolField "has_previous" (const False) <> boolField "has_previous" (const False))
       ( \postInfo ->
           maybe
             (boolField "has_previous" (const False))
@@ -167,9 +225,7 @@ postCtx identifier postInfos =
 
 pageCtx :: Context String
 pageCtx =
-  metadataField
-    <> bodyField "body"
-    <> constField "seo" ""
+  metadataField <> bodyField "body"
 
 postListCtx :: [Item String] -> Maybe String -> Context String
 postListCtx posts mTag =

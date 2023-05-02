@@ -1,0 +1,15 @@
+$partial("templates/metadata.html")$
+
+<meta name="description" content="$description$">
+<meta property="og:description" content="$description$">
+<meta property="og:type" content="website">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebPage",
+  "description":"$description$",
+  "headline":"$title$",
+  "url":"$root$$url$"
+}
+</script>

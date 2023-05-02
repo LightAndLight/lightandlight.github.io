@@ -1,7 +1,6 @@
 ---
 permalink: /why-LINQ-is-broken
 title: Why LINQ (well, C#) is Broken
-author: ielliott95
 tags:
   - programming
   - haskell

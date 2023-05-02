@@ -1,6 +1,5 @@
 ---
 title: Statically Sized Higher-kinded Polymorphism
-author: ielliott95
 permalink: /sized-hkts
 date: 2020-07-07 15:00:00 +1000
 tags:

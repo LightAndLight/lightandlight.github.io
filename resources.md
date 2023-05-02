@@ -1,6 +1,7 @@
 ---
 title: Resources
 permalink: /resources
+description: Web resources I enjoy and recommend.
 ---
 
 <h1 class="centered">Resources</h1>

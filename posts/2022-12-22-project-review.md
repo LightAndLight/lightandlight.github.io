@@ -1,6 +1,5 @@
 ---
 title: 2022 Project Review
-author: ielliott95
 permalink: /2022-project-review
 date: 2022-12-27 14:25:00 +1000
 tags:

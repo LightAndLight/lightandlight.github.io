@@ -1,6 +1,5 @@
 ---
 title: Turning bottom-up into top-down with Reverse State
-author: ielliott95
 permalink: /topsy-turvy-reverse-state
 tags:
     - programming

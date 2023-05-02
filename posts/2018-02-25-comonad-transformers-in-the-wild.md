@@ -1,6 +1,5 @@
 ---
 title: Comonad Transformers in the Wild
-author: ielliott95
 permalink: /comonad-transformers-in-the-wild
 tags:
     - programming
