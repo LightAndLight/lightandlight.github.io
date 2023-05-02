@@ -22,10 +22,51 @@
   <script src="/res/script.js"></script>
 
   
-  <title>Why LINQ (well, C#) is Broken - ielliott.io</title>
+  <title>Why LINQ (well, C#) is Broken - blog.ielliott.io</title>
   
 
-  
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/why-LINQ-is-broken">
+<meta property="og:url" content="https://blog.ielliott.io/why-LINQ-is-broken">
+<meta property="og:title" content="Why LINQ (well, C#) is Broken">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Why LINQ (well, C#) is Broken">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="LINQ is a system that provides a flexible query interface for .NET languages.
+It allows a user to write queries over arbitrary data using an in-built
+SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
+so any data structure that implements the correct methods can be used with LINQ.">
+<meta property="og:description" content="LINQ is a system that provides a flexible query interface for .NET languages.
+It allows a user to write queries over arbitrary data using an in-built
+SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
+so any data structure that implements the correct methods can be used with LINQ.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-10-24T00:00+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Why LINQ (well, C#) is Broken",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2016-10-24T00:00+00:00",
+  "dateModified":"2016-10-24T00:00+00:00",
+  "description":"LINQ is a system that provides a flexible query interface for .NET languages.
+It allows a user to write queries over arbitrary data using an in-built
+SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
+so any data structure that implements the correct methods can be used with LINQ.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/why-LINQ-is-broken"
+  },
+  "url": "https://blog.ielliott.io/why-LINQ-is-broken"
+}
+</script>
 </head>
 
 <body>
@@ -104,10 +145,12 @@ one must reimplement all LINQ-specific methods specifically for that type.</p>
 A well-written program should not have duplicated code - it makes maintenance
 more laborious and increases the chance of bugs.</p>
 <p>So in an effort to save ourselves time, we should abstract over this common
-pattern. We require a function that specifies
-&gt; for all generic classes <code>F&lt;???&gt;</code> implementing <code>Select</code> and <code>SelectMany</code>, given
+pattern. We require a function that specifies</p>
+<blockquote>
+<p>for all generic classes <code>F&lt;???&gt;</code> implementing <code>Select</code> and <code>SelectMany</code>, given
 an instance of <code>F</code> containing <code>A</code>s, another instance of <code>F</code> containing <code>B</code>s,
 and a <code>Func&lt;A,B,C</code>, return an <code>F</code> containing <code>C</code>s</p>
+</blockquote>
 <p>It turns out that it’s actually impossible to write this method in C#. I’d like
 to write something like
 <code>F&lt;C&gt; CombineWith&lt;F&lt;?&gt;,A,B,C&gt;(F&lt;A&gt; myA, F&lt;B&gt; myB, Func&lt;A,B,C&gt; f)</code>, but C# only
@@ -117,11 +160,13 @@ not abstract over the contents of a list ie. the method
 <code>List&lt;A&gt; Sort&lt;A&gt;(List &lt;A&gt; input)</code> cannot be expressed in this language. Due to
 this limitation, we would have to create a new list class every time we needed
 a different element type inside the list, then reimplement <code>Sort</code> for each new
-class.
-&gt; <code>ListOfInt.Sort</code>
+class.</p>
+<blockquote>
+<p><code>ListOfInt.Sort</code>
 <code>ListOfBool.Sort</code>
 <code>ListOfSomeData.Sort</code>
 …</p>
+</blockquote>
 <p>This is again a terrible violation of the “don’t repeat yourself” principle.
 You write <code>n</code> implementations of <code>Sort</code>, where <code>n</code> is the number of sortable
 classes. Imagine that each implementation used the
@@ -130,12 +175,14 @@ If you wanted to implement the correct version, you would have to update <code>n
 methods.</p>
 <p>Also consider the implementation of
 <code>List&lt;B&gt; Map&lt;A,B&gt;(List&lt;A&gt; input, Func&lt;A,B&gt; f)</code> in a generic-less language. You
-would have to write a different method for each inhabitant of <code>A</code> and <code>B</code>
-&gt; <code>ListOfInt.MapToListOfInt</code>
+would have to write a different method for each inhabitant of <code>A</code> and <code>B</code></p>
+<blockquote>
+<p><code>ListOfInt.MapToListOfInt</code>
 <code>ListOfInt.MapToListOfBool</code>
 <code>ListOfInt.MapToListOfSomeData</code>
 <code>ListOfBool.MapToListOfBool</code>
 …</p>
+</blockquote>
 <p>You write <code>n^2</code> <code>Map</code> methods where <code>n</code> is the number of of mappable classes.</p>
 <p>More generally, in this generic-less language, you write <code>O(n^m)</code> where <code>m</code> is
 the sum of should-be-generic inputs and should-be-generic outputs, and <code>n</code> is

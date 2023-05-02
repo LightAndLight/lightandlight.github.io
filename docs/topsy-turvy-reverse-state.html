@@ -22,10 +22,57 @@
   <script src="/res/script.js"></script>
 
   
-  <title>Turning bottom-up into top-down with Reverse State - ielliott.io</title>
+  <title>Turning bottom-up into top-down with Reverse State - blog.ielliott.io</title>
   
 
-  
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/topsy-turvy-reverse-state">
+<meta property="og:url" content="https://blog.ielliott.io/topsy-turvy-reverse-state">
+<meta property="og:title" content="Turning bottom-up into top-down with Reverse State">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Turning bottom-up into top-down with Reverse State">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="I love bound - it makes De
+Bruijn indices mindlessly easy. I also love
+Plated
+for all sorts of whole-program transformations. I think they're two
+indispensible tools for working with programming languages.
+Unfortunately, they're not compatible.">
+<meta property="og:description" content="I love bound - it makes De
+Bruijn indices mindlessly easy. I also love
+Plated
+for all sorts of whole-program transformations. I think they're two
+indispensible tools for working with programming languages.
+Unfortunately, they're not compatible.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2018-06-13T00:00+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Turning bottom-up into top-down with Reverse State",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2018-06-13T00:00+00:00",
+  "dateModified":"2018-06-13T00:00+00:00",
+  "description":"I love bound - it makes De
+Bruijn indices mindlessly easy. I also love
+Plated
+for all sorts of whole-program transformations. I think they're two
+indispensible tools for working with programming languages.
+Unfortunately, they're not compatible.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/topsy-turvy-reverse-state"
+  },
+  "url": "https://blog.ielliott.io/topsy-turvy-reverse-state"
+}
+</script>
 </head>
 
 <body>
@@ -62,7 +109,7 @@ instances of <code>Plated</code> for types which contain a <code>Scope</code>. W
 to choosing between <code>bound</code> and <code>Plated</code>, I choose <code>Plated</code> - because we
 can use it to build functionality similar to <code>bound</code>.</p>
 <h2 id="write-some-code">Write some code!</h2>
-<h3 id="warning-the-code-in-this-post-is-subtly-broken.-see-the-reddit-thread">Warning: the code in this post is subtly broken. See the <a href="https://www.reddit.com/r/haskell/comments/8qs2gc/turning_bottomup_into_topdown_with_reverse_state/">reddit thread</a></h3>
+<h3 id="warning-the-code-in-this-post-is-subtly-broken-see-the-reddit-thread">Warning: the code in this post is subtly broken. See the <a href="https://www.reddit.com/r/haskell/comments/8qs2gc/turning_bottomup_into_topdown_with_reverse_state/">reddit thread</a></h3>
 <p>Let’s get some boilerplate out of the road. Here is a datatype for
 lambda calculus, with De Bruijn indices (<code>B</code>), as well as free variables
 (<code>F</code>). Notice that lambda abstraction (<code>Abs</code>) doesn’t give a name to the
