@@ -77,6 +77,10 @@ main = do
       route idRoute
       compile copyFileCompiler
 
+    match "posts/images/*" $ do
+      route $ gsubRoute "posts/" (const "")
+      compile copyFileCompiler
+
     match (fromList ["favicon.ico", "CNAME"]) $ do
       route idRoute
       compile copyFileCompiler
