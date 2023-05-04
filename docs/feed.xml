@@ -10,7 +10,7 @@
         <email>isaace71295@gmail.com</email>
         
     </author>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <entry>
     <title>Migrating from Jekyll to Hakyll</title>
     <link href="https://blog.ielliott.io/jekyll-to-hakyll" />
@@ -18,7 +18,7 @@
     <id>https://blog.ielliott.io/jekyll-to-hakyll</id>
     
     <published>2023-05-04T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
 <a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
 tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
@@ -63,7 +63,7 @@ Contents
 </ul>
 </div>
 </div>
-<h2 id="background">Background</h2>
+<h2 id="background"><a href="#background">Background</a></h2>
 <p>I’ve been using Jekyll to generate my blog because that’s what <a href="https://pages.github.com/">GitHub
 Pages</a> recommended when I first set things up. Recently I’ve been working
 on a math-heavy post, and I decided that I wanted <a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a>
@@ -71,8 +71,8 @@ support for this site. I started exploring possible solutions, and found <a href
 which I then learned is used in <a href="https://pandoc.org/">Pandoc</a> to <a href="https://pandoc.org/MANUAL.html#math-rendering-in-html">convert TeX to
 MathML</a>. I know Hakyll has good Pandoc support, and
 Haskell is one of my main languages, so I decided to make the switch<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<h2 id="changes">Changes</h2>
-<h3 id="prettier-urls">Prettier URLs</h3>
+<h2 id="changes"><a href="#changes">Changes</a></h2>
+<h3 id="prettier-urls"><a href="#prettier-urls">Prettier URLs</a></h3>
 <p>Change: removed trailing slashes from many blog page URLs (e.g.
 from <code>https://blog.ielliott.io/test-post/</code> to <code>https://blog.ielliott.io/test-post</code>).</p>
 <p>Static site generators create HTML files, which typically have file paths ending in <code>.html</code>. Web servers
@@ -97,7 +97,7 @@ this and changed the configuration to resemble GitHub Pages’ pretty URL resolu
 (<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L30-L55"><code>site.hs#L30-L55</code></a>).
 I realised how fortunate it was that I could make this change; the relevant Hakyll changes were only
 <a href="https://hackage.haskell.org/package/hakyll/changelog#hakyll-41600-2023-04-27">released a week ago!</a></p>
-<h3 id="mathml-support">MathML support</h3>
+<h3 id="mathml-support"><a href="#mathml-support">MathML support</a></h3>
 <p>Changes:</p>
 <ul>
 <li>Equations are compiled to MathML</li>
@@ -127,12 +127,12 @@ support.&quot; Below that, there are 3 options: &quot;Load MathJax&quot; (curren
 mathml.css&quot;, and &quot;Do nothing&quot;. Under those, there is a checkbox (unchecked) labelled
 &quot;Remember choice for 30 days&quot;. At the bottom, there are two buttons: &quot;Ignore&quot;
 and &quot;Save&quot;." style="max-width: 100%" /></p>
-<h3 id="syntax-highlighting">Syntax highlighting</h3>
+<h3 id="syntax-highlighting"><a href="#syntax-highlighting">Syntax highlighting</a></h3>
 <p>Change: slightly different syntax highlighting.</p>
 <p>Pandoc does syntax highlighting differently to Jekyll, and I prefer Jekyll’s output. I’ll explain
 why in another post. The consequence is that I had to rewrite my syntax highlighting stylesheet, and
 code might look a little different due to the way Pandoc marks it up.</p>
-<h2 id="thoughts">Thoughts</h2>
+<h2 id="thoughts"><a href="#thoughts">Thoughts</a></h2>
 <p>I had to reimplement a few things that Jekyll did for
 me, like the <a href="/sitemap.xml">sitemap</a>
 (<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L196-L206"><code>site.hs#L196-206</code></a>)
@@ -163,7 +163,7 @@ development for me.</p>
     <id>https://blog.ielliott.io/favourites</id>
     
     <published>2023-01-10T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
 conversation</a>,
@@ -201,7 +201,7 @@ interesting, in the hope that others might use it to find something new.</p>]]>
     <id>https://blog.ielliott.io/project-review</id>
     
     <published>2022-12-22T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>Reflections this year's hobby projects.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/2022-project-review">
@@ -210,7 +210,7 @@ I’m quite satisfied with the work I did. I learned a lot
 and had some cool ideas that I will continue to build on. I’m glad I wrote this review, because
 there’s some stuff in here that I’m quite proud of that I had forgotten about. This year was a
 pretty long one for me.</p>
-<h2 id="ipso"><code>ipso</code></h2>
+<h2 id="ipso"><a href="#ipso"><code>ipso</code></a></h2>
 <p><em>Ongoing</em></p>
 <p><a href="https://github.com/LightAndLight/ipso" class="uri">https://github.com/LightAndLight/ipso</a></p>
 <p><code>ipso</code> is a scripting language that I started working on a bit over 2 years ago. My goal for this
@@ -229,7 +229,7 @@ docs</a>)</li>
 <li><a href="https://github.com/LightAndLight/ipso/blob/main/.github/workflows/uploadToCache">Using <code>ipso</code> in a CI script</a></li>
 </ul>
 <p>The language itself is pretty stable now, so now my focus will be on writing standard library functions.</p>
-<h2 id="ray-tracing-in-one-weekend"><code>ray-tracing-in-one-weekend</code></h2>
+<h2 id="ray-tracing-in-one-weekend"><a href="#ray-tracing-in-one-weekend"><code>ray-tracing-in-one-weekend</code></a></h2>
 <p><em>January</em></p>
 <p><a href="https://github.com/LightAndLight/ray-tracing-in-one-weekend" class="uri">https://github.com/LightAndLight/ray-tracing-in-one-weekend</a></p>
 <p><img src="https://github.com/LightAndLight/ray-tracing-in-one-weekend/raw/main/render.png"
@@ -245,7 +245,7 @@ contributions from an extremely large number incident rays. The point’s colour
 an integral, and we use Monte Carlo integration to compute the integral with a varying level of
 accuracy. For a preview render, we can use few samples, and quickly produce a noisy image. For a full
 render we can use many samples, which will take longer, but will give a very accurate result.</p>
-<h2 id="sylva"><code>sylva</code></h2>
+<h2 id="sylva"><a href="#sylva"><code>sylva</code></a></h2>
 <p><em>January</em></p>
 <p><a href="https://github.com/LightAndLight/sylva" class="uri">https://github.com/LightAndLight/sylva</a></p>
 <p>“Sylva” means “forest” in Latin (according to Google Translate). I was playing with some
@@ -257,7 +257,7 @@ ideas about wikis / “document-based knowledge graphs”.</p>
 <li>Preventing dead links within the “wiki”</li>
 </ul>
 <p>This was just a sketch and I don’t plan to do anything with it.</p>
-<h2 id="editor-vue"><code>editor-vue</code></h2>
+<h2 id="editor-vue"><a href="#editor-vue"><code>editor-vue</code></a></h2>
 <p><em>March</em></p>
 <p><a href="https://github.com/LightAndLight/editor-vue" class="uri">https://github.com/LightAndLight/editor-vue</a></p>
 <p>A while ago I built a toy <a href="https://github.com/LightAndLight/edit-log">structural code editor</a> using
@@ -266,7 +266,7 @@ Haskell (GHCJS), and the <code>reflex</code> FRP library. I wasn’t happy with 
 rebuilt some of the code editor using <code>vue.js</code> with TypeScript, enough to get a sense of the coding
 style and performance of the app. I was impressed by the performance improvements, and found
 TypeScript tolerable (and much, much better than plain JavaScript).</p>
-<h2 id="nix-docs"><code>nix-docs</code></h2>
+<h2 id="nix-docs"><a href="#nix-docs"><code>nix-docs</code></a></h2>
 <p><em>March / April</em></p>
 <p><a href="https://github.com/LightAndLight/nix-docs" class="uri">https://github.com/LightAndLight/nix-docs</a></p>
 <p><code>nix-docs</code> is an ongoing experiment with reference documentation for some important Nix functions. Most Nix documentation is prose paragraphs, which is pretty bad for reference docs. Reference docs
@@ -274,7 +274,7 @@ need to be skimmable, terse, and interlinked. Here’s the <code>nix-docs</code>
 <code>mkDerivation</code>: <a href="https://blog.ielliott.io/nix-docs/mkDerivation.html" class="uri">https://blog.ielliott.io/nix-docs/mkDerivation.html</a>.</p>
 <p>This year I updated the styling to match the new <a href="https://nixos.org/">NixOS</a> design and wrote a documentation generator for the content (my first iteration was hand-edited HTML that I copied
 from the Nixpkgs manual).</p>
-<h2 id="ccc"><code>ccc</code></h2>
+<h2 id="ccc"><a href="#ccc"><code>ccc</code></a></h2>
 <p><em>May</em></p>
 <p><a href="https://github.com/LightAndLight/ccc" class="uri">https://github.com/LightAndLight/ccc</a></p>
 <p><code>ccc</code> stands for <a href="https://ncatlab.org/nlab/show/cartesian+closed+category">cartesian closed
@@ -322,12 +322,12 @@ I settled on is explicit about parallel computations. While composition (<code>f
 <code>g</code>, the tensor operator (<code>f ⊗ g</code>) can be thought of as <code>f</code> and <code>g</code> in parallel. There’s a sense in
 which this CCC syntax “reveals” parallelism that’s inherient in the lambda calculus. I’m curious
 what it would be like to write a multi-core parallel evaluator based on this.</p>
-<h2 id="march"><code>march</code></h2>
+<h2 id="march"><a href="#march"><code>march</code></a></h2>
 <p><em>June</em></p>
 <p><a href="https://github.com/LightAndLight/march" class="uri">https://github.com/LightAndLight/march</a></p>
 <p>I wanted to check for broken local links markdown documents, and create
 a “move” command that works like <code>mv</code> but also renames links. I finished the former but not the latter.</p>
-<h2 id="bidirectional-typechecking-with-unification"><code>bidirectional-typechecking-with-unification</code></h2>
+<h2 id="bidirectional-typechecking-with-unification"><a href="#bidirectional-typechecking-with-unification"><code>bidirectional-typechecking-with-unification</code></a></h2>
 <p><em>June</em></p>
 <p><a href="https://github.com/LightAndLight/bidirectional-typechecking-with-unification" class="uri">https://github.com/LightAndLight/bidirectional-typechecking-with-unification</a></p>
 <p>This work was inspired by <a href="https://www.haskellforall.com/2022/06/the-appeal-of-bidirectional-type.html">an article about the limitations of unification-based type
@@ -347,7 +347,7 @@ bidirectional style means ensures that “checking” types drives subtyping. Th
 all perfectly compatible with unification-based inference.</p>
 <p>This deserves a much clearer explanation in its own blog post. I think it’s a promising result
 for programming language design.</p>
-<h2 id="little"><code>little</code></h2>
+<h2 id="little"><a href="#little"><code>little</code></a></h2>
 <p><em>June / July</em></p>
 <p><a href="https://github.com/LightAndLight/little" class="uri">https://github.com/LightAndLight/little</a></p>
 <p><code>little</code> is my first attempt at a <a href="https://doi.org/10.1093/comjnl/27.2.97">Knuth-style literate
@@ -375,7 +375,7 @@ you remove all the tags from your XML document, will it still make sense to a re
 apply this heuristic to the syntax of <code>little</code>.</p>
 <p>The code is pretty crappy, so if I continued to work on this I’d rewrite it. I’m optimistic about
 what I created so far, though.</p>
-<h2 id="mininix"><code>mininix</code></h2>
+<h2 id="mininix"><a href="#mininix"><code>mininix</code></a></h2>
 <p><em>August</em></p>
 <p><a href="https://github.com/LightAndLight/mininix" class="uri">https://github.com/LightAndLight/mininix</a></p>
 <p><code>mininix</code> is an attempt at understanding how Nix-style build systems work by writing a small one. It
@@ -392,7 +392,7 @@ For example, if you want to use Nix to package a Haskell project, you need to co
 <code>.cabal</code> file to a Nix expression (or do <a href="https://nixos.wiki/wiki/Import_From_Derivation">import from
 derivation</a>, which I fundamentally disagree with).
 What if there was a way to use the <code>.cabal</code> file without the grossness of import-from-derivation?</p>
-<h2 id="top-down-hindley-milner"><code>top-down-hindley-milner</code></h2>
+<h2 id="top-down-hindley-milner"><a href="#top-down-hindley-milner"><code>top-down-hindley-milner</code></a></h2>
 <p><em>September</em></p>
 <p><a href="https://github.com/LightAndLight/top-down-hindley-milner" class="uri">https://github.com/LightAndLight/top-down-hindley-milner</a></p>
 <p>This project shows a sort of “upside down” approach to Hindley-Milner type inference.
@@ -407,7 +407,7 @@ manner, and my algorithm refines types through checking from the top down.</p>
 inference followed by unification with an expected type. In the “top-down” style, checking does all
 the work, and inference is performed by checking against a fresh metavariable.</p>
 <p>I want to combine this work with <a href="#bidirectional-typechecking-with-unification">the subtyping work</a> I mentioned earier.</p>
-<h2 id="hover-pill"><code>hover-pill</code></h2>
+<h2 id="hover-pill"><a href="#hover-pill"><code>hover-pill</code></a></h2>
 <p><em>October</em></p>
 <p><a href="https://github.com/LightAndLight/hover-pill" class="uri">https://github.com/LightAndLight/hover-pill</a></p>
 <p><code>hover-pill</code> is a game I created to learn the <a href="https://bevyengine.org/">Bevy</a> game engine. You can
@@ -428,7 +428,7 @@ history behind the patterns. I think there are ideas here that apply outside of 
 but I don’t know what they are yet. On example (and I think it’s where I learned about the DoD book)
 is <a href="https://ziglang.org/download/0.8.0/release-notes.html#Reworked-Memory-Layout">this</a> explanation
 of a “data-oriented” performance improvement in the Zig compiler.</p>
-<h2 id="wgpu-mandelbrot"><code>wgpu-mandelbrot</code></h2>
+<h2 id="wgpu-mandelbrot"><a href="#wgpu-mandelbrot"><code>wgpu-mandelbrot</code></a></h2>
 <p><em>October</em></p>
 <p><a href="https://github.com/LightAndLight/wgpu-mandelbrot" class="uri">https://github.com/LightAndLight/wgpu-mandelbrot</a></p>
 <p><img src="https://github.com/LightAndLight/wgpu-mandelbrot/raw/main/images/screenshot-2.png"
@@ -448,7 +448,7 @@ resources and their relationships:</p>
 It’s higher level than Vulkan, but more explicit than OpenGL. I’ve done a Vulkan tutorial and forgot
 almost all of it. Having learned the fundamentals <code>wgpu</code>, I think the Vulkan API would make a lot more sense
 to me now.</p>
-<h2 id="hedge"><code>hedge</code></h2>
+<h2 id="hedge"><a href="#hedge"><code>hedge</code></a></h2>
 <p><em>December</em></p>
 <p><a href="https://github.com/LightAndLight/hedge" class="uri">https://github.com/LightAndLight/hedge</a></p>
 <p><code>hedge</code> is a library that makes it easier for me to write web information systems with Haskell. I’ve
@@ -476,7 +476,7 @@ language</a> with automated helpers.</p>
     <id>https://blog.ielliott.io/rip-dreamincode</id>
     
     <published>2022-07-06T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
 down</a>
@@ -519,7 +519,7 @@ positive, constructive experience.</p>
     <id>https://blog.ielliott.io/webgl-slower-than-canvas</id>
     
     <published>2021-05-20T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
@@ -569,7 +569,7 @@ duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms
     <id>https://blog.ielliott.io/rust-defun-example</id>
     
     <published>2021-02-06T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>]]></summary>
@@ -731,7 +731,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/docker-cleanup-commands</id>
     
     <published>2020-11-07T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/docker-cleanup-commands">
@@ -758,7 +758,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/sized-hkts</id>
     
     <published>2020-07-07T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
   sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
@@ -816,8 +816,8 @@ Contents
 </ul>
 </div>
 </div>
-<h2 id="background">Background</h2>
-<h3 id="generics">Generics</h3>
+<h2 id="background"><a href="#background">Background</a></h2>
+<h3 id="generics"><a href="#generics">Generics</a></h3>
 <p>Many typed languages support some form of generic (parameterised) datatypes. This ability to abstract
 over types is known as ‘parametric polymorphism’ (polymorphism for short). In Rust, for example, one
 can define type of polymorphic pairs as <code>struct Pair&lt;A, B&gt;(fst: A, snd: B)</code>. In this definition, <code>A</code> and <code>B</code> are type
@@ -828,7 +828,7 @@ variables (or type parameters), and can be substituted for other types:
 as its arity (so <code>Pair</code> has arity 2). The arity of a type constructor must always be respected; it’s an error to
 provide greater or fewer type parameters than are expected. For example, <code>Pair&lt;bool&gt;</code> and
 <code>Pair&lt;char, int32, String&gt;</code> are invalid.</p>
-<h3 id="sizing">Sizing</h3>
+<h3 id="sizing"><a href="#sizing">Sizing</a></h3>
 <p>When using C++ or Rust, the compiler will calculate how many bytes of memory each datatype requires. Simple
 types like <code>int32</code> and <code>bool</code> have a constant size; 4 bytes and 1 byte respectively. The size of datatypes
 built using of other simple types is easy to calculate. The simplest way to calculate the size of a struct
@@ -854,7 +854,7 @@ on your CPU) regardless of what it points to. But in order to allocate a new poi
 be known.</p>
 <p>For each generic datatype or function, the compiler keeps track of which type variables are important for sizing
 calculations. The specifics of this is discussed in the <a href="#type-classes">Type Classes</a> section.</p>
-<h3 id="kinds">Kinds</h3>
+<h3 id="kinds"><a href="#kinds">Kinds</a></h3>
 <p>A consequence of all this is that in these languages, type variables can only stand for types. But there
 are good reasons to have type variables that stand for type constructors, too:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> One<span class="op">&lt;</span>A<span class="op">&gt;</span>(A)</span>
@@ -904,7 +904,7 @@ referred to as types. The kind becomes the distinguishing feature. For example, 
 be replaced by “type of kind <code>Type -&gt; Type -&gt; Type</code>”.</p>
 <p>Some final jargon: types with a kind other than <code>Type</code> are known as ‘higher-kinded types’, and parameterising
 over higher-kinded types is known as ‘higher-kinded polymorphism’.</p>
-<h3 id="type-classes">Type Classes</h3>
+<h3 id="type-classes"><a href="#type-classes">Type Classes</a></h3>
 <p>Rust uses <a href="https://blog.rust-lang.org/2015/05/11/traits.html">traits</a> to coordinate sizing calculations. Each
 datatype implicitly receives an implementation of the <code>Sized</code> trait, and every type variable that is relevant for
 a sizing calculation is given a <code>Sized</code> bound. This means that trait resolution, an already useful feature, can
@@ -928,12 +928,12 @@ be said that <code>Sized A</code> <em>implies</em> <code>Sized Two&lt;A&gt;</cod
 such as <code>Two</code> (of kind <code>Type -&gt; Type</code>) has a size <em>function</em>. Given the sizes of the type constructor’s parameters,
 a size function computes the size of the resulting datatype. <code>Two</code>’s size function is <code>\a -&gt; a + a</code>. <code>Pair</code>’s size
 function <code>\a -&gt; b -&gt; a + b</code> (it could also be <code>\(a, b) -&gt; a + b</code> in an uncurried setting).</p>
-<h3 id="problem-statement">Problem Statement</h3>
+<h3 id="problem-statement"><a href="#problem-statement">Problem Statement</a></h3>
 <p>With the background out of the way, the specific problem can be stated:</p>
 <p>When a type of kind <code>Type</code> is relevant for a size calculation, it is given a <code>Sized</code> constraint, which will be
 satisfied with a concrete size as evidence. What is the equivalent notion of constraint and evidence for
 higher-kinded types that contribute to size calculations?</p>
-<h2 id="solution">Solution</h2>
+<h2 id="solution"><a href="#solution">Solution</a></h2>
 <p>An elegant solution to this problem can found by introducing quantified class constraints<sup><a href="#reference-quantified-constraints" id="reference-quantified-constraints:1">2</a></sup>. Quantified constraints
 are an extension to type classes that add implication and quantification to the language of constraints, and corresponding
 notions of evidence.</p>
@@ -1007,7 +1007,7 @@ code generation. The compiler knows that <code>ListF Maybe int32</code> is naive
 <li>The datatype sizes are not necessarily consistent with <code>sizeof</code>, because they ignore alignment for simplicity.
 At this point, factoring alignment into the size calculations is straightforward.</li>
 </ul>
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 <p>Quantified class constraints provide an elegant framework for statically-sized higher-kinded types. On its own, this
 can raise the abstraction ceiling for high-performance languages, but it also serves as the groundwork for ‘zero-cost’
 versions of functional programming abstractions such as Functor, Applicative, and Traversable.</p>
@@ -1017,7 +1017,7 @@ would require new syntax, and represents an additional concept for users to lear
 would also be a controversial change; choosing to keep types uncurried would disadvantage prospective users of the
 system, and changing to curried types would require rethinking of syntax and educational materials to maintain Rust’s
 high standard of user experience.</p>
-<h2 id="references">References</h2>
+<h2 id="references"><a href="#references">References</a></h2>
 <ol type="1">
 <li><p><span id="reference-constructor-classes">Jones, M. P. (1995). A system of constructor classes:
 overloading and implicit higher-order polymorphism. <em>Journal of functional programming</em>, 5(1),
@@ -1035,15 +1035,15 @@ Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <e
     <id>https://blog.ielliott.io/lambdas-are-codatatypes</id>
     
     <published>2019-07-01T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/lambdas-are-codatatypes">
       <![CDATA[<p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>
-<h2 id="datatypes">Datatypes</h2>
-<h3 id="defining-them">Defining them</h3>
+<h2 id="datatypes"><a href="#datatypes">Datatypes</a></h2>
+<h3 id="defining-them"><a href="#defining-them">Defining them</a></h3>
 <p>When you define a datatype, you list the ways to construct values of that type. For example,
 this definition:</p>
 <pre><code>data Bool : Type where { 
@@ -1067,7 +1067,7 @@ be fully applied.</p>
   Nil;
   Cons[a, List a]
 }</code></pre>
-<h3 id="using-them">Using them</h3>
+<h3 id="using-them"><a href="#using-them">Using them</a></h3>
 <p>The way you construct a value of a datatype is unique to that datatype; there are a finite number of
 constructors, and each represents a different way to build a value of that type. In contrast, there is
 a universal way to <em>destruct</em> values: pattern matching.</p>
@@ -1103,7 +1103,7 @@ sum n =
     Cons[x, xs] -&gt; x + sum xs
   }</code></pre>
 <p>Hopefully this is all familiar to you. I’ve covered all this so that it contrasts with <em>codatatypes</em>.</p>
-<h2 id="codatatypes">Codatatypes</h2>
+<h2 id="codatatypes"><a href="#codatatypes">Codatatypes</a></h2>
 <p>Codatatypes are the dual to datatypes. Formally, this means a lot of things that I don’t yet understand. What
 follows is how this duality arises in practise.</p>
 <p>To begin, I’d like to share some hand-wavy intuition for the concepts I’m
@@ -1114,7 +1114,7 @@ arguments to be evaluated, which means you can hide computations inside them. Ha
 apply constructors, which further diverges from what I’ve laid out here.</p>
 <p>Codatatypes <em>do</em>. They have ‘potential energy’; they have the capacity to do more work when prodded. Haskell’s
 ‘datatypes’ are more codata-like in this respect because they can contain suspended computations.</p>
-<h3 id="defining-them-1">Defining them</h3>
+<h3 id="defining-them-1"><a href="#defining-them-1">Defining them</a></h3>
 <p>Since datatypes are defined by their constructors, codatatypes will be defined by their <em>destructors</em>.</p>
 <p>This definition:</p>
 <pre><code>codata Pair (a : Type) (b : Type) : Type where {
@@ -1134,7 +1134,7 @@ they’re not first-class.</p>
 }</code></pre>
 <p>A stream is like an infinite list; every stream value contains a head and a tail, and no matter how many
 times you extract the tail, there will always be another stream waiting for you.</p>
-<h3 id="using-them-1">Using them</h3>
+<h3 id="using-them-1"><a href="#using-them-1">Using them</a></h3>
 <p>There is a universal way to destruct datatypes, and there is a universal way to <em>construct</em> <em>codatatypes</em>.
 For lack of a better term, you can call it ‘copattern matching’. Here’s how you would construct a
 <code>Pair Int Bool</code>:</p>
@@ -1185,7 +1185,7 @@ copattern matching corresponds to abstraction. This is awesome!</p>]]>
     <id>https://blog.ielliott.io/agda-nixos</id>
     
     <published>2019-05-17T23:49:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>]]></summary>
@@ -1260,7 +1260,7 @@ Checking Test (/home/isaac/Test.agda).
     <id>https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys</id>
     
     <published>2019-05-05T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
 confronted by a white guy who felt ‘called out’ by some of her anecdotes. Apparently, she
@@ -1359,7 +1359,7 @@ don’t know how exactly this sort of thing happens — maybe I’ll explore tha
     <id>https://blog.ielliott.io/learning-a-craft</id>
     
     <published>2019-02-11T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
 was way too hard, so I decided I wanted to create browser-based static HTML
@@ -1397,7 +1397,7 @@ only wants to work on seriously cool and ground-breaking projects. And I’m sur
 it’s not only programming; it seems there’s a common set of problems facing
 people who take up a craft. To address this, I’m going to think of advice that I
 would give to beginner programmers and generalise it.</p>
-<h2 id="drop-your-standards-and-shelve-your-ideas">Drop your standards and shelve your ideas</h2>
+<h2 id="drop-your-standards-and-shelve-your-ideas"><a href="#drop-your-standards-and-shelve-your-ideas">Drop your standards and shelve your ideas</a></h2>
 <p>At the start of the learning process, you have barely any ability. This means
 that by most standards, you will produce a lot of terrible, unskilled work. But
 that’s okay, because at this stage each piece of work is a step toward
@@ -1411,7 +1411,7 @@ ability to see them through right now. Sometimes lofty ideas can help you figure
 out which areas to study – if you dream of making a first person shooter then
 you should definitely learn about 3D graphics. In general, though, I think it
 will help to put the big ideas aside until you’re more skilled.</p>
-<h2 id="make-everything">Make EVERYTHING</h2>
+<h2 id="make-everything"><a href="#make-everything">Make EVERYTHING</a></h2>
 <p>When I started coding, I made calculator and to-do list apps, tiny
 database-backed webapps and 2D space shooters and brick breakers. None of this
 was remotely novel; it was a challenge just to repeat what others had built
@@ -1434,7 +1434,7 @@ smaller components, and figured out how to make each of those bits. How do I
 display a ball on the screen? How do I make it move? How do I make it bounce?
 Each sub-problem required original thinking on my part, and it’s this original
 thinking that drove my improvement.</p>
-<h2 id="find-joy-in-the-process">Find joy in the process</h2>
+<h2 id="find-joy-in-the-process"><a href="#find-joy-in-the-process">Find joy in the process</a></h2>
 <p>Motivation is really important for making consistent progress in a skill, but
 not all motivations are equally effective. I think the least sustainable
 motivational source (but most common for beginners) is ‘wanting to make
@@ -1470,7 +1470,7 @@ But that’s beside the point, isn’t it?</em></p>]]>
     <id>https://blog.ielliott.io/writing</id>
     
     <published>2018-12-29T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I think writing can help us think better.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/writing">
@@ -1540,7 +1540,7 @@ as an end in itself requires us to better understand those ideas.</p>]]>
     <id>https://blog.ielliott.io/on-programming-language-design</id>
     
     <published>2018-11-21T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
 programming languages that have been ‘invented’ with those that have been
@@ -1613,7 +1613,7 @@ coherent structure of computation.</p>]]>
     <id>https://blog.ielliott.io/topsy-turvy-reverse-state</id>
     
     <published>2018-06-13T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
 <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
@@ -1635,8 +1635,8 @@ Bruijn terms, like <code>λ. 3</code>. This means that you can’t write useful
 instances of <code>Plated</code> for types which contain a <code>Scope</code>. When it comes
 to choosing between <code>bound</code> and <code>Plated</code>, I choose <code>Plated</code> - because we
 can use it to build functionality similar to <code>bound</code>.</p>
-<h2 id="write-some-code">Write some code!</h2>
-<h3 id="warning-the-code-in-this-post-is-subtly-broken-see-the-reddit-thread">Warning: the code in this post is subtly broken. See the <a href="https://www.reddit.com/r/haskell/comments/8qs2gc/turning_bottomup_into_topdown_with_reverse_state/">reddit thread</a></h3>
+<h2 id="write-some-code"><a href="#write-some-code">Write some code!</a></h2>
+<h3 id="warning-the-code-in-this-post-is-subtly-broken-see-the-reddit-thread"><a href="#warning-the-code-in-this-post-is-subtly-broken-see-the-reddit-thread">Warning: the code in this post is subtly broken. See the <span>reddit thread</span></a></h3>
 <p>Let’s get some boilerplate out of the road. Here is a datatype for
 lambda calculus, with De Bruijn indices (<code>B</code>), as well as free variables
 (<code>F</code>). Notice that lambda abstraction (<code>Abs</code>) doesn’t give a name to the
@@ -1699,7 +1699,7 @@ family of functions act from the bottom up. When it sees a free variable
 it can abstract over, it will replace it with <code>B 0</code>, then go upwards
 through the tree, incrementing the counter. This is the <em>reverse</em> of
 what we want.</p>
-<h2 id="etats">etatS</h2>
+<h2 id="etats"><a href="#etats">etatS</a></h2>
 <p>Enter <a href="http://hackage.haskell.org/package/rev-state/docs/Control-Monad-Trans-RevState.html">Reverse
 State</a>.
 In reverse state, <code>get</code> accesses the state of the computation <em>after</em>
@@ -1774,7 +1774,7 @@ and <code>instantiate</code> as library functions.</p>]]>
     <id>https://blog.ielliott.io/comonad-transformers-in-the-wild</id>
     
     <published>2018-02-25T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>A certain algorithmic puzzle website has a problem that goes like this…</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/comonad-transformers-in-the-wild">
@@ -1925,13 +1925,13 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/continuations-from-the-ground-up</id>
     
     <published>2017-06-06T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/continuations-from-the-ground-up">
       <![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
 <p>This post was generated from a <a href="../files/continuations.lhs">Literate Haskell file</a> using Pandoc, so you can load it up into GHCI and play around if you want.</p>
-<h2 id="continuation-passing-style">Continuation Passing Style</h2>
+<h2 id="continuation-passing-style"><a href="#continuation-passing-style">Continuation Passing Style</a></h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">CPS</span> <span class="kw">where</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">Control.Applicative</span></span>
@@ -1988,7 +1988,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      mul five sixteen (\eighty <span class="ot">-&gt;</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        add eighty <span class="dv">5</span> k)))</span></code></pre></div>
 <p>In translating programs to continuation passing style, we transform a <em>tree</em> of computations into a <em>sequence</em> of computations. In doing so, we have <em>reified</em> the flow of the program. We now have a data structure in memory that represents the computations that make up the program. In this case, the data structure is a lot like a linked list- there is a head: ‘the computation that will be performed next’, and a tail: ‘the computations that will be performed on the result’. It’s this ability to represent the flow of the program as a data structure that sets CPS programs apart from regular programs, which we will see later.</p>
-<h2 id="continuation-passing-is-monadic">Continuation Passing is Monadic</h2>
+<h2 id="continuation-passing-is-monadic"><a href="#continuation-passing-is-monadic">Continuation Passing is Monadic</a></h2>
 <p>Right now, writing CPS programs in Haskell is too verbose. Fortunately there are some familiar abstractions that will make it elegant:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">Cont</span> r a <span class="ot">=</span> <span class="dt">Cont</span> {<span class="ot"> runCont ::</span> (a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r }</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -2011,12 +2011,12 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Monad</span> (<span class="dt">Cont</span> r) <span class="kw">where</span></span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  ca <span class="op">&gt;&gt;=</span> f <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runCont ca (\a <span class="ot">-&gt;</span> runCont (f a) k)</span></code></pre></div>
 <p>It turns out that the return type of these CPS programs, <code>(a -&gt; r) -&gt; r</code>, is a Monad. If you don’t understand these implementations, meditate on them until you do. Here some hand-wave-y English explanations that may help:</p>
-<h3 id="functor">Functor</h3>
+<h3 id="functor"><a href="#functor">Functor</a></h3>
 <p><code>fmap</code>: Continue with the result of <code>c</code> by changing the result from an <code>a</code> to a <code>b</code> then sending that result to the current continuation.</p>
-<h3 id="applicative">Applicative</h3>
+<h3 id="applicative"><a href="#applicative">Applicative</a></h3>
 <p><code>pure</code>: Send an <code>a</code> to the current continuation</p>
 <p><code>&lt;*&gt;</code>: Continue with the result of <code>cf</code> by continuing with the result of <code>ca</code> by sending (the result of <code>cf</code>) applied to (the result of <code>ca</code>) to the current continuation.</p>
-<h3 id="monad">Monad</h3>
+<h3 id="monad"><a href="#monad">Monad</a></h3>
 <p><code>&gt;&gt;=</code>: Continue with the result of <code>ca</code> by applying it to <code>f</code> and passing the current continuation on to the value <code>f</code> returned.</p>
 <p>So now we can rewrite our previous verbose example:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_6&#39; ::</span> <span class="dt">Cont</span> r <span class="dt">Int</span></span>
@@ -2028,7 +2028,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
 <p>and run it:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_7 ::</span> <span class="dt">IO</span> ()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>prog_7 <span class="ot">=</span> runCont prog_6&#39; exitSuccess</span></code></pre></div>
-<h2 id="callcc">callCC</h2>
+<h2 id="callcc"><a href="#callcc">callCC</a></h2>
 <p>Consider the following CPS program:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_8 ::</span> (<span class="dt">Eq</span> a, <span class="dt">Fractional</span> a) <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> (<span class="dt">Maybe</span> a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>prog_8 a b c <span class="ot">=</span> \k <span class="ot">-&gt;</span></span>
@@ -2078,7 +2078,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
 <span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- if branch A was reached, `res` = 10</span></span>
 <span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- if branch B was reached, `res` = 20</span></span>
 <span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  add&#39; five res</span></code></pre></div>
-<h2 id="another-level-of-abstraction">Another level of abstraction</h2>
+<h2 id="another-level-of-abstraction"><a href="#another-level-of-abstraction">Another level of abstraction</a></h2>
 <p>We can also embed arbitrary effects in the return type of <code>Cont</code>. In other words, we can create a monad transformer.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">ContT</span> r m a <span class="ot">=</span> <span class="dt">ContT</span> {<span class="ot"> runContT ::</span> (a <span class="ot">-&gt;</span> m r) <span class="ot">-&gt;</span> m r }</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -2099,7 +2099,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  lift ma <span class="ot">=</span> <span class="dt">ContT</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> ma <span class="op">&gt;&gt;=</span> k</span></code></pre></div>
 <p>Notice that the <code>Functor</code>, <code>Applicative</code> and <code>Monad</code> instances for <code>ContT r m</code> don’t place any constraints on the <code>m</code>. This means that any type constructor of kind <code>(* -&gt; *)</code> can be in the <code>m</code> position. The <code>MonadTrans</code> instance, however, does require <code>m</code> is a monad. It’s a very simple definition- the result of running the lifted action is piped into the current continuation using <code>&gt;&gt;=</code>.</p>
 <p>Now that we have a fully-featured CPS monad, we can start doing magic.</p>
-<h2 id="the-future-the-past-and-alternate-timelines">The future, the past and alternate timelines</h2>
+<h2 id="the-future-the-past-and-alternate-timelines"><a href="#the-future-the-past-and-alternate-timelines">The future, the past and alternate timelines</a></h2>
 <p>The continuation that <code>callCC</code> provides access to is the current future of program execution as a single function. That’s why this program-as-a-linear-sequence is so powerful. If you could save the current continuation and call it at a later time somewhere else in your (CPS) program, it would jump ‘back in time’ to the point after that particular <code>callCC</code>.</p>
 <p>To demonstrate this, and end with a bang, here’s a simple boolean SAT solver.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Language of boolean expressions</span></span>
@@ -2224,7 +2224,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations</id>
     
     <published>2017-03-24T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
@@ -2271,7 +2271,7 @@ the entries somewhere to be safe)</del></p></li>
     <id>https://blog.ielliott.io/introduction-to-unification</id>
     
     <published>2017-01-07T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
@@ -2282,7 +2282,7 @@ unification in with a little help from the HM type theory.</p>]]></summary>
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
 unification in with a little help from the HM type theory.</p>
-<h2 id="what-is-unification">What is Unification?</h2>
+<h2 id="what-is-unification"><a href="#what-is-unification">What is Unification?</a></h2>
 <p>Unification is a method of solving equations by substitution. This sentence alone
 doesn’t give enough information to implement an algorithm, so let’s define some
 vocabulary to write a more rigorous definition.</p>
@@ -2316,7 +2316,7 @@ applying the substitution is idempotent: <code>subs(subs(value)) = subs(value)</
 <p>With this vocabulary, we can now better define unification:</p>
 <p><em>Given a set of equations <code>eqs</code>, find a minimal substitution <code>sub</code> such that
 every equation in <code>sub(eqs)</code> is solved</em></p>
-<h2 id="hindley-milner">Hindley-Milner</h2>
+<h2 id="hindley-milner"><a href="#hindley-milner">Hindley-Milner</a></h2>
 <p>Unification is the backbone of type inference in the HM type theory. The actual
 type inference algorithm is not important here- just how unification works on
 HM terms.</p>
@@ -2340,7 +2340,7 @@ and variables are, of course, variables.</p>
 new variable. A set of equations is generated by traversing the expression’s AST,
 then these equations are then unified, which yields a solution for the
 expression’s type variable.</p>
-<h2 id="an-algorithm">An Algorithm</h2>
+<h2 id="an-algorithm"><a href="#an-algorithm">An Algorithm</a></h2>
 <p>A simple unification algorithm can be described as follows:</p>
 <pre><code>unify(equations):
   solutions := {}
@@ -2372,7 +2372,7 @@ expression’s type variable.</p>
 <p>In essence the algorithm is “rearrange an equation so it is a solution, update
 everything according to this knowledge, remember the solution and continue”.
 <a href="https://en.wikipedia.org/wiki/System_of_linear_equations#Elimination_of_variables">Sounds like something we did a lot in school…</a></p>
-<h3 id="why-check-occurs">Why check <code>occurs</code>?</h3>
+<h3 id="why-check-occurs"><a href="#why-check-occurs">Why check <code>occurs</code>?</a></h3>
 <p>This algorithm requires a substitution to ‘eliminate’ a variable from the problem.
 If a variable could also be on the right side of a substitution then it would
 not be eliminated, constructing an infinite solution.</p>
@@ -2401,7 +2401,7 @@ b -&gt; (b -&gt; (b -&gt; c) -&gt; c) -&gt; (b -&gt; c) -&gt; c = b -&gt; (b -&g
 
 no matter how many times we do this the equation will never be solved...</code></pre>
 <p>Omitting the occurs check does <em>not</em> unify the equations according our definition.</p>
-<h2 id="resources">Resources</h2>
+<h2 id="resources"><a href="#resources">Resources</a></h2>
 <p>The <a href="https://en.wikipedia.org/wiki/Unification_(computer_science)">Wikipedia entry for Unification</a>
 is amazing and goes into much more depth.</p>]]>
     </content>
@@ -2413,7 +2413,7 @@ is amazing and goes into much more depth.</p>]]>
     <id>https://blog.ielliott.io/why-LINQ-is-broken</id>
     
     <published>2016-10-24T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
@@ -2556,7 +2556,7 @@ counter to productivity.</p>]]>
     <id>https://blog.ielliott.io/search-and-replace-in-multiple-files</id>
     
     <published>2015-07-25T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
 finished most of the project when I realised that the main page of the
@@ -2566,7 +2566,7 @@ to be changed, and I wanted to change them all at once. Enter <code>sed</code>.<
     
     <content type="html" xml:base="https://blog.ielliott.io/search-and-replace-in-multiple-files">
       <![CDATA[<pre><code>$ sed -i &quot;s/pattern/replacement/g&quot; FILES</code></pre>
-<h2 id="the-story">The Story</h2>
+<h2 id="the-story"><a href="#the-story">The Story</a></h2>
 <p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
 finished most of the project when I realised that the main page of the
@@ -2595,7 +2595,7 @@ use the <code>-i</code> flag to make the alterations inside the source file.</p>
     <id>https://blog.ielliott.io/the-programming-thought-process-fizzbuzz</id>
     
     <published>2015-03-04T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
@@ -2774,7 +2774,7 @@ improvement.</p>
     <id>https://blog.ielliott.io/a-practical-introduction-to-monad-transformers</id>
     
     <published>2015-02-01T00:00:00Z</published>
-    <updated>2023-05-04T06:15+00:00</updated>
+    <updated>2023-05-04T22:21+00:00</updated>
     <summary type="html"><![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>]]></summary>
@@ -2783,7 +2783,7 @@ monads that, when used seperately, would be incredibly difficult to implement.</
       <![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>
-<h2 id="the-task">The Task</h2>
+<h2 id="the-task"><a href="#the-task">The Task</a></h2>
 <p>You input a number and want to manipulate it while printing the
 result each time. If there were no intermediate IO operations we could use the state monad
 with the following state changes:</p>
@@ -2809,7 +2809,7 @@ a monad where:</p>
 <li>Our IO functions have access variables inside the computation</li>
 </ol>
 <p>This monad is called the state monad transformer.</p>
-<h2 id="the-solution">The Solution</h2>
+<h2 id="the-solution"><a href="#the-solution">The Solution</a></h2>
 <p>The state monad transformer is defined as:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">StateT</span> s m a <span class="ot">=</span> <span class="dt">StateT</span> {<span class="ot"> runStateT ::</span> s <span class="ot">-&gt;</span> m (a,s) }</span></code></pre></div>
 <p><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>Meaning that given an initial state <code>s</code> and a state transformer <code>st</code>, we can call <code>runStateT st s</code> to get

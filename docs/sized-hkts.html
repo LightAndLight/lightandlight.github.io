@@ -142,8 +142,8 @@ Contents
 </ul>
 </div>
 </div>
-<h2 id="background">Background</h2>
-<h3 id="generics">Generics</h3>
+<h2 id="background"><a href="#background">Background</a></h2>
+<h3 id="generics"><a href="#generics">Generics</a></h3>
 <p>Many typed languages support some form of generic (parameterised) datatypes. This ability to abstract
 over types is known as ‘parametric polymorphism’ (polymorphism for short). In Rust, for example, one
 can define type of polymorphic pairs as <code>struct Pair&lt;A, B&gt;(fst: A, snd: B)</code>. In this definition, <code>A</code> and <code>B</code> are type
@@ -154,7 +154,7 @@ variables (or type parameters), and can be substituted for other types:
 as its arity (so <code>Pair</code> has arity 2). The arity of a type constructor must always be respected; it’s an error to
 provide greater or fewer type parameters than are expected. For example, <code>Pair&lt;bool&gt;</code> and
 <code>Pair&lt;char, int32, String&gt;</code> are invalid.</p>
-<h3 id="sizing">Sizing</h3>
+<h3 id="sizing"><a href="#sizing">Sizing</a></h3>
 <p>When using C++ or Rust, the compiler will calculate how many bytes of memory each datatype requires. Simple
 types like <code>int32</code> and <code>bool</code> have a constant size; 4 bytes and 1 byte respectively. The size of datatypes
 built using of other simple types is easy to calculate. The simplest way to calculate the size of a struct
@@ -180,7 +180,7 @@ on your CPU) regardless of what it points to. But in order to allocate a new poi
 be known.</p>
 <p>For each generic datatype or function, the compiler keeps track of which type variables are important for sizing
 calculations. The specifics of this is discussed in the <a href="#type-classes">Type Classes</a> section.</p>
-<h3 id="kinds">Kinds</h3>
+<h3 id="kinds"><a href="#kinds">Kinds</a></h3>
 <p>A consequence of all this is that in these languages, type variables can only stand for types. But there
 are good reasons to have type variables that stand for type constructors, too:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> One<span class="op">&lt;</span>A<span class="op">&gt;</span>(A)</span>
@@ -230,7 +230,7 @@ referred to as types. The kind becomes the distinguishing feature. For example, 
 be replaced by “type of kind <code>Type -&gt; Type -&gt; Type</code>”.</p>
 <p>Some final jargon: types with a kind other than <code>Type</code> are known as ‘higher-kinded types’, and parameterising
 over higher-kinded types is known as ‘higher-kinded polymorphism’.</p>
-<h3 id="type-classes">Type Classes</h3>
+<h3 id="type-classes"><a href="#type-classes">Type Classes</a></h3>
 <p>Rust uses <a href="https://blog.rust-lang.org/2015/05/11/traits.html">traits</a> to coordinate sizing calculations. Each
 datatype implicitly receives an implementation of the <code>Sized</code> trait, and every type variable that is relevant for
 a sizing calculation is given a <code>Sized</code> bound. This means that trait resolution, an already useful feature, can
@@ -254,12 +254,12 @@ be said that <code>Sized A</code> <em>implies</em> <code>Sized Two&lt;A&gt;</cod
 such as <code>Two</code> (of kind <code>Type -&gt; Type</code>) has a size <em>function</em>. Given the sizes of the type constructor’s parameters,
 a size function computes the size of the resulting datatype. <code>Two</code>’s size function is <code>\a -&gt; a + a</code>. <code>Pair</code>’s size
 function <code>\a -&gt; b -&gt; a + b</code> (it could also be <code>\(a, b) -&gt; a + b</code> in an uncurried setting).</p>
-<h3 id="problem-statement">Problem Statement</h3>
+<h3 id="problem-statement"><a href="#problem-statement">Problem Statement</a></h3>
 <p>With the background out of the way, the specific problem can be stated:</p>
 <p>When a type of kind <code>Type</code> is relevant for a size calculation, it is given a <code>Sized</code> constraint, which will be
 satisfied with a concrete size as evidence. What is the equivalent notion of constraint and evidence for
 higher-kinded types that contribute to size calculations?</p>
-<h2 id="solution">Solution</h2>
+<h2 id="solution"><a href="#solution">Solution</a></h2>
 <p>An elegant solution to this problem can found by introducing quantified class constraints<sup><a href="#reference-quantified-constraints" id="reference-quantified-constraints:1">2</a></sup>. Quantified constraints
 are an extension to type classes that add implication and quantification to the language of constraints, and corresponding
 notions of evidence.</p>
@@ -333,7 +333,7 @@ code generation. The compiler knows that <code>ListF Maybe int32</code> is naive
 <li>The datatype sizes are not necessarily consistent with <code>sizeof</code>, because they ignore alignment for simplicity.
 At this point, factoring alignment into the size calculations is straightforward.</li>
 </ul>
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 <p>Quantified class constraints provide an elegant framework for statically-sized higher-kinded types. On its own, this
 can raise the abstraction ceiling for high-performance languages, but it also serves as the groundwork for ‘zero-cost’
 versions of functional programming abstractions such as Functor, Applicative, and Traversable.</p>
@@ -343,7 +343,7 @@ would require new syntax, and represents an additional concept for users to lear
 would also be a controversial change; choosing to keep types uncurried would disadvantage prospective users of the
 system, and changing to curried types would require rethinking of syntax and educational materials to maintain Rust’s
 high standard of user experience.</p>
-<h2 id="references">References</h2>
+<h2 id="references"><a href="#references">References</a></h2>
 <ol type="1">
 <li><p><span id="reference-constructor-classes">Jones, M. P. (1995). A system of constructor classes:
 overloading and implicit higher-order polymorphism. <em>Journal of functional programming</em>, 5(1),

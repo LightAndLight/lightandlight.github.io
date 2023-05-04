@@ -85,8 +85,8 @@ a comment on Bob Harper's blog that "exponentials are coinductive", but it only 
   <p class="date"> 1 July, 2019</p>
   <p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>
-<h2 id="datatypes">Datatypes</h2>
-<h3 id="defining-them">Defining them</h3>
+<h2 id="datatypes"><a href="#datatypes">Datatypes</a></h2>
+<h3 id="defining-them"><a href="#defining-them">Defining them</a></h3>
 <p>When you define a datatype, you list the ways to construct values of that type. For example,
 this definition:</p>
 <pre><code>data Bool : Type where { 
@@ -110,7 +110,7 @@ be fully applied.</p>
   Nil;
   Cons[a, List a]
 }</code></pre>
-<h3 id="using-them">Using them</h3>
+<h3 id="using-them"><a href="#using-them">Using them</a></h3>
 <p>The way you construct a value of a datatype is unique to that datatype; there are a finite number of
 constructors, and each represents a different way to build a value of that type. In contrast, there is
 a universal way to <em>destruct</em> values: pattern matching.</p>
@@ -146,7 +146,7 @@ sum n =
     Cons[x, xs] -&gt; x + sum xs
   }</code></pre>
 <p>Hopefully this is all familiar to you. I’ve covered all this so that it contrasts with <em>codatatypes</em>.</p>
-<h2 id="codatatypes">Codatatypes</h2>
+<h2 id="codatatypes"><a href="#codatatypes">Codatatypes</a></h2>
 <p>Codatatypes are the dual to datatypes. Formally, this means a lot of things that I don’t yet understand. What
 follows is how this duality arises in practise.</p>
 <p>To begin, I’d like to share some hand-wavy intuition for the concepts I’m
@@ -157,7 +157,7 @@ arguments to be evaluated, which means you can hide computations inside them. Ha
 apply constructors, which further diverges from what I’ve laid out here.</p>
 <p>Codatatypes <em>do</em>. They have ‘potential energy’; they have the capacity to do more work when prodded. Haskell’s
 ‘datatypes’ are more codata-like in this respect because they can contain suspended computations.</p>
-<h3 id="defining-them-1">Defining them</h3>
+<h3 id="defining-them-1"><a href="#defining-them-1">Defining them</a></h3>
 <p>Since datatypes are defined by their constructors, codatatypes will be defined by their <em>destructors</em>.</p>
 <p>This definition:</p>
 <pre><code>codata Pair (a : Type) (b : Type) : Type where {
@@ -177,7 +177,7 @@ they’re not first-class.</p>
 }</code></pre>
 <p>A stream is like an infinite list; every stream value contains a head and a tail, and no matter how many
 times you extract the tail, there will always be another stream waiting for you.</p>
-<h3 id="using-them-1">Using them</h3>
+<h3 id="using-them-1"><a href="#using-them-1">Using them</a></h3>
 <p>There is a universal way to destruct datatypes, and there is a universal way to <em>construct</em> <em>codatatypes</em>.
 For lack of a better term, you can call it ‘copattern matching’. Here’s how you would construct a
 <code>Pair Int Bool</code>:</p>

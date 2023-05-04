@@ -87,7 +87,7 @@ monads that, when used seperately, would be incredibly difficult to implement.",
   <p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>
-<h2 id="the-task">The Task</h2>
+<h2 id="the-task"><a href="#the-task">The Task</a></h2>
 <p>You input a number and want to manipulate it while printing the
 result each time. If there were no intermediate IO operations we could use the state monad
 with the following state changes:</p>
@@ -113,7 +113,7 @@ a monad where:</p>
 <li>Our IO functions have access variables inside the computation</li>
 </ol>
 <p>This monad is called the state monad transformer.</p>
-<h2 id="the-solution">The Solution</h2>
+<h2 id="the-solution"><a href="#the-solution">The Solution</a></h2>
 <p>The state monad transformer is defined as:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">StateT</span> s m a <span class="ot">=</span> <span class="dt">StateT</span> {<span class="ot"> runStateT ::</span> s <span class="ot">-&gt;</span> m (a,s) }</span></code></pre></div>
 <p><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>Meaning that given an initial state <code>s</code> and a state transformer <code>st</code>, we can call <code>runStateT st s</code> to get

@@ -82,7 +82,7 @@
   <p class="date"> 6 June, 2017</p>
   <p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
 <p>This post was generated from a <a href="../files/continuations.lhs">Literate Haskell file</a> using Pandoc, so you can load it up into GHCI and play around if you want.</p>
-<h2 id="continuation-passing-style">Continuation Passing Style</h2>
+<h2 id="continuation-passing-style"><a href="#continuation-passing-style">Continuation Passing Style</a></h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">CPS</span> <span class="kw">where</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="dt">Control.Applicative</span></span>
@@ -139,7 +139,7 @@
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      mul five sixteen (\eighty <span class="ot">-&gt;</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        add eighty <span class="dv">5</span> k)))</span></code></pre></div>
 <p>In translating programs to continuation passing style, we transform a <em>tree</em> of computations into a <em>sequence</em> of computations. In doing so, we have <em>reified</em> the flow of the program. We now have a data structure in memory that represents the computations that make up the program. In this case, the data structure is a lot like a linked list- there is a head: ‘the computation that will be performed next’, and a tail: ‘the computations that will be performed on the result’. It’s this ability to represent the flow of the program as a data structure that sets CPS programs apart from regular programs, which we will see later.</p>
-<h2 id="continuation-passing-is-monadic">Continuation Passing is Monadic</h2>
+<h2 id="continuation-passing-is-monadic"><a href="#continuation-passing-is-monadic">Continuation Passing is Monadic</a></h2>
 <p>Right now, writing CPS programs in Haskell is too verbose. Fortunately there are some familiar abstractions that will make it elegant:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">Cont</span> r a <span class="ot">=</span> <span class="dt">Cont</span> {<span class="ot"> runCont ::</span> (a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r }</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -162,12 +162,12 @@
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Monad</span> (<span class="dt">Cont</span> r) <span class="kw">where</span></span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  ca <span class="op">&gt;&gt;=</span> f <span class="ot">=</span> <span class="dt">Cont</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> runCont ca (\a <span class="ot">-&gt;</span> runCont (f a) k)</span></code></pre></div>
 <p>It turns out that the return type of these CPS programs, <code>(a -&gt; r) -&gt; r</code>, is a Monad. If you don’t understand these implementations, meditate on them until you do. Here some hand-wave-y English explanations that may help:</p>
-<h3 id="functor">Functor</h3>
+<h3 id="functor"><a href="#functor">Functor</a></h3>
 <p><code>fmap</code>: Continue with the result of <code>c</code> by changing the result from an <code>a</code> to a <code>b</code> then sending that result to the current continuation.</p>
-<h3 id="applicative">Applicative</h3>
+<h3 id="applicative"><a href="#applicative">Applicative</a></h3>
 <p><code>pure</code>: Send an <code>a</code> to the current continuation</p>
 <p><code>&lt;*&gt;</code>: Continue with the result of <code>cf</code> by continuing with the result of <code>ca</code> by sending (the result of <code>cf</code>) applied to (the result of <code>ca</code>) to the current continuation.</p>
-<h3 id="monad">Monad</h3>
+<h3 id="monad"><a href="#monad">Monad</a></h3>
 <p><code>&gt;&gt;=</code>: Continue with the result of <code>ca</code> by applying it to <code>f</code> and passing the current continuation on to the value <code>f</code> returned.</p>
 <p>So now we can rewrite our previous verbose example:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_6' ::</span> <span class="dt">Cont</span> r <span class="dt">Int</span></span>
@@ -179,7 +179,7 @@
 <p>and run it:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_7 ::</span> <span class="dt">IO</span> ()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>prog_7 <span class="ot">=</span> runCont prog_6' exitSuccess</span></code></pre></div>
-<h2 id="callcc">callCC</h2>
+<h2 id="callcc"><a href="#callcc">callCC</a></h2>
 <p>Consider the following CPS program:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ot">prog_8 ::</span> (<span class="dt">Eq</span> a, <span class="dt">Fractional</span> a) <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> (<span class="dt">Maybe</span> a <span class="ot">-&gt;</span> r) <span class="ot">-&gt;</span> r</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>prog_8 a b c <span class="ot">=</span> \k <span class="ot">-&gt;</span></span>
@@ -229,7 +229,7 @@
 <span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- if branch A was reached, `res` = 10</span></span>
 <span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- if branch B was reached, `res` = 20</span></span>
 <span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  add' five res</span></code></pre></div>
-<h2 id="another-level-of-abstraction">Another level of abstraction</h2>
+<h2 id="another-level-of-abstraction"><a href="#another-level-of-abstraction">Another level of abstraction</a></h2>
 <p>We can also embed arbitrary effects in the return type of <code>Cont</code>. In other words, we can create a monad transformer.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">newtype</span> <span class="dt">ContT</span> r m a <span class="ot">=</span> <span class="dt">ContT</span> {<span class="ot"> runContT ::</span> (a <span class="ot">-&gt;</span> m r) <span class="ot">-&gt;</span> m r }</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -250,7 +250,7 @@
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  lift ma <span class="ot">=</span> <span class="dt">ContT</span> <span class="op">$</span> \k <span class="ot">-&gt;</span> ma <span class="op">&gt;&gt;=</span> k</span></code></pre></div>
 <p>Notice that the <code>Functor</code>, <code>Applicative</code> and <code>Monad</code> instances for <code>ContT r m</code> don’t place any constraints on the <code>m</code>. This means that any type constructor of kind <code>(* -&gt; *)</code> can be in the <code>m</code> position. The <code>MonadTrans</code> instance, however, does require <code>m</code> is a monad. It’s a very simple definition- the result of running the lifted action is piped into the current continuation using <code>&gt;&gt;=</code>.</p>
 <p>Now that we have a fully-featured CPS monad, we can start doing magic.</p>
-<h2 id="the-future-the-past-and-alternate-timelines">The future, the past and alternate timelines</h2>
+<h2 id="the-future-the-past-and-alternate-timelines"><a href="#the-future-the-past-and-alternate-timelines">The future, the past and alternate timelines</a></h2>
 <p>The continuation that <code>callCC</code> provides access to is the current future of program execution as a single function. That’s why this program-as-a-linear-sequence is so powerful. If you could save the current continuation and call it at a later time somewhere else in your (CPS) program, it would jump ‘back in time’ to the point after that particular <code>callCC</code>.</p>
 <p>To demonstrate this, and end with a bang, here’s a simple boolean SAT solver.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Language of boolean expressions</span></span>

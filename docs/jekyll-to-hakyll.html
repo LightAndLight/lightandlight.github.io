@@ -129,7 +129,7 @@ Contents
 </ul>
 </div>
 </div>
-<h2 id="background">Background</h2>
+<h2 id="background"><a href="#background">Background</a></h2>
 <p>I’ve been using Jekyll to generate my blog because that’s what <a href="https://pages.github.com/">GitHub
 Pages</a> recommended when I first set things up. Recently I’ve been working
 on a math-heavy post, and I decided that I wanted <a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a>
@@ -137,8 +137,8 @@ support for this site. I started exploring possible solutions, and found <a href
 which I then learned is used in <a href="https://pandoc.org/">Pandoc</a> to <a href="https://pandoc.org/MANUAL.html#math-rendering-in-html">convert TeX to
 MathML</a>. I know Hakyll has good Pandoc support, and
 Haskell is one of my main languages, so I decided to make the switch<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<h2 id="changes">Changes</h2>
-<h3 id="prettier-urls">Prettier URLs</h3>
+<h2 id="changes"><a href="#changes">Changes</a></h2>
+<h3 id="prettier-urls"><a href="#prettier-urls">Prettier URLs</a></h3>
 <p>Change: removed trailing slashes from many blog page URLs (e.g.
 from <code>https://blog.ielliott.io/test-post/</code> to <code>https://blog.ielliott.io/test-post</code>).</p>
 <p>Static site generators create HTML files, which typically have file paths ending in <code>.html</code>. Web servers
@@ -163,7 +163,7 @@ this and changed the configuration to resemble GitHub Pages’ pretty URL resolu
 (<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L30-L55"><code>site.hs#L30-L55</code></a>).
 I realised how fortunate it was that I could make this change; the relevant Hakyll changes were only
 <a href="https://hackage.haskell.org/package/hakyll/changelog#hakyll-41600-2023-04-27">released a week ago!</a></p>
-<h3 id="mathml-support">MathML support</h3>
+<h3 id="mathml-support"><a href="#mathml-support">MathML support</a></h3>
 <p>Changes:</p>
 <ul>
 <li>Equations are compiled to MathML</li>
@@ -193,12 +193,12 @@ support.&quot; Below that, there are 3 options: &quot;Load MathJax&quot; (curren
 mathml.css&quot;, and &quot;Do nothing&quot;. Under those, there is a checkbox (unchecked) labelled
 &quot;Remember choice for 30 days&quot;. At the bottom, there are two buttons: &quot;Ignore&quot;
 and &quot;Save&quot;." style="max-width: 100%" /></p>
-<h3 id="syntax-highlighting">Syntax highlighting</h3>
+<h3 id="syntax-highlighting"><a href="#syntax-highlighting">Syntax highlighting</a></h3>
 <p>Change: slightly different syntax highlighting.</p>
 <p>Pandoc does syntax highlighting differently to Jekyll, and I prefer Jekyll’s output. I’ll explain
 why in another post. The consequence is that I had to rewrite my syntax highlighting stylesheet, and
 code might look a little different due to the way Pandoc marks it up.</p>
-<h2 id="thoughts">Thoughts</h2>
+<h2 id="thoughts"><a href="#thoughts">Thoughts</a></h2>
 <p>I had to reimplement a few things that Jekyll did for
 me, like the <a href="/sitemap.xml">sitemap</a>
 (<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L196-L206"><code>site.hs#L196-206</code></a>)

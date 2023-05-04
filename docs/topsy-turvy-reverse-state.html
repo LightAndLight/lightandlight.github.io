@@ -108,8 +108,8 @@ Bruijn terms, like <code>λ. 3</code>. This means that you can’t write useful
 instances of <code>Plated</code> for types which contain a <code>Scope</code>. When it comes
 to choosing between <code>bound</code> and <code>Plated</code>, I choose <code>Plated</code> - because we
 can use it to build functionality similar to <code>bound</code>.</p>
-<h2 id="write-some-code">Write some code!</h2>
-<h3 id="warning-the-code-in-this-post-is-subtly-broken-see-the-reddit-thread">Warning: the code in this post is subtly broken. See the <a href="https://www.reddit.com/r/haskell/comments/8qs2gc/turning_bottomup_into_topdown_with_reverse_state/">reddit thread</a></h3>
+<h2 id="write-some-code"><a href="#write-some-code">Write some code!</a></h2>
+<h3 id="warning-the-code-in-this-post-is-subtly-broken-see-the-reddit-thread"><a href="#warning-the-code-in-this-post-is-subtly-broken-see-the-reddit-thread">Warning: the code in this post is subtly broken. See the <span>reddit thread</span></a></h3>
 <p>Let’s get some boilerplate out of the road. Here is a datatype for
 lambda calculus, with De Bruijn indices (<code>B</code>), as well as free variables
 (<code>F</code>). Notice that lambda abstraction (<code>Abs</code>) doesn’t give a name to the
@@ -172,7 +172,7 @@ family of functions act from the bottom up. When it sees a free variable
 it can abstract over, it will replace it with <code>B 0</code>, then go upwards
 through the tree, incrementing the counter. This is the <em>reverse</em> of
 what we want.</p>
-<h2 id="etats">etatS</h2>
+<h2 id="etats"><a href="#etats">etatS</a></h2>
 <p>Enter <a href="http://hackage.haskell.org/package/rev-state/docs/Control-Monad-Trans-RevState.html">Reverse
 State</a>.
 In reverse state, <code>get</code> accesses the state of the computation <em>after</em>
