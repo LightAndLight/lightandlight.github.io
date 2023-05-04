@@ -17,10 +17,10 @@ import Hakyll hiding (pandocCompiler, readPandoc, writePandoc)
 import Network.Wai.Application.Static (StaticSettings (..))
 import System.Directory (doesFileExist)
 import System.FilePath (dropExtension, takeBaseName, takeExtension, (<.>), (</>))
-import Text.Pandoc (Block (..), Pandoc (..), readHtml, runPure)
+import Text.Pandoc (Block (..), Inline (..), Pandoc (..), nullAttr, readHtml, runPure)
 import qualified Text.Pandoc as Pandoc
 import Text.Pandoc.Options
-import Text.Pandoc.Walk (query)
+import Text.Pandoc.Walk (query, walk)
 import Text.Pandoc.Writers (writePlain)
 import WaiAppStatic.Types (File (..), fromPiece, unsafeToPiece)
 
@@ -128,7 +128,7 @@ main = do
       compile $ do
         identifier <- getUnderlying
 
-        postPandocItem <- readPandocWith pandocReaderOptions =<< getResourceBody
+        postPandocItem <- (fmap . fmap) linkHeaders . readPandocWith pandocReaderOptions =<< getResourceBody
         post <- saveSnapshot "content" $ writePandocWith pandocWriterOptions postPandocItem
 
         excerpt <- saveSnapshot "excerpt" =<< getExcerpt identifier postPandocItem
@@ -222,6 +222,18 @@ main = do
         atomTemplate <- loadBody "templates/atom.xml"
         atomItemTemplate <- loadBody "templates/atom-item.xml"
         renderAtomWithTemplates atomTemplate atomItemTemplate feedConfiguration (feedCtx now) posts
+
+linkHeaders :: Pandoc -> Pandoc
+linkHeaders =
+  walk @Block
+    ( \block ->
+        case block of
+          Header level attr@(identifier, _classes, _attributes) content
+            | level > 1
+            , not (Text.null identifier) ->
+                Header level attr [Link nullAttr content ("#" <> identifier, "")]
+          _ -> block
+    )
 
 postInfoCtx :: Context String
 postInfoCtx =
