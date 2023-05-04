@@ -1,0 +1,17 @@
+<entry>
+    <title>$title$</title>
+    <link href="$root$$url$" />
+    $if(feed_id)$
+    <id>$feed_id$</id>
+    $else$
+    <id>$root$$url$</id>
+    $endif$
+    <published>$published$</published>
+    <updated>$updated$</updated>
+    <summary type="html"><![CDATA[$description$]]></summary>
+    $if(body)$
+    <content type="html" xml:base="$root$$url$">
+      <![CDATA[$body$]]>
+    </content>
+    $endif$
+</entry>
