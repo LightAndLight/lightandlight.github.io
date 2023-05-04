@@ -183,14 +183,26 @@ pre>code {
     border: none;
 }
 
-.heading {
+h1>a, h2>a, h3>a, h4>a, h5>a {
     color: #2f2f2f;
     text-decoration: none;
 }
 
-.heading:hover {
+h1>a:hover, h2>a:hover, h3>a:hover, h4>a:hover, h5>a:hover {
     color: #379392;
     border-bottom: 1px solid;
+}
+
+h1>a[href^="#"]:after, h2>a[href^="#"]:after, h3>a[href^="#"]:after, h4>a[href^="#"]:after, h5>a[href^="#"]:after {
+    content: '#';
+    color: #c6c6d0;
+    margin-left: 0.5rem;
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: bold;
+}
+
+h1>a[href^="#"]:hover:after, h2>a[href^="#"]:hover:after, h3>a[href^="#"]:hover:after, h4>a[href^="#"]:hover:after, h5>a[href^="#"]:hover:after {
+    color: #98c5c5;
 }
 
 nav a {
