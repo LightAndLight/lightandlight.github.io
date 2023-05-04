@@ -8,28 +8,57 @@ import Control.Monad ((<=<))
 import Data.List (isInfixOf, isPrefixOf, nub)
 import Data.Maybe (mapMaybe)
 import Data.Monoid (First (..))
-
--- use the "With" variants of these functions instead
-
 import qualified Data.Text as Text
 import Data.Time.Clock (UTCTime, getCurrentTime)
 import Data.Time.Format (defaultTimeLocale, formatTime)
+
+-- use the "With" variants of these functions instead
 import Hakyll hiding (pandocCompiler, readPandoc, writePandoc)
+import Network.Wai.Application.Static (StaticSettings (..))
+import System.Directory (doesFileExist)
 import System.FilePath (dropExtension, takeBaseName, takeExtension, (<.>), (</>))
 import Text.Pandoc (Block (..), Pandoc (..), readHtml, runPure)
 import qualified Text.Pandoc as Pandoc
 import Text.Pandoc.Options
 import Text.Pandoc.Walk (query)
 import Text.Pandoc.Writers (writePlain)
+import WaiAppStatic.Types (File (..), fromPiece, unsafeToPiece)
 
 root :: String
 root = "https://blog.ielliott.io"
+
+-- | Serves the contents of `/path/to/x.html` when `/path/to/x` is requested.
+withPrettyUrls :: Configuration -> Configuration
+withPrettyUrls config =
+  config
+    { previewSettings = \path ->
+        let settings = config.previewSettings path
+         in settings
+              { ssLookupFile =
+                  \pieces ->
+                    case splitAt (length pieces - 1) pieces of
+                      (prefix, [piece])
+                        | let fileName = fromPiece piece
+                        , takeExtension (Text.unpack fileName) == "" ->
+                            settings.ssLookupFile $ prefix <> [unsafeToPiece $ fileName <> ".html"]
+                      _ -> settings.ssLookupFile pieces
+              , ssGetMimeType =
+                  \file ->
+                    if takeExtension (Text.unpack (fromPiece file.fileName)) == ""
+                      then do
+                        htmlExists <- doesFileExist $ path </> Text.unpack (fromPiece file.fileName) <.> "html"
+                        if htmlExists
+                          then pure "text/html"
+                          else settings.ssGetMimeType file
+                      else settings.ssGetMimeType file
+              }
+    }
 
 main :: IO ()
 main = do
   now <- getCurrentTime
 
-  hakyll $ do
+  hakyllWith (withPrettyUrls defaultConfiguration) $ do
     match "templates/*" $ compile templateBodyCompiler
 
     match "css/*" $ do
@@ -46,6 +75,10 @@ main = do
 
     match "files/*" $ do
       route idRoute
+      compile copyFileCompiler
+
+    match "posts/images/*" $ do
+      route $ gsubRoute "posts/" (const "")
       compile copyFileCompiler
 
     match (fromList ["favicon.ico", "CNAME"]) $ do

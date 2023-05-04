@@ -16,7 +16,7 @@ excerpt: |
 ---
 
 <div class="intro-wrapper">
-  <div>
+  <div class="intro">
 
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
   sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
@@ -29,23 +29,21 @@ excerpt: |
 
   </div>
 
-  <div class="contents-wrapper">
-    <div class="contents">
-      <h3>Contents</h3>
-      <ul style="list-style-type: none; padding-left: 0;">
-        <li><a href="#background">Background</a></li>
-        <ul style="list-style-type: none; padding-left: 1em;">
-          <li><a href="#generics">Generics</a></li>
-          <li><a href="#sizing">Sizing</a></li>
-          <li><a href="#kinds">Kinds</a></li>
-          <li><a href="#type-classes">Type Classes</a></li>
-          <li><a href="#problem-statement">Problem Statement</a></li>
-        </ul>
-        <li><a href="#solution">Solution</a></li>
-        <li><a href="#conclusion">Conclusion</a></li>
-        <li><a href="#references">References</a></li>
+  <div class="contents">
+    <h3>Contents</h3>
+    <ul style="list-style-type: none; padding-left: 0;">
+      <li><a href="#background">Background</a></li>
+      <ul style="list-style-type: none; padding-left: 1em;">
+        <li><a href="#generics">Generics</a></li>
+        <li><a href="#sizing">Sizing</a></li>
+        <li><a href="#kinds">Kinds</a></li>
+        <li><a href="#type-classes">Type Classes</a></li>
+        <li><a href="#problem-statement">Problem Statement</a></li>
       </ul>
-    </div>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#conclusion">Conclusion</a></li>
+      <li><a href="#references">References</a></li>
+    </ul>
   </div>
 </div>
 
