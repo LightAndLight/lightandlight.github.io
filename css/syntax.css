@@ -1,0 +1,38 @@
+/* keyword, control flow */
+.sourceCode .kw, .sourceCode .cf {
+  color: #4f86c6;
+  font-weight: bold;
+}
+
+/* datatype */
+.sourceCode .dt {
+  color: #379392;
+}
+
+/* decimal value, base N, float, char, string */
+.sourceCode .dv, .sourceCode .bn, .sourceCode .fl, .sourceCode .ch, .sourceCode .st {
+  color: #4fb0c6;
+}
+
+/* comment */
+.sourceCode .co {
+  color: #9e9ea8;
+}
+
+/* other */
+.sourceCode .ot {}
+
+/* alert */
+.sourceCode .al {
+  color: #CB4B16;
+  font-weight: bold;
+}
+
+/* region marker */
+.sourceCode .re {}
+
+/* error */
+.sourceCode .er {
+  color: #D30102;
+  font-weight: bold;
+}

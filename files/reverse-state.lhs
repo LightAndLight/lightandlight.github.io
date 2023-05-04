@@ -22,7 +22,7 @@ Notice that lambda abstraction (`Abs`) doesn't give a name to the function
 argument, which means that only `B`s can reference them. This is called the
 "locally nameless" approach.
 
-[Literate Haskell source]({{ "/files/reverse-state.lhs" | absolute_url }})
+[Literate Haskell source](../files/reverse-state.lhs)
 
 \begin{code}
 {-# language DeriveGeneric #-}

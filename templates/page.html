@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400"
+    type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  $if(title)$
+  <title>$title$ - blog.ielliott.io</title>
+  $else$
+  <title>blog.ielliott.io</title>
+  $endif$
+
+  $metadata$
+</head>
+
+<body>
+  $partial("templates/header.html")$
+  $partial("templates/nav.html")$
+
+  <section>
+    $if(math)$
+    <script id="mathml-polyfill-script" src="/res/mathml-polyfill.js"></script>
+    $endif$
+
+    $body$
+  </section>
+  $partial("templates/footer.html")$
+
+  <script>feather.replace()</script>
+</body>
+
+</html>

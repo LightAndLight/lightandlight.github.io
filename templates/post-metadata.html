@@ -1,0 +1,27 @@
+$partial("templates/metadata.html")$
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="$plaintext(excerpt)$">
+<meta property="og:description" content="$plaintext(excerpt)$">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="$date$">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"$title$",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"$date$",
+  "dateModified":"$if(updated)$$updated$$else$$date$$endif$",
+  "description":"$plaintext(excerpt)$",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"$root$$url$"
+  },
+  "url": "$root$$url$"
+}
+</script>
