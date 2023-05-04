@@ -10,15 +10,160 @@
         <email>isaace71295@gmail.com</email>
         
     </author>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <entry>
+    <title>Migrating from Jekyll to Hakyll</title>
+    <link href="https://blog.ielliott.io/jekyll-to-hakyll" />
+    
+    <id>https://blog.ielliott.io/jekyll-to-hakyll</id>
+    
+    <published>2023-05-04T00:00:00Z</published>
+    <updated>2023-05-04T06:15+00:00</updated>
+    <summary type="html"><![CDATA[<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
+<a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
+special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
+impacted.</p>]]></summary>
+    
+    <content type="html" xml:base="https://blog.ielliott.io/jekyll-to-hakyll">
+      <![CDATA[<div class="intro-wrapper">
+<div class="intro">
+<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
+<a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
+special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
+impacted.</p>
+<p>You can find the source code at <a href="https://github.com/LightAndLight/lightandlight.github.io/" class="uri">https://github.com/LightAndLight/lightandlight.github.io/</a>.</p>
+</div>
+<div class="contents">
+<h3>
+Contents
+</h3>
+<ul style="list-style-type: none; padding-left: 0;">
+<li>
+<a href="#background">Background</a>
+</li>
+<li>
+<a href="#changes">Changes</a>
+</li>
+<ul style="list-style-type: none; padding-left: 1em;">
+<li>
+<a href="#prettier-urls">Prettier URLs</a>
+</li>
+<li>
+<a href="#mathml-support">MathML support</a>
+</li>
+<li>
+<a href="#syntax-highlighting">Syntax highlighting</a>
+</li>
+</ul>
+<li>
+<a href="#thoughts">Thoughts</a>
+</li>
+</ul>
+</div>
+</div>
+<h2 id="background">Background</h2>
+<p>I’ve been using Jekyll to generate my blog because that’s what <a href="https://pages.github.com/">GitHub
+Pages</a> recommended when I first set things up. Recently I’ve been working
+on a math-heavy post, and I decided that I wanted <a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a>
+support for this site. I started exploring possible solutions, and found <a href="https://github.com/jgm/texmath"><code>texmath</code></a>,
+which I then learned is used in <a href="https://pandoc.org/">Pandoc</a> to <a href="https://pandoc.org/MANUAL.html#math-rendering-in-html">convert TeX to
+MathML</a>. I know Hakyll has good Pandoc support, and
+Haskell is one of my main languages, so I decided to make the switch<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<h2 id="changes">Changes</h2>
+<h3 id="prettier-urls">Prettier URLs</h3>
+<p>Change: removed trailing slashes from many blog page URLs (e.g.
+from <code>https://blog.ielliott.io/test-post/</code> to <code>https://blog.ielliott.io/test-post</code>).</p>
+<p>Static site generators create HTML files, which typically have file paths ending in <code>.html</code>. Web servers
+often map URL paths to filesystem paths to serve files, leading to many URLs ending in
+<code>.html</code>. I don’t like this; <code>.html</code> offers me no useful
+information. And if it <em>does</em> coincide with the resource’s file
+type, <a href="https://www.w3.org/DesignIssues/NameMyth.html#Why">that is subject to change</a>.</p>
+<p>My Jekyll-based site had “extension-less URLs” (which I call “pretty URLs”), but I
+consistently used a trailing slash at the end of every URL (e.g.
+<code>https://blog.ielliot.io/test-post/</code>). These days I prefer to use a trailing
+slash to signify a “directory-like resource”, under which other resources are “nested”. This aligns with the convention where web servers serve <code>/index.html</code> when <code>/</code> is
+requested. My blog posts don’t need an index because they’re self contained, so their URLs shouldn’t
+have a trailing slash.</p>
+<p><a href="https://rsp.github.io/gh-pages-no-extension/index">GitHub Pages supports extensionless HTML pages</a>,
+serving file <code>x.html</code> when <code>x</code> is requested, so I removed the trailing slash from each page’s
+canonical path and make Hakyll generate a file ending in <code>.html</code> at that path
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L127"><code>site.hs#L127</code></a>,
+<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L322-L333"><code>site.hs#L322-L333</code></a>).</p>
+<p>By default, Hakyll’s <code>watch</code> command doesn’t support pretty URLs. For a little while, I manually
+added <code>.html</code> to the URL in the address bar whenever I clicked a link in my site’s preview. I got sick of
+this and changed the configuration to resemble GitHub Pages’ pretty URL resolution rules
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L30-L55"><code>site.hs#L30-L55</code></a>).
+I realised how fortunate it was that I could make this change; the relevant Hakyll changes were only
+<a href="https://hackage.haskell.org/package/hakyll/changelog#hakyll-41600-2023-04-27">released a week ago!</a></p>
+<h3 id="mathml-support">MathML support</h3>
+<p>Changes:</p>
+<ul>
+<li>Equations are compiled to MathML</li>
+<li>MathJax is never automatically loaded</li>
+<li>Browsers with poor MathML support display a warning and some options for improvement</li>
+</ul>
+<p>I’m becoming more aware of sites that use unnecessary JavaScript. I realised that my blog’s use of
+MathJax for client-side equation rendering was an example of this. The equations on my blog are static; all the information required to
+render them is present when I generate the site, so I should be able to compile the equations once and
+serve them to readers. Client-side MathJax is
+better suited for fast feedback on dynamic equations, like when someone types an equation into a text
+box.</p>
+<p>I played with compiling LaTeX equations to SVGs
+(<a href="https://github.com/LightAndLight/latex4web/blob/552cf33a02b9644ca4cd6987d920af88e2759e95/latex2svg.py"><code>latex2svg.py</code></a>,
+<a href="https://github.com/LightAndLight/latex4web/blob/552cf33a02b9644ca4cd6987d920af88e2759e95/latex2svg.m4"><code>latex2svg.m4</code></a>),
+but realised it would be hard to make that
+<a href="https://www.w3.org/WAI/fundamentals/accessibility-intro/">accessible</a>. I then
+came across <a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a> and realised that it was the right solution.</p>
+<p>MathML <a href="https://caniuse.com/mathml">still isn’t ubiquitous</a>, so I added a <a href="https://github.com/LightAndLight/lightandlight.github.io/blob/2124670c349ce879a441ea01b19cbdfe42c031bf/js/mathml-polyfill.js">polyfill
+script</a>
+based on <a href="https://github.com/fred-wang/mathml-warning.js" class="uri">https://github.com/fred-wang/mathml-warning.js</a>. If you view
+a math post in a web browser with limited MathML support, you’ll be prompted to
+improve the experience by loading external resources:</p>
+<p><img src="./images/mathml-warning.png" alt="Screenshot of a warning message for browsers with poor
+MathML support. The warning says, &quot;This page uses MathML, which your browser doesn't fully
+support.&quot; Below that, there are 3 options: &quot;Load MathJax&quot; (currently selected), &quot;Apply
+mathml.css&quot;, and &quot;Do nothing&quot;. Under those, there is a checkbox (unchecked) labelled
+&quot;Remember choice for 30 days&quot;. At the bottom, there are two buttons: &quot;Ignore&quot;
+and &quot;Save&quot;." style="max-width: 100%" /></p>
+<h3 id="syntax-highlighting">Syntax highlighting</h3>
+<p>Change: slightly different syntax highlighting.</p>
+<p>Pandoc does syntax highlighting differently to Jekyll, and I prefer Jekyll’s output. I’ll explain
+why in another post. The consequence is that I had to rewrite my syntax highlighting stylesheet, and
+code might look a little different due to the way Pandoc marks it up.</p>
+<h2 id="thoughts">Thoughts</h2>
+<p>I had to reimplement a few things that Jekyll did for
+me, like the <a href="/sitemap.xml">sitemap</a>
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L196-L206"><code>site.hs#L196-206</code></a>)
+and previous/next post links
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L240-L260"><code>site.hs#L240-L260</code></a>).
+I didn’t have to create the Atom feed from scratch, though: <a href="https://hackage.haskell.org/package/hakyll-4.16.0.0/docs/Hakyll-Web-Feed.html">Hakyll has a module for that</a>. The whole process was pretty involved (a few days of work) and I
+think I only had the appetite for it because I’m currently not working.</p>
+<p>This is the most time I’ve spent working on a Hakyll site, and I think I’ve crossed an “inflection
+point” in my understanding of the library. I can now build features from scratch instead of searching for recipes on the internet. Normally I would approach a static site generator with some impatience,
+wanting to “get things done” so that I can return to what I find interesting. This time around, I
+decided to do a deep dive and I gained a lot of experience.</p>
+<p>I’m glad I made the switch. While Pandoc has a few annoying issues, I’m not
+discouraged from fixing them like I would be if I found a problem with Jekyll.
+Being proficient with Haskell, fixing these issues would just be a variation on normal software
+development for me.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Also, there were no satisfying search results for how to do this with Jekyll.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>]]>
+    </content>
+    
+</entry><entry>
     <title>Web Resources I Enjoy</title>
     <link href="https://blog.ielliott.io/web-resources-i-enjoy" />
     
     <id>https://blog.ielliott.io/favourites</id>
     
     <published>2023-01-10T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
 conversation</a>,
@@ -56,7 +201,7 @@ interesting, in the hope that others might use it to find something new.</p>]]>
     <id>https://blog.ielliott.io/project-review</id>
     
     <published>2022-12-22T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Reflections this year's hobby projects.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/2022-project-review">
@@ -316,12 +461,12 @@ forms of boilerplate I find.</p>
 <p>I’m not sure if it will ever lead to something I could call a “framework”, like
 <a href="https://rubyonrails.org/">Rails</a>. Right now I have the sense that it would be more like a <a href="https://en.wikipedia.org/wiki/A_Pattern_Language">pattern
 language</a> with automated helpers.</p>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
 <li id="fn1"><p>that made it onto GitHub<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
+</aside>]]>
     </content>
     
 </entry><entry>
@@ -331,7 +476,7 @@ language</a> with automated helpers.</p>
     <id>https://blog.ielliott.io/rip-dreamincode</id>
     
     <published>2022-07-06T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
 down</a>
@@ -374,7 +519,7 @@ positive, constructive experience.</p>
     <id>https://blog.ielliott.io/webgl-slower-than-canvas</id>
     
     <published>2021-05-20T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
@@ -424,7 +569,7 @@ duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms
     <id>https://blog.ielliott.io/rust-defun-example</id>
     
     <published>2021-02-06T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>]]></summary>
@@ -570,13 +715,13 @@ instead of two), so recursing over a <code>Lam</code> node uses less stack space
 <p>I haven’t benchmarked the defunctionalised approach and compared it against the trait object
 implementation. If anyone has suggestions for easily measuring the time and memory usage of
 Rust programs, preferably by function, then please let me know.</p>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
 <li id="fn1"><p>This is a form of existential quantification. The Haskell equivalent looks something like
 <code>data Some (c :: Constraint) where; Some :: c a =&gt; a -&gt; Some c</code><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
+</aside>]]>
     </content>
     
 </entry><entry>
@@ -586,7 +731,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/docker-cleanup-commands</id>
     
     <published>2020-11-07T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/docker-cleanup-commands">
@@ -613,7 +758,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/sized-hkts</id>
     
     <published>2020-07-07T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
   sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
@@ -625,7 +770,7 @@ Rust programs, preferably by function, then please let me know.</p>
     
     <content type="html" xml:base="https://blog.ielliott.io/sized-hkts">
       <![CDATA[<div class="intro-wrapper">
-<div>
+<div class="intro">
 <p>Memory-sensitive languages like C++ and Rust use compile-time information to calculate
 sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
 that improve runtime performance. Modern languages in this setting support generic types, but so far
@@ -634,7 +779,6 @@ how to enable parameterisation over arbitrary type constructs, while still retai
 of datatype sizes.</p>
 <p>The code for this project can be found <a href="https://github.com/LightAndLight/sized-hkts">here</a>.</p>
 </div>
-<div class="contents-wrapper">
 <div class="contents">
 <h3>
 Contents
@@ -670,7 +814,6 @@ Contents
 <a href="#references">References</a>
 </li>
 </ul>
-</div>
 </div>
 </div>
 <h2 id="background">Background</h2>
@@ -892,7 +1035,7 @@ Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <e
     <id>https://blog.ielliott.io/lambdas-are-codatatypes</id>
     
     <published>2019-07-01T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>]]></summary>
     
@@ -1042,7 +1185,7 @@ copattern matching corresponds to abstraction. This is awesome!</p>]]>
     <id>https://blog.ielliott.io/agda-nixos</id>
     
     <published>2019-05-17T23:49:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>]]></summary>
@@ -1117,7 +1260,7 @@ Checking Test (/home/isaac/Test.agda).
     <id>https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys</id>
     
     <published>2019-05-05T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
 confronted by a white guy who felt ‘called out’ by some of her anecdotes. Apparently, she
@@ -1170,7 +1313,7 @@ obnoxiously? I’m going to be charitable here and say (for demonstration purpos
 no more jerkish on average, so one in ten white male researchers she interacts with are jerks to her.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>O</mi><mo stretchy="false" form="prefix">|</mo><mi>W</mi><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.1</mn></mrow><annotation encoding="application/x-tex">P(O | WG) = 0.1</annotation></semantics></math>.</p>
 <p>Now, compute!</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right"><mspace width="0.222em"></mspace></mtd><mtd columnalign="left"><mfrac><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>O</mi><mo stretchy="false" form="prefix">|</mo><mi>W</mi><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>W</mi><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>O</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right"></mtd></mtr><mtr><mtd columnalign="right"><mo>=</mo></mtd><mtd columnalign="left"><mspace width="0.278em"></mspace><mfrac><mrow><mn>0.1</mn><mo>⋅</mo><mn>0.7</mn></mrow><mn>0.1</mn></mfrac></mtd></mtr><mtr><mtd columnalign="right"></mtd></mtr><mtr><mtd columnalign="right"><mo>=</mo></mtd><mtd columnalign="left"><mspace width="0.278em"></mspace><mn>0.7</mn></mtd></mtr></mtable><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mspace width="0.222em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><mfrac><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>O</mi><mo stretchy="false" form="prefix">|</mo><mi>W</mi><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>W</mi><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>O</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mo>=</mo></mtd><mtd columnalign="left" style="text-align: left"><mspace width="0.278em"></mspace><mfrac><mrow><mn>0.1</mn><mo>⋅</mo><mn>0.7</mn></mrow><mn>0.1</mn></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mo>=</mo></mtd><mtd columnalign="left" style="text-align: left"><mspace width="0.278em"></mspace><mn>0.7</mn></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 ~ &amp; \frac{P(O | WG) \cdot P(WG)}{P(O)} \\\\
 = &amp; \; \frac{0.1 \cdot 0.7}{0.1} \\\\
@@ -1216,7 +1359,7 @@ don’t know how exactly this sort of thing happens — maybe I’ll explore tha
     <id>https://blog.ielliott.io/learning-a-craft</id>
     
     <published>2019-02-11T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
 was way too hard, so I decided I wanted to create browser-based static HTML
@@ -1327,7 +1470,7 @@ But that’s beside the point, isn’t it?</em></p>]]>
     <id>https://blog.ielliott.io/writing</id>
     
     <published>2018-12-29T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I think writing can help us think better.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/writing">
@@ -1397,7 +1540,7 @@ as an end in itself requires us to better understand those ideas.</p>]]>
     <id>https://blog.ielliott.io/on-programming-language-design</id>
     
     <published>2018-11-21T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
 programming languages that have been ‘invented’ with those that have been
@@ -1470,7 +1613,7 @@ coherent structure of computation.</p>]]>
     <id>https://blog.ielliott.io/topsy-turvy-reverse-state</id>
     
     <published>2018-06-13T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
 <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
@@ -1631,7 +1774,7 @@ and <code>instantiate</code> as library functions.</p>]]>
     <id>https://blog.ielliott.io/comonad-transformers-in-the-wild</id>
     
     <published>2018-02-25T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>A certain algorithmic puzzle website has a problem that goes like this…</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/comonad-transformers-in-the-wild">
@@ -1782,7 +1925,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/continuations-from-the-ground-up</id>
     
     <published>2017-06-06T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/continuations-from-the-ground-up">
@@ -2081,7 +2224,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations</id>
     
     <published>2017-03-24T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
@@ -2128,7 +2271,7 @@ the entries somewhere to be safe)</del></p></li>
     <id>https://blog.ielliott.io/introduction-to-unification</id>
     
     <published>2017-01-07T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
@@ -2270,7 +2413,7 @@ is amazing and goes into much more depth.</p>]]>
     <id>https://blog.ielliott.io/why-LINQ-is-broken</id>
     
     <published>2016-10-24T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
@@ -2413,7 +2556,7 @@ counter to productivity.</p>]]>
     <id>https://blog.ielliott.io/search-and-replace-in-multiple-files</id>
     
     <published>2015-07-25T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
 finished most of the project when I realised that the main page of the
@@ -2452,7 +2595,7 @@ use the <code>-i</code> flag to make the alterations inside the source file.</p>
     <id>https://blog.ielliott.io/the-programming-thought-process-fizzbuzz</id>
     
     <published>2015-03-04T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
@@ -2631,7 +2774,7 @@ improvement.</p>
     <id>https://blog.ielliott.io/a-practical-introduction-to-monad-transformers</id>
     
     <published>2015-02-01T00:00:00Z</published>
-    <updated>2023-05-02T06:26+00:00</updated>
+    <updated>2023-05-04T06:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>]]></summary>
@@ -2715,12 +2858,12 @@ monad:</p>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- 8</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- 15</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- -7</span></span></code></pre></div>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
 <li id="fn1"><p><code>newtype</code> creates a strict, isomorphic type with a single value constructor. If all that was too much, just imagine that <code>newtype</code> rearranges an existing type into a more pleasant one.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
+</aside>]]>
     </content>
     
 </entry>

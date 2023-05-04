@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Migrating from Jekyll to Hakyll - blog.ielliott.io</title>
+  
+
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/jekyll-to-hakyll">
+<meta property="og:url" content="https://blog.ielliott.io/jekyll-to-hakyll">
+<meta property="og:title" content="Migrating from Jekyll to Hakyll">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Migrating from Jekyll to Hakyll">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="I've just finished migrating this site from Jekyll to
+Hakyll. The only noticeable changes are: slightly prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using Pandoc. I paid
+special attention to preserving the Atom feed identifiers so that feed readers aren't
+impacted.">
+<meta property="og:description" content="I've just finished migrating this site from Jekyll to
+Hakyll. The only noticeable changes are: slightly prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using Pandoc. I paid
+special attention to preserving the Atom feed identifiers so that feed readers aren't
+impacted.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2023-05-04T00:00+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Migrating from Jekyll to Hakyll",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2023-05-04T00:00+00:00",
+  "dateModified":"2023-05-04T00:00+00:00",
+  "description":"I've just finished migrating this site from Jekyll to
+Hakyll. The only noticeable changes are: slightly prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using Pandoc. I paid
+special attention to preserving the Atom feed identifiers so that feed readers aren't
+impacted.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/jekyll-to-hakyll"
+  },
+  "url": "https://blog.ielliott.io/jekyll-to-hakyll"
+}
+</script>
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+
+  <section>
+    
+
+    <article>
+  <h1>Migrating from Jekyll to Hakyll</h1>
+  <p class="date"> 4 May, 2023</p>
+  <div class="intro-wrapper">
+<div class="intro">
+<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
+<a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
+special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
+impacted.</p>
+<p>You can find the source code at <a href="https://github.com/LightAndLight/lightandlight.github.io/" class="uri">https://github.com/LightAndLight/lightandlight.github.io/</a>.</p>
+</div>
+<div class="contents">
+<h3>
+Contents
+</h3>
+<ul style="list-style-type: none; padding-left: 0;">
+<li>
+<a href="#background">Background</a>
+</li>
+<li>
+<a href="#changes">Changes</a>
+</li>
+<ul style="list-style-type: none; padding-left: 1em;">
+<li>
+<a href="#prettier-urls">Prettier URLs</a>
+</li>
+<li>
+<a href="#mathml-support">MathML support</a>
+</li>
+<li>
+<a href="#syntax-highlighting">Syntax highlighting</a>
+</li>
+</ul>
+<li>
+<a href="#thoughts">Thoughts</a>
+</li>
+</ul>
+</div>
+</div>
+<h2 id="background">Background</h2>
+<p>I’ve been using Jekyll to generate my blog because that’s what <a href="https://pages.github.com/">GitHub
+Pages</a> recommended when I first set things up. Recently I’ve been working
+on a math-heavy post, and I decided that I wanted <a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a>
+support for this site. I started exploring possible solutions, and found <a href="https://github.com/jgm/texmath"><code>texmath</code></a>,
+which I then learned is used in <a href="https://pandoc.org/">Pandoc</a> to <a href="https://pandoc.org/MANUAL.html#math-rendering-in-html">convert TeX to
+MathML</a>. I know Hakyll has good Pandoc support, and
+Haskell is one of my main languages, so I decided to make the switch<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<h2 id="changes">Changes</h2>
+<h3 id="prettier-urls">Prettier URLs</h3>
+<p>Change: removed trailing slashes from many blog page URLs (e.g.
+from <code>https://blog.ielliott.io/test-post/</code> to <code>https://blog.ielliott.io/test-post</code>).</p>
+<p>Static site generators create HTML files, which typically have file paths ending in <code>.html</code>. Web servers
+often map URL paths to filesystem paths to serve files, leading to many URLs ending in
+<code>.html</code>. I don’t like this; <code>.html</code> offers me no useful
+information. And if it <em>does</em> coincide with the resource’s file
+type, <a href="https://www.w3.org/DesignIssues/NameMyth.html#Why">that is subject to change</a>.</p>
+<p>My Jekyll-based site had “extension-less URLs” (which I call “pretty URLs”), but I
+consistently used a trailing slash at the end of every URL (e.g.
+<code>https://blog.ielliot.io/test-post/</code>). These days I prefer to use a trailing
+slash to signify a “directory-like resource”, under which other resources are “nested”. This aligns with the convention where web servers serve <code>/index.html</code> when <code>/</code> is
+requested. My blog posts don’t need an index because they’re self contained, so their URLs shouldn’t
+have a trailing slash.</p>
+<p><a href="https://rsp.github.io/gh-pages-no-extension/index">GitHub Pages supports extensionless HTML pages</a>,
+serving file <code>x.html</code> when <code>x</code> is requested, so I removed the trailing slash from each page’s
+canonical path and make Hakyll generate a file ending in <code>.html</code> at that path
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L127"><code>site.hs#L127</code></a>,
+<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L322-L333"><code>site.hs#L322-L333</code></a>).</p>
+<p>By default, Hakyll’s <code>watch</code> command doesn’t support pretty URLs. For a little while, I manually
+added <code>.html</code> to the URL in the address bar whenever I clicked a link in my site’s preview. I got sick of
+this and changed the configuration to resemble GitHub Pages’ pretty URL resolution rules
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L30-L55"><code>site.hs#L30-L55</code></a>).
+I realised how fortunate it was that I could make this change; the relevant Hakyll changes were only
+<a href="https://hackage.haskell.org/package/hakyll/changelog#hakyll-41600-2023-04-27">released a week ago!</a></p>
+<h3 id="mathml-support">MathML support</h3>
+<p>Changes:</p>
+<ul>
+<li>Equations are compiled to MathML</li>
+<li>MathJax is never automatically loaded</li>
+<li>Browsers with poor MathML support display a warning and some options for improvement</li>
+</ul>
+<p>I’m becoming more aware of sites that use unnecessary JavaScript. I realised that my blog’s use of
+MathJax for client-side equation rendering was an example of this. The equations on my blog are static; all the information required to
+render them is present when I generate the site, so I should be able to compile the equations once and
+serve them to readers. Client-side MathJax is
+better suited for fast feedback on dynamic equations, like when someone types an equation into a text
+box.</p>
+<p>I played with compiling LaTeX equations to SVGs
+(<a href="https://github.com/LightAndLight/latex4web/blob/552cf33a02b9644ca4cd6987d920af88e2759e95/latex2svg.py"><code>latex2svg.py</code></a>,
+<a href="https://github.com/LightAndLight/latex4web/blob/552cf33a02b9644ca4cd6987d920af88e2759e95/latex2svg.m4"><code>latex2svg.m4</code></a>),
+but realised it would be hard to make that
+<a href="https://www.w3.org/WAI/fundamentals/accessibility-intro/">accessible</a>. I then
+came across <a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a> and realised that it was the right solution.</p>
+<p>MathML <a href="https://caniuse.com/mathml">still isn’t ubiquitous</a>, so I added a <a href="https://github.com/LightAndLight/lightandlight.github.io/blob/2124670c349ce879a441ea01b19cbdfe42c031bf/js/mathml-polyfill.js">polyfill
+script</a>
+based on <a href="https://github.com/fred-wang/mathml-warning.js" class="uri">https://github.com/fred-wang/mathml-warning.js</a>. If you view
+a math post in a web browser with limited MathML support, you’ll be prompted to
+improve the experience by loading external resources:</p>
+<p><img src="./images/mathml-warning.png" alt="Screenshot of a warning message for browsers with poor
+MathML support. The warning says, &quot;This page uses MathML, which your browser doesn't fully
+support.&quot; Below that, there are 3 options: &quot;Load MathJax&quot; (currently selected), &quot;Apply
+mathml.css&quot;, and &quot;Do nothing&quot;. Under those, there is a checkbox (unchecked) labelled
+&quot;Remember choice for 30 days&quot;. At the bottom, there are two buttons: &quot;Ignore&quot;
+and &quot;Save&quot;." style="max-width: 100%" /></p>
+<h3 id="syntax-highlighting">Syntax highlighting</h3>
+<p>Change: slightly different syntax highlighting.</p>
+<p>Pandoc does syntax highlighting differently to Jekyll, and I prefer Jekyll’s output. I’ll explain
+why in another post. The consequence is that I had to rewrite my syntax highlighting stylesheet, and
+code might look a little different due to the way Pandoc marks it up.</p>
+<h2 id="thoughts">Thoughts</h2>
+<p>I had to reimplement a few things that Jekyll did for
+me, like the <a href="/sitemap.xml">sitemap</a>
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L196-L206"><code>site.hs#L196-206</code></a>)
+and previous/next post links
+(<a href="https://github.com/LightAndLight/lightandlight.github.io/blob/a29bac1b084b86abe43e28c4062ca963d0647b98/site.hs#L240-L260"><code>site.hs#L240-L260</code></a>).
+I didn’t have to create the Atom feed from scratch, though: <a href="https://hackage.haskell.org/package/hakyll-4.16.0.0/docs/Hakyll-Web-Feed.html">Hakyll has a module for that</a>. The whole process was pretty involved (a few days of work) and I
+think I only had the appetite for it because I’m currently not working.</p>
+<p>This is the most time I’ve spent working on a Hakyll site, and I think I’ve crossed an “inflection
+point” in my understanding of the library. I can now build features from scratch instead of searching for recipes on the internet. Normally I would approach a static site generator with some impatience,
+wanting to “get things done” so that I can return to what I find interesting. This time around, I
+decided to do a deep dive and I gained a lot of experience.</p>
+<p>I’m glad I made the switch. While Pandoc has a few annoying issues, I’m not
+discouraged from fixing them like I would be if I found a problem with Jekyll.
+Being proficient with Haskell, fixing these issues would just be a variation on normal software
+development for me.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Also, there were no satisfying search results for how to do this with Jekyll.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+  <footer>
+    <p>
+      
+      <a href="/web-resources-i-enjoy">Web Resources I Enjoy - Previous</a>
+      
+      |
+      
+      <span>Newest</span>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming">programming</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+
+  <script>feather.replace()</script>
+</body>
+
+</html>
