@@ -261,7 +261,7 @@ footer {
     flex-basis: fit-content;
 }
 
-.contents {
+#toc {
     background: #e9e9f2;
     padding: 1em;
     margin-left: 1em;
@@ -270,8 +270,13 @@ footer {
     white-space: nowrap;
 }
 
-.contents ul {
+#toc ul {
     margin: 0;
+    list-style-type: none;
+}
+
+#toc li>ul {
+    margin-left: 1em;
 }
 
 @media (max-width: 800px) {
@@ -282,11 +287,6 @@ footer {
 
     .intro-wrapper {
         flex-direction: column;
-    }
-
-    .contents-wrapper {
-        min-width: 100%;
-        margin: 0;
     }
 }
 

@@ -18,19 +18,7 @@ tags:
 
   </div>
 
-  <div class="contents">
-    <h3>Contents</h3>
-    <ul style="list-style-type: none; padding-left: 0;">
-      <li><a href="#background">Background</a></li>
-      <li><a href="#changes">Changes</a></li>
-      <ul style="list-style-type: none; padding-left: 1em;">
-        <li><a href="#prettier-urls">Prettier URLs</a></li>
-        <li><a href="#mathml-support">MathML support</a></li>
-        <li><a href="#syntax-highlighting">Syntax highlighting</a></li>
-      </ul>
-      <li><a href="#thoughts">Thoughts</a></li>
-    </ul>
-  </div>
+  <div id="toc"><!-- generated --></div>
 </div>
 
 ## Background

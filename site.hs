@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -13,11 +14,13 @@ import Data.Time.Clock (UTCTime, getCurrentTime)
 import Data.Time.Format (defaultTimeLocale, formatTime)
 
 -- use the "With" variants of these functions instead
+
+import Data.Text (Text)
 import Hakyll hiding (pandocCompiler, readPandoc, writePandoc)
 import Network.Wai.Application.Static (StaticSettings (..))
 import System.Directory (doesFileExist)
 import System.FilePath (dropExtension, takeBaseName, takeExtension, (<.>), (</>))
-import Text.Pandoc (Block (..), Inline (..), Pandoc (..), nullAttr, readHtml, runPure)
+import Text.Pandoc (Block, Inline (..), Pandoc (..), nullAttr, readHtml, runPure)
 import qualified Text.Pandoc as Pandoc
 import Text.Pandoc.Options
 import Text.Pandoc.Walk (query, walk)
@@ -53,6 +56,36 @@ withPrettyUrls config =
                       else settings.ssGetMimeType file
               }
     }
+
+data BreakOn a b
+  = Found {prefix :: [a], target :: b, suffix :: [a]}
+  | Missing [a]
+
+breakOn :: (a -> Maybe b) -> [a] -> BreakOn a b
+breakOn predicate items =
+  case items of
+    [] ->
+      Missing []
+    item : items' ->
+      case predicate item of
+        Nothing ->
+          case breakOn predicate items' of
+            Found{prefix, target, suffix} ->
+              Found{prefix = item : prefix, target, suffix}
+            Missing items'' ->
+              Missing (item : items'')
+        Just item' ->
+          Found{prefix = [], target = item', suffix = items'}
+
+separateBy :: (a -> Maybe b) -> [a] -> ([a], [(b, [a])])
+separateBy predicate items =
+  case breakOn predicate items of
+    Missing items' ->
+      (items', [])
+    Found{prefix, target, suffix} ->
+      case separateBy predicate suffix of
+        (prefix', suffix') ->
+          (prefix, (target, prefix') : suffix')
 
 main :: IO ()
 main = do
@@ -132,7 +165,10 @@ main = do
       compile $ do
         identifier <- getUnderlying
 
-        postPandocItem <- (fmap . fmap) linkHeaders . readPandocWith pandocReaderOptions =<< getResourceBody
+        postPandocItem <- do
+          document <- readPandocWith pandocReaderOptions =<< getResourceBody
+          pure $ linkHeaders . tableOfContents <$> document
+
         post <- saveSnapshot "content" $ writePandocWith pandocWriterOptions postPandocItem
 
         excerpt <- saveSnapshot "excerpt" =<< getExcerpt identifier postPandocItem
@@ -232,12 +268,96 @@ linkHeaders =
   walk @Block
     ( \block ->
         case block of
-          Header level attr@(identifier, _classes, _attributes) content
+          Pandoc.Header level attr@(identifier, _classes, _attributes) content
             | level > 1
             , not (Text.null identifier) ->
-                Header level attr [Link nullAttr content ("#" <> identifier, "")]
+                Pandoc.Header level attr [Link nullAttr content ("#" <> identifier, "")]
           _ -> block
     )
+
+tableOfContents :: Pandoc -> Pandoc
+tableOfContents document =
+  walk @Block
+    ( \block ->
+        case block of
+          Pandoc.Div attr@("toc", _classes, _attributes) _ ->
+            Pandoc.Div
+              attr
+              -- This breaks if I use `Pandoc.Header 3 nullAttr [Str "Contents"]`
+              -- I don't know why.
+              [ Pandoc.RawBlock "html" "<h3>Contents</h3>"
+              , contents
+              ]
+          _ -> block
+    )
+    document
+ where
+  contents =
+    fromContents . toContents $
+      query @Block
+        ( \block -> case block of
+            Pandoc.Header{} -> [block]
+            _ -> mempty
+        )
+        document
+
+data Contents = Header
+  { level :: Int
+  , id :: Text
+  , classes :: [Text]
+  , attrs :: [(Text, Text)]
+  , content :: [Inline]
+  , children :: [Contents]
+  }
+  deriving (Eq, Show)
+
+toContents :: [Block] -> [Contents]
+toContents = go 2
+ where
+  go :: Int -> [Block] -> [Contents]
+  go level =
+    fmap
+      ( \((headerLevel, (identifier, classes, attrs), content), blocks) ->
+          let omitChildren =
+                case lookup "toc:omit_children" attrs of
+                  Just value ->
+                    case value of
+                      "true" ->
+                        True
+                      "false" ->
+                        False
+                      _ ->
+                        error $ "invalid contents:omit_children value: " <> Text.unpack value
+                  Nothing ->
+                    False
+           in Header
+                headerLevel
+                identifier
+                classes
+                attrs
+                content
+                (if omitChildren then [] else go (level + 1) blocks)
+      )
+      . snd
+      . separateBy
+        ( \case
+            Pandoc.Header headerLevel attrs content
+              | level == headerLevel ->
+                  Just (headerLevel, attrs, content)
+            _ -> Nothing
+        )
+
+fromContents :: [Contents] -> Block
+fromContents contents =
+  Pandoc.BulletList $
+    ( \content ->
+        Pandoc.Plain [Link nullAttr content.content ("#" <> content.id, "")]
+          : case content.children of
+            [] -> []
+            _ ->
+              [fromContents content.children]
+    )
+      <$> contents
 
 postInfoCtx :: Context String
 postInfoCtx =
@@ -293,7 +413,14 @@ pandocReaderOptions :: ReaderOptions
 pandocReaderOptions =
   defaultHakyllReaderOptions
     { readerExtensions =
-        enableExtension Ext_backtick_code_blocks
+        -- Syntax for adding attributes to Markdown elements.
+        -- `tableOfContents` uses this to omit a heading's children from the contents listing.
+        enableExtension Ext_header_attributes
+          .
+          -- Uses `Div` blocks for `<div>` tags so that I can post-process them.
+          -- See `tableOfContents` for an example.
+          enableExtension Ext_native_divs
+          . enableExtension Ext_backtick_code_blocks
           . enableExtension Ext_markdown_in_html_blocks
           . enableExtension Ext_auto_identifiers
           . enableExtension Ext_gfm_auto_identifiers
@@ -381,7 +508,7 @@ getExcerpt identifier postPandocItem = do
               . getFirst
               . query
                 ( \block -> case block of
-                    Para{} -> First $ Just block
+                    Pandoc.Para{} -> First $ Just block
                     _ -> mempty
                 )
           )
