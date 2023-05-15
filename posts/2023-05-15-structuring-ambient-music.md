@@ -128,3 +128,8 @@ alongside new textural sounds, punctuated by a different instrument, or undernea
 Maybe one goal I can keep in mind when composing an ambient song is: variety. Is this "song" just a single chord on a single
 intrument? It could probably do with more variation. I have to balance this against being too busy or incoherent. Using lots
 of extra sounds could provide too much stimulation, and there might be such a huge variety as to seem randomly chosen and inserted.
+
+Variety is something I have trouble with in general. Metal music is built around guitars
+and drums, which constrains the composition. In the kinds of ambient / environmental / soundtrack music I'm thinking about, the
+sound possibilities are endless. So if I should add interesting sounds to my music, how do I decide what to add? I'll address this
+in a different post.
