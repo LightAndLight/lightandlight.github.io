@@ -133,3 +133,14 @@ Variety is something I have trouble with in general. Metal music is built around
 and drums, which constrains the composition. In the kinds of ambient / environmental / soundtrack music I'm thinking about, the
 sound possibilities are endless. So if I should add interesting sounds to my music, how do I decide what to add? I'll address this
 in a different post.
+
+---
+
+Here are some links discussing structure in music, and its lack in ambient music:
+
+* https://www.openculture.com/2018/04/hear-the-very-first-pieces-of-ambient-music-erik-saties-furniture-music-circa-1917.html
+* https://pitchfork.com/features/interview/10023-a-conversation-with-brian-eno-about-ambient-music/
+* https://mtosmt.org/issues/mto.22.28.3/mto.22.28.3.nobile.html
+
+A word that came up a few times is "teleological". Applied to music in the sense that the song has a purpose / has important features
+that are somehow the point of the song / has a distinctive beginning, middle end / that it's "going somewhere".
