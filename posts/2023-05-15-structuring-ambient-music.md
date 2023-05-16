@@ -138,9 +138,56 @@ in a different post.
 
 Here are some links discussing structure in music, and its lack in ambient music:
 
+* https://www.reddit.com/r/musictheory/comments/gnjto8/does_ambient_music_have_a_form/
 * https://www.openculture.com/2018/04/hear-the-very-first-pieces-of-ambient-music-erik-saties-furniture-music-circa-1917.html
 * https://pitchfork.com/features/interview/10023-a-conversation-with-brian-eno-about-ambient-music/
 * https://mtosmt.org/issues/mto.22.28.3/mto.22.28.3.nobile.html
+* http://music.hyperreal.org/artists/brian_eno/MFA-txt.html
+  * The rest of the liner notes are worth reading: http://music.hyperreal.org/artists/brian_eno/liners.html
+    * http://music.hyperreal.org/artists/brian_eno/onland-txt.html seems to get at what I mean when
+      I talk about music as "environmental". Important for video game music that situates the player.
 
 A word that came up a few times is "teleological". Applied to music in the sense that the song has a purpose / has important features
 that are somehow the point of the song / has a distinctive beginning, middle end / that it's "going somewhere".
+
+Aside:
+
+* [this](https://www.mtosmt.org/issues/mto.11.17.3/mto.11.17.3.osborn.html) was interesting
+  read about through-composition in metal.
+* *Subverting the Verse—Chorus Paradigm: Terminally Climactic Forms in Recent Rock Music*
+  (<https://doi.org/10.1525/mts.2013.35.1.23>) gives a "ladder" of memorability for sections.
+  If a song has a particularly memorable / enjoyable section, then the "purpose" of the song can be
+  about enjoying that section within an appropriate context. The song is "leading up to" its most
+  memorable moments. I think this relates to how people use "teleological".
+
+  There's something here relating to Brian Eno's "narrativeless" description of ambient music
+  ([link](https://pitchfork.com/features/interview/10023-a-conversation-with-brian-eno-about-ambient-music/)):
+  
+  > For me, the central idea was about music as a place you go to. Not a narrative, not a sequence
+  > that has some sort of teleological direction to it—verse, chorus, this, that, and the other.
+  
+  Combined with a sentence from Music for Airports ([link](http://music.hyperreal.org/artists/brian_eno/MFA-txt.html)):
+
+  > Ambient Music must be able to accomodate many levels of listening attention without enforcing
+  > one in particular; it must be as ignorable as it is interesting.
+
+  The interestingness of an ambient piece could be time-independent. I stopped listening to metal
+  while working because my favourite parts of a song will "demand" my attention, and I'll find
+  myself listening to the song instead of concentrating on my work. Rather than interestingness / memorability
+  being a function of time, an ambient song could have it as a function of attention.
+
+Aside:
+
+* The "oblique strategies" - http://www.rtqe.net/ObliqueStrategies/OSintro.html - Brian Eno and
+  Peter Schmidt
+
+  A really interesting way of artists trying to help themselves remember different perspectives.
+
+  * [Editions](http://www.rtqe.net/ObliqueStrategies/Edition1-3.html)
+    * [1](http://www.rtqe.net/ObliqueStrategies/Ed1.html)
+
+* Documentary on imaginary landscapes with Brian Eno: <https://www.openculture.com/2012/05/brian_eno_on_creating_music_and_art_as_imaginary_landscapes_1989.html>
+  * He mentions that the inifinite variety of a synth is sort of useless, and prefers something that
+    does a few things very well. (02:49)
+
+    "What you need are fewer possiblilties that are more interesting."
