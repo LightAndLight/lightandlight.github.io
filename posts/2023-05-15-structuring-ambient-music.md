@@ -134,6 +134,27 @@ and drums, which constrains the composition. In the kinds of ambient / environme
 sound possibilities are endless. So if I should add interesting sounds to my music, how do I decide what to add? I'll address this
 in a different post.
 
+### Horizontal and vertical
+
+Guy Michelmore made a [video](https://www.youtube.com/watch?v=f-Q8JC3VcS4) about writing music for games. He mentions "horizontal
+interactivity" and "vertical interactivity". Rick Beato [interviewed Brian Schmidt](https://www.youtube.com/watch?v=xZpE_5EEfT4)
+who brought up the same concepts as "horizontal sequencing" and "vertical sequencing". Game music responds to game events,
+and the two main categories of response are: moving to a new musical section (horizontal) or layering more parts onto the existing
+section (vertical).
+
+In a sense, music composed in this manner recieves its temporal structure from the game events - player action, non-player reactions,
+condition triggers, etc. There's a narrative played out on screen which is reflected to some extent in the music. The music has
+timbral / atmospheric / rhythmic structure to match the game location, the sort of events that are happening, and according to
+the emotional reaction the composer wants to elicit.
+
+Aside: This reminds me of Brian Eno's generative music ([good playable demos here](https://reverbmachine.com/blog/deconstructing-brian-eno-music-for-airports/)).
+Composed small phrases and played them on chaotically overlapping loops, so that the music would continue to play not-yet-heard
+phrases. Interactive game music replaces the random / chaotic choice of phrases with a more coherent choice based on game location
+and events.
+
+So maybe one way to pre-define a structure for myself is to define an environment, and then explore some events that play out in
+the environment.
+
 ---
 
 Here are some links discussing structure in music, and its lack in ambient music:
