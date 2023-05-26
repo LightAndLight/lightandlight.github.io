@@ -1408,11 +1408,7 @@ $$
 (X * \; \mathbb{A} \rightarrow_{Nom} Y) \rightarrow 
 X \rightarrow_{Nom} [\mathbb{A}](Y)
 \\
-\text{bind}(f)(x) = f(x, \text{fresh}_X(x))
-\\
-\; \; \text{where}
-\\
-\; \; \; \; \text{fresh}_X \; : \; \forall (x \in X). \; \exists (a \in \mathbb{A}). \; a \# x
+\text{bind}(f)(x) = \langle a \rangle f(x, a) \text{ where } a \; \# \; (f, x)
 \\ \; \\
 \text{bind}^{-1} \; : \; 
 (X \rightarrow_{Nom} [\mathbb{A}](Y)) \rightarrow
@@ -1422,11 +1418,13 @@ X * \; \mathbb{A} \rightarrow_{Nom} Y
 \\
 \; \; \text{where}
 \\
-\; \; \; \; -{} \; @ -{} \; : \; [\mathbb{A}]X \times \mathbb{A} \rightarrow X
+\; \; \; \; -{} \; @ -{} \; : \; [\mathbb{A}]X * \mathbb{A} \rightarrow X
 \\
 \; \; \; \; @(\langle a \rangle x, a') = (a \; a') \cdot x
 \end{array}
 $$
+
+TODO: okay,  progress by fixing the definition of bind. now follow it through
 
 <div style="display: flex; flex-direction: row; justify-content: center;">
 
@@ -1434,9 +1432,17 @@ $$
 \begin{array}{l}
 \text{bind}(\text{bind}^{-1}(f))(x)
 \\
-= \text{bind}^{-1}(f)(x, \text{fresh}_X(x))
+= \text{bind}^{-1}(f)(x, \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x))
 \\
-= f(x) \; @ \; \text{fresh}_X(x)
+= f(x) \; @ \; \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x)
+\\
+\; \; \; \; \text{requires } \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; f(x)
+\\
+\; \; \; \; \text{requires } \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; f \wedge \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; x
+\\
+\; \; \; \; \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; x \text{ true by definition}
+\\
+\; \; \; \; \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; f \text{ true by definition}
 \\
 = \; ??? \; (\text{TODO})
 \\
@@ -1450,7 +1456,7 @@ $$
 \\
 = \text{bind}(f)(x) \; @ \; a
 \\
-= f(x, \text{fresh}_X(x)) \; @ \; a
+= f(x, \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x)) \; @ \; a
 \\
 = \; ??? (\text{TODO})
 \\
