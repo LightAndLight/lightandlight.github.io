@@ -49,14 +49,27 @@ blockquote {
     border: 1px solid #d0d0dd;
     border-radius: 0.25em;
     font-style: italic;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: justify;
+    hyphens: auto;
 }
 
 blockquote::before {
     content: '';
     position: absolute;
-    width: 0.25em;
+    width: 0.25rem;
     height: 100%;
     background-color: #4fb0c6;
+}
+
+blockquote > * {
+    margin-left: 1.25em;
+    margin-right: 1.25em;
+}
+
+blockquote > *:first-child {
+    margin-top: 1rem;
 }
 
 .centered {
@@ -67,7 +80,7 @@ blockquote::before {
     font-size: 3em;
 }
 
-h1, h2, h3, h4, h5, p, ul, ol, pre {
+h1, h2, h3, h4, h5, p, ul, ol, pre, blockquote {
     margin-top: 0;
     margin-bottom: 1rem;
 }
@@ -107,7 +120,6 @@ p {
 }
 
 p, li {
-    hyphens: auto;
     word-break: break-word;
 }
 
@@ -279,11 +291,6 @@ footer {
 }
 
 @media (max-width: 800px) {
-    p, li {
-        margin-left: 0;
-        margin-right: 0;
-    }
-
     .intro-wrapper {
         flex-direction: column;
     }
