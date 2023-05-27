@@ -1,6 +1,7 @@
 ---
 title: Gear Acquisition Syndrome
 permalink: /gear-acquisition-syndrome
+chinese: true
 ---
 
 In the past few years I've become wary of a certain relationship dynamic with my artistic hobbies
@@ -9,9 +10,28 @@ some new art-related material. It's very easy to spend hours doodling with a new
 in a fresh journal, or twiddling with a synth I've just bought. The next day, though, the new tool
 is a little less exciting, and so on, until it's as normal as everything else.
 
-In situations like these it seems easy to mistake the excitement of novelty for actual interest in
-an artistic process. I find it kind of scary to imagine accidentally convincing myself that creativity
-and motivation follows from having bought something new.
+In situations like these it seems easy to mistake the excitement of novelty for actual interest
+in an artistic process. I find it kind of scary to imagine accidentally convincing myself that
+creativity and motivation follows from having bought something new. Here's an
+[archetypal](https://en.wikipedia.org/wiki/Archetype)
+story of the situation I'm trying to avoid, based on my experiences with this subject across a
+few hobbies:
+
+> Painting is a large part of my identity. I think of myself as *a painter*,
+> and the idea that I create paintings is almost existentially important to me. If I'm a painter and I don't paint,
+> then *what even am I*? There's one problem: I haven't painted anything in months. These days I never have any good ideas,
+> and I'm rarely inspired or motivated to pick up a brush. One day I stumble across a video of someone painting with
+> [gouache](https://en.wikipedia.org/wiki/Gouache). I feel something when I see that painting (inspiration, maybe?)
+> and I've never used gouache before, so I head out to the art store to buy some. I arrive home excited to try these
+> new paints. In the hours that follow I have fun fooling around, and the part of me that sees myself as a painter
+> is satisfied: I'm doing the thing that I'm supposed to be doing. As days and weeks pass the excitement fades, and
+> the pressures of everyday life eclipse my painting practise. One day I realise that I haven't painted anything for a
+> while. This realisation is as uncomfortable as ever: I *am* a painter, so if I haven't been painting then what have
+> I been doing with myself? I jump on Instagram to look for some inspiration, and the cycle repeats.
+
+There's a lot going on there: [self-concept](https://en.wikipedia.org/wiki/Self-concept), motivation,
+shame, creativity, and [conditioning](https://en.wikipedia.org/wiki/Operant_conditioning) all interacting.
+Right now I'm most interested in the way "getting new stuff" relates to motivation and creativity.
 
 This topic came to mind recently after reading
 ["When the Cymbals Come In" by Thorsten Ball](https://registerspill.thorstenball.com/p/when-the-cymbals-come-in)
@@ -23,47 +43,75 @@ defines it very nicely:
 > to buy and own instruments and equipment as an anticipated catalyst of creative energy and bringer of happiness.
 
 Parts of GAS describe the relationship toward my tools that I've been trying to avoid. It's
-relieving to find a concise, searchable term that gets me into the same "informational neighbourhood".
+relieving to find a concise, searchable term that gets me into the same "informational neighbourhood". I found two
+interesting articles while exploring the topic through Google:
 
-Another component of GAS is a kind of compulsion to collect, like for a few of the "gassers" described in
-[this GuitarWorld article](https://www.guitarworld.com/features/gear-acquisition-syndrome),
-and [this article](http://sdarchive.com/gas.html) by [Walter Becker](https://en.wikipedia.org/wiki/Walter_Becker).
-I've never had this problem. My concern is around using "gear acquisition" as a twisted crutch to produce
-*some kind* of creative output.
+* [G.A.S.](http://sdarchive.com/gas.html) by [Walter Becker](https://en.wikipedia.org/wiki/Walter_Becker)
 
-Here's what I'm imagining:
+  [This Guitar World article](https://www.guitarworld.com/features/gear-acquisition-syndrome) suggests that this 
+  essay from 1996 popularised the terms "Gear Acquisition Syndrome" and "GAS".
 
-Suppose that some creative pursuit (say, painting) is a large part of my identity. I think of myself as *a painter*,
-and the idea that I create paintings is almost existentially important to me. If I'm a painter and I don't paint,
-then *what even am I*? There one problem: I haven't painted anything in months. These days I never have any good ideas,
-and I'm rarely inspired or motivated to pick up a brush. One day I stumble across a video of someone painting with
-[gouache](https://en.wikipedia.org/wiki/Gouache). I feel something when I see that painting&mdash;inspiration, maybe?&mdash;
-and I've never used gouache before, so I head out to the art store to buy some. I arrive home excited to try these
-new paints. In the hours that follow I have fun fooling around, and the part of me that sees myself as a painter
-is satisfied: I'm doing the thing that I'm supposed to be doing. As days and weeks pass the excitement fades, and
-the pressures of everyday life eclipse my painting practise. One day I realise: 
+* ["The Science of Gear Acquisition Syndrome" by Joshua Sariñana](https://www.joshuasarinana.com/the-science-of-gear-acquisition-syndrome)
 
-There have been times when I felt like I "should be" create things
+  A neuroscientific, psychological, and slightly philosophy take on GAS from a photography perspective. I most
+  enjoyed their take on the relationship between creativity and anxiety. Stress, fear, and shame around creative projects
+  lead to [avoidance](https://en.wikipedia.org/wiki/Avoidance_coping)[^ugh-fields], and "gear acquisition" temporarily masks
+  these emotions with a burst of excitement.
 
-* Danger of confusing the excitement of novelty with enjoyment of the craft
-  * Spending hours drawing on the new paper I bought, playing with some new paints, or fiddling with a new synthesiser.
-* A heuristic I use for working around this
-  * Must be continuously practising with the tools you have
-    * Tools serve the art, rather than the art serving the tools
-  * Improve skills, especially perception, until you clearly notice how your current tools are limiting you in your projects
-  * Then acquire new tools that help you overcome these new limitations
-  * When this heuristic is working for me, getting the new tool feels more like "relief" instead of "excitement"
-    * I'm already doing the the art, so I'm enjoying the feeling of being able to do it better
-    * Rather than being excited to *start* doing the art because I've just gotten this new tool
-* "Gear Acquisition Syndrome" - learned from 
-  * Results from Google front page
-    * According to a [Guitar World article on the subject](https://www.guitarworld.com/features/gear-acquisition-syndrome),
-      the phrase was first used by  in an article titled ["G.A.S. Attack"](http://sdarchive.com/gas.html).
-    * ["The Science of Gear Acquisition Syndrome" by Joshua Sariñana](https://www.joshuasarinana.com/the-science-of-gear-acquisition-syndrome)
-      has a neuroscientific and philosophical take on GAS in the context of photography
-      * Book suggestion: Art & Fear by David Bayles and Ted Orland
-    * Another nice article: https://www.sessions.edu/notes-on-design/dealing-with-gas-gear-acquisition-syndrome/
-      * Summarise and extract favourite parts
-* How might it show up in software?
-  * Using new tools (editors, terminals, etc.)
-  * Using new tech stack
+On my creative journey I've developed some heuristics to avoid GAS. Being heuristics, they don't always work, and
+being fallible, I don't always follow them. I still think they're important ways to deal with the problem.
+
+* Do the thing a lot without acquiring any gear
+
+  I have to demonstrate a commitment to the activity before I think about buying anything to support it. I place a lot of
+  weight on [enjoying the process](https://blog.ielliott.io/learning-a-craft#find-joy-in-the-process), and when trying
+  something new it's easy to confuse the excitement of novelty with enjoyment of the activity. New toys compounds this.
+  In the beginning it's more important to make a habit out of the activity, or discover that I don't actually like it.
+  
+  Example: You've just started rock climbing with friends. Use the rental shoes at the climbing gym for a few months before
+  buying your own.
+  
+* If you physically need gear to do the thing, get the cheapest gear possible with the least research
+
+  The "least research" part is important. As a beginner I can't actually percieve most of the differences
+  between similar tools. Perceptual ability and taste only develop as my skills improve. It's easy to get
+  caught in ["analysis paralysis"](https://en.wikipedia.org/wiki/Analysis_paralysis) between gear that would
+  be indistinguishable in practise.
+
+  Example: You want to learn guitar. Use the crappy hand-me-down that your friend is giving away instead of buying
+  your favourite player's signature model.
+  
+* Wear it out
+
+  One measure of commitment to an activity is whether I'm wearing out my gear and using up my materials[^goodharts-law].
+  
+  TODO: more
+
+  Example: You use your cheap stand mixer at least twice a week and it's starting to fall apart. It's time to
+  think about getting a higher-quality model.
+  
+* A new tool should feel more relieving than exciting
+
+  As I become committed to an activity and improve my skills, I can start to notice *real* flaws and limitations
+  in my current tools. These are no reason to stop doing the thing, and I can continue to improve without
+  addressing them. My experience suggests *specific* properties I'd need from a different tool to overcome
+  the limitations of my current one. Crappy gear or not, I am going to do the thing anyway. So when I finally get
+  the better tool, I feel relief from the benefits of using it, rather than excitement or "inspiration" *to* use it.
+  
+  Example: Having played tennis weekly for the past 6 months with clunky hire racquets, you appreciate how light
+  and responsive your new one feels while playing.
+      
+P.S.
+
+When I told my girlfriend my girlfriend about "Gear Acquisition Syndrome", she taught me a
+Chinese phrase that has a similar meaning: "<span lang="zh">差生文具多</span>", which literally means "the poor student
+has lots of stationary". It's inspired by a hypothetical student who is not studying enough, so to
+motivate themselves they go shopping for stationary (instead of studying). A student who does well,
+on the other hand, can study at any time with the simplest of materials. The phrase is a meme on the
+Chinese internet and we watched a few funny videos about gym-goers with too much fitness gear, home
+cooks with too many pots, and so on.
+
+[^ugh-fields]: See also: ["Ugh Fields"](https://www.lesswrong.com/posts/EFQ3F6kmt4WHXRqik/ugh-fields)
+[^goodharts-law]: It's important that this stays a *measure*, rather than a *target*, in the sense of [Goodhart's Law](https://en.wikipedia.org/wiki/Goodhart%27s_law):
+    
+    > "When a measure becomes a target, it ceases to be a good measure"
