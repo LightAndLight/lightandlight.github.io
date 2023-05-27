@@ -26,6 +26,11 @@ body {
     width: 90%;
 }
 
+*[lang="zh"] {
+    font-family: "Noto Sans SC", sans-serif;
+    font-size: 0.9em;
+}
+
 a {
     color: #379392
 }
