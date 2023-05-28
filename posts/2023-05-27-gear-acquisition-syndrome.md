@@ -1,7 +1,7 @@
 ---
 title: Gear Acquisition Syndrome
 permalink: /gear-acquisition-syndrome
-date: 2023-05-28T16:36:00
+date: 2023-05-28T06:36:00Z
 chinese: true
 ---
 
