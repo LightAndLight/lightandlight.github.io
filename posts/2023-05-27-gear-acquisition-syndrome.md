@@ -4,8 +4,8 @@ permalink: /gear-acquisition-syndrome
 chinese: true
 ---
 
-In the past few years I've become wary of a certain relationship dynamic with my artistic hobbies
-like drawing and music production. It's this period of excitement and "motivation" after I've acquired
+Over the past few years I've become wary of a certain feeling related to my artistic hobbies
+like drawing and music production: the sense of excitement and "motivation" after I've acquired
 some new art-related material. It's very easy to spend hours doodling with a new marker, writing
 in a fresh journal, or twiddling with a synth I've just bought. The next day, though, the new tool
 is a little less exciting, and so on, until it's as normal as everything else.
@@ -14,7 +14,7 @@ In situations like these it seems easy to mistake the excitement of novelty for 
 in an artistic process. I find it kind of scary to imagine accidentally convincing myself that
 creativity and motivation follows from having bought something new. Here's an
 [archetypal](https://en.wikipedia.org/wiki/Archetype)
-story of the situation I'm trying to avoid, based on my experiences with this subject across a
+story of a situation I'm trying to avoid, based on my experiences with this subject across a
 few hobbies:
 
 > Painting is a large part of my identity. I think of myself as *a painter*,
@@ -32,6 +32,8 @@ few hobbies:
 There's a lot going on there: [self-concept](https://en.wikipedia.org/wiki/Self-concept), motivation,
 shame, creativity, and [conditioning](https://en.wikipedia.org/wiki/Operant_conditioning) all interacting.
 Right now I'm most interested in the way "getting new stuff" relates to motivation and creativity.
+
+## G.A.S.
 
 This topic came to mind recently after reading
 ["When the Cymbals Come In" by Thorsten Ball](https://registerspill.thorstenball.com/p/when-the-cymbals-come-in)
@@ -58,60 +60,60 @@ interesting articles while exploring the topic through Google:
   lead to [avoidance](https://en.wikipedia.org/wiki/Avoidance_coping)[^ugh-fields], and "gear acquisition" temporarily masks
   these emotions with a burst of excitement.
 
-On my creative journey I've developed some heuristics to avoid GAS. Being heuristics, they don't always work, and
-being fallible, I don't always follow them. I still think they're important ways to deal with the problem.
+## What to do about it?
 
-* Do the thing a lot without acquiring any gear
+I have some [heuristics](https://en.wikipedia.org/wiki/Heuristic) to avoid GAS. I don't always follow them (but I hope
+that writing them down will increase my accountability to the idea), and being heuristics they necessarily don't work
+for every situation. I'll present them here as advice to my future selves.
 
-  I have to demonstrate a commitment to the activity before I think about buying anything to support it. I place a lot of
-  weight on [enjoying the process](https://blog.ielliott.io/learning-a-craft#find-joy-in-the-process), and when trying
-  something new it's easy to confuse the excitement of novelty with enjoyment of the activity. New toys compounds this.
-  In the beginning it's more important to make a habit out of the activity, or discover that I don't actually like it.
+### Do the thing a lot
+
+Demonstrate a commitment to the activity before you think about buying anything to support it. I place a lot of
+weight on [enjoying the process](https://blog.ielliott.io/learning-a-craft#find-joy-in-the-process), and when trying
+something new it's easy to confuse the excitement of novelty with enjoyment of the activity. New toys compounds this.
+In the beginning it's more important to make a habit out of the activity, or discover that you don't actually like it.
+
+Example: You've just started rock climbing with friends. Use the rental shoes at the climbing gym for a few months before
+buying your own.
   
-  Example: You've just started rock climbing with friends. Use the rental shoes at the climbing gym for a few months before
-  buying your own.
-  
-* If you physically need gear to do the thing, get the cheapest gear possible with the least research
+### Wear it out
 
-  The "least research" part is important. As a beginner I can't actually percieve most of the differences
-  between similar tools. Perceptual ability and taste only develop as my skills improve. It's easy to get
-  caught in ["analysis paralysis"](https://en.wikipedia.org/wiki/Analysis_paralysis) between gear that would
-  be indistinguishable in practise.
+One measure of commitment to an activity is whether you're wearing out my gear and using up your materials.
+It's important that this stays a *measure*, rather than a *target*, in the sense of
+[Goodhart's Law](https://en.wikipedia.org/wiki/Goodhart%27s_law): "When a measure becomes a target, it ceases to be a good measure."
 
-  Example: You want to learn guitar. Use the crappy hand-me-down that your friend is giving away instead of buying
-  your favourite player's signature model.
+Example: You use your cheap stand mixer at least twice a week and it's starting to fall apart. It's time to
+think about getting a higher-quality model.
   
-* Wear it out
+### Keep it simple
 
-  One measure of commitment to an activity is whether I'm wearing out my gear and using up my materials[^goodharts-law].
-  
-  TODO: more
+If you physically need gear to do the thing, start with cheap gear and keep research to the minimum. As a beginner
+you can't percieve most of the differences between similar tools. Perceptual ability and taste only develop as your
+skills improve. It's easy to get caught in ["analysis paralysis"](https://en.wikipedia.org/wiki/Analysis_paralysis),
+comparing gear that would be indistinguishable to you in practise.
 
-  Example: You use your cheap stand mixer at least twice a week and it's starting to fall apart. It's time to
-  think about getting a higher-quality model.
-  
-* A new tool should feel more relieving than exciting
+Example: You want to learn guitar. Use the crappy hand-me-down that your friend is giving away instead of buying
+your favourite player's signature model.  
 
-  As I become committed to an activity and improve my skills, I can start to notice *real* flaws and limitations
-  in my current tools. These are no reason to stop doing the thing, and I can continue to improve without
-  addressing them. My experience suggests *specific* properties I'd need from a different tool to overcome
-  the limitations of my current one. Crappy gear or not, I am going to do the thing anyway. So when I finally get
-  the better tool, I feel relief from the benefits of using it, rather than excitement or "inspiration" *to* use it.
-  
-  Example: Having played tennis weekly for the past 6 months with clunky hire racquets, you appreciate how light
-  and responsive your new one feels while playing.
+### Relief over excitement
+
+As you become committed to an activity and your skills improve, you will start to notice *real* flaws and limitations
+in your current tools. These are no reason to stop doing the thing, and you can usually continue to improve without
+addressing them. At this point the experience you've gained will suggest *specific* properties you need from a different
+tool to overcome the limitations of your current one. Crappy gear or not, you are going to do the thing anyway. So when
+you finally get the better tool, you mostly feel relief from the benefits of using it, rather than excitement or "inspiration"
+*to* use it.
+
+Example: Having played tennis weekly for the past 6 months with clunky hire racquets, you appreciate how light
+and responsive your new one feels while playing.
       
-P.S.
+## Postscript
 
-When I told my girlfriend my girlfriend about "Gear Acquisition Syndrome", she taught me a
+When I told my girlfriend about "Gear Acquisition Syndrome", she taught me a
 Chinese phrase that has a similar meaning: "<span lang="zh">差生文具多</span>", which literally means "the poor student
-has lots of stationary". It's inspired by a hypothetical student who is not studying enough, so to
-motivate themselves they go shopping for stationary (instead of studying). A student who does well,
-on the other hand, can study at any time with the simplest of materials. The phrase is a meme on the
-Chinese internet and we watched a few funny videos about gym-goers with too much fitness gear, home
-cooks with too many pots, and so on.
+has lots of stationery". It's inspired by a hypothetical student who is not studying enough, so to
+get more motivation they go shopping for stationery (instead of studying). A student who does well,
+on the other hand, can study at any time with the simplest of materials. The phrase is an internet meme in China
+and we watched a few funny videos about gym-goers with too much fitness gear, home cooks with too many pots, and so on.
 
 [^ugh-fields]: See also: ["Ugh Fields"](https://www.lesswrong.com/posts/EFQ3F6kmt4WHXRqik/ugh-fields)
-[^goodharts-law]: It's important that this stays a *measure*, rather than a *target*, in the sense of [Goodhart's Law](https://en.wikipedia.org/wiki/Goodhart%27s_law):
-    
-    > "When a measure becomes a target, it ceases to be a good measure"
