@@ -26,11 +26,6 @@ body {
     width: 90%;
 }
 
-*[lang="zh"] {
-    font-family: "Noto Sans SC", sans-serif;
-    font-size: 0.9em;
-}
-
 a {
     color: #379392
 }
@@ -54,27 +49,14 @@ blockquote {
     border: 1px solid #d0d0dd;
     border-radius: 0.25em;
     font-style: italic;
-    margin-left: 0;
-    margin-right: 0;
-    text-align: justify;
-    hyphens: auto;
 }
 
 blockquote::before {
     content: '';
     position: absolute;
-    width: 0.25rem;
+    width: 0.25em;
     height: 100%;
     background-color: #4fb0c6;
-}
-
-blockquote > * {
-    margin-left: 1.25em;
-    margin-right: 1.25em;
-}
-
-blockquote > *:first-child {
-    margin-top: 1rem;
 }
 
 .centered {
@@ -85,7 +67,7 @@ blockquote > *:first-child {
     font-size: 3em;
 }
 
-h1, h2, h3, h4, h5, p, ul, ol, pre, blockquote {
+h1, h2, h3, h4, h5, p, ul, ol, pre {
     margin-top: 0;
     margin-bottom: 1rem;
 }
@@ -125,6 +107,7 @@ p {
 }
 
 p, li {
+    hyphens: auto;
     word-break: break-word;
 }
 
@@ -189,10 +172,6 @@ code {
     hyphens: none;
     font-family: "Source Code Pro", monospace;
     line-height: 145%;
-}
-
-math[display="block"] {
-    font-size: 1.2em;
 }
 
 pre>code {
@@ -282,7 +261,7 @@ footer {
     flex-basis: fit-content;
 }
 
-.contents {
+#toc {
     background: #e9e9f2;
     padding: 1em;
     margin-left: 1em;
@@ -291,18 +270,23 @@ footer {
     white-space: nowrap;
 }
 
-.contents ul {
+#toc ul {
     margin: 0;
+    list-style-type: none;
+}
+
+#toc li>ul {
+    margin-left: 1em;
 }
 
 @media (max-width: 800px) {
-    .intro-wrapper {
-        flex-direction: column;
+    p, li {
+        margin-left: 0;
+        margin-right: 0;
     }
 
-    .contents-wrapper {
-        min-width: 100%;
-        margin: 0;
+    .intro-wrapper {
+        flex-direction: column;
     }
 }
 
