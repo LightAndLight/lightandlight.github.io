@@ -51,6 +51,15 @@ Casey Muratori is a game developer. They've written a lot about API design, and
 I still benefit from re-reading posts such as [Semantic Compression](https://caseymuratori.com/blog_0015).
 Their posts on software performance also stand out in my mind.
 
+### Eric S. Raymond's technical essays
+
+<http://www.catb.org/esr/writings/>
+
+Eric S. Raymond (`esr`) is an old-school Unix hacker who's been publishing essays on the internet since the
+90s. I find a lot of value in their analysis of Unix technical culture and design principles. My
+favourite work is [The Art of Unix Programming](http://www.catb.org/esr/writings/taoup/), from which
+I continue to gain insights on software design.
+
 ### matklad's blog
 
 <https://matklad.github.io>
@@ -66,6 +75,17 @@ refactorable, understandable, efficient.
 Nikita Popov's blog. They have worked on the
 PHP VM and the LLVM compiler. I like it because they talk about fairly low-level programming
 language performance (interpreters/VMs and compiler performance).
+
+### Paul Graham's essays
+
+<http://www.paulgraham.com/articles.html>
+
+[Paul Graham](https://en.wikipedia.org/wiki/Paul_Graham_(programmer))'s essays touch on topics like software
+design, motivation, startup advice, and writing itself. Here are some that I enjoy:
+
+* [Programming Bottom-Up](http://www.paulgraham.com/progbot.html)
+* [Taste for Makers](http://www.paulgraham.com/taste.html)
+* [How to Work Hard](http://www.paulgraham.com/hwh.html)
 
 ## Visual Art
 
