@@ -2,6 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
+date: 2023-05-29
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -1424,27 +1425,19 @@ X * \; \mathbb{A} \rightarrow_{Nom} Y
 \end{array}
 $$
 
-TODO: okay,  progress by fixing the definition of bind. now follow it through
-
 <div style="display: flex; flex-direction: row; justify-content: center;">
 
 $$
 \begin{array}{l}
 \text{bind}(\text{bind}^{-1}(f))(x)
 \\
-= \text{bind}^{-1}(f)(x, \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x))
+= \langle a \rangle \; \text{bind}^{-1}(f)(x, a)
+\; \text{where } a \; \# \; (\text{bind}^{-1}(f), x)
 \\
-= f(x) \; @ \; \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x)
+= \langle a \rangle \; (f(x) \; @ \; a)
+\; \text{where } a \; \# \; (\text{bind}^{-1}(f), x)
 \\
-\; \; \; \; \text{requires } \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; f(x)
-\\
-\; \; \; \; \text{requires } \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; f \wedge \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; x
-\\
-\; \; \; \; \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; x \text{ true by definition}
-\\
-\; \; \; \; \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x) \; \# \; f \text{ true by definition}
-\\
-= \; ??? \; (\text{TODO})
+\text{TODO: here}
 \\
 = f(x)
 \end{array}
@@ -1456,7 +1449,11 @@ $$
 \\
 = \text{bind}(f)(x) \; @ \; a
 \\
-= f(x, \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x)) \; @ \; a
+= (\langle a' \rangle \; f(x, \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x))) \; @ \; a
+\; \text{where } a \; \# \; x \land a' \; \# \; (f, x)
+\\
+= (a \; a') \cdot f(x, \text{fresh}(f, x))
+\; \text{where } a \; \# \; x \land a' \; \# \; (f, x)
 \\
 = \; ??? (\text{TODO})
 \\
