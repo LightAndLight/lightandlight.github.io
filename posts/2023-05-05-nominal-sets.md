@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-05-29
+date: 2023-05-30
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -1437,7 +1437,20 @@ $$
 = \langle a \rangle \; (f(x) \; @ \; a)
 \; \text{where } a \; \# \; (\text{bind}^{-1}(f), x)
 \\
-\text{TODO: here}
+\; \; \; \; \text{let } \langle a' \rangle x' = f(x)
+\\
+= \langle a \rangle (\langle a' \rangle x' \; @ \; a) \text{ where } ...
+\\
+= \langle a \rangle \; (a' \; a) \cdot x' \text{ where } ...
+\\
+\; \; \; \; 
+\begin{array}{l}
+\exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a \; b) \cdot (a' \; a) \cdot x' = (a' \; b) \cdot x'
+\end{array}
+\\
+TODO
+\\
+= \langle a' \rangle x'
 \\
 = f(x)
 \end{array}
