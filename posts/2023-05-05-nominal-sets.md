@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-05-30
+date: 2023-06-05
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -1401,6 +1401,38 @@ $$
 $[\mathbb{A}]({-})$ is right adjoint to the functor ${}- * \; \mathbb{A}$ arising from the following
 nominal set: $X * \mathbb{A} = \{ \; (x, a) \; | \; x \in X, a \; \# \; x  \;\}$. <a href="#proof-13-link">↩</a>
 
+#### Lemma 1
+
+(TODO: where to put this?)
+
+Equivariant functions are supported by the empty set.
+
+$$
+\begin{array}{l}
+(\forall \pi, x. \; f (\pi \cdot x) = \pi \cdot f(x)) \implies \{\} \; \text{supports}_{min} \; f
+\\ \; \\
+\{\} \; \text{supports}_{min} \; f 
+\\
+\iff \{\} \; \text{supports} \; f \land (\forall \bar{x}. \; \bar{x} \; \text{supports} \; x \implies \{\} \subseteq \bar{x})
+\\
+\iff \{\} \; \text{supports} \; f \; (\forall \bar{x}. \; \{\} \subseteq \bar{x} \text{ trivial})
+\\ \; \\
+\{\} \; \text{supports} \; f
+\\
+\iff \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \pi \cdot f = f
+\\
+\iff \pi \cdot f = f
+\\
+\iff \forall x. \; \pi \cdot f(\pi^{-1} \cdot x) = f(x)
+\\
+\iff \forall x. \; \pi \cdot \pi^{-1} \cdot f(x) = f(x) \; (f \text{ equivariant})
+\\
+\iff \forall x. \; f(x) = f(x) \; \square
+\end{array}
+$$
+
+Main proof:
+
 $$
 \begin{array}{l}
 {}- * \; \mathbb{A} \dashv [\mathbb{A}]({-}) 
@@ -1409,7 +1441,7 @@ $$
 (X * \; \mathbb{A} \rightarrow_{Nom} Y) \rightarrow 
 X \rightarrow_{Nom} [\mathbb{A}](Y)
 \\
-\text{bind}(f)(x) = \langle a \rangle f(x, a) \text{ where } a \; \# \; (f, x)
+\text{bind}(f)(x) = \langle a \rangle f(x, a) \text{ for some } a \; \# \; x
 \\ \; \\
 \text{bind}^{-1} \; : \; 
 (X \rightarrow_{Nom} [\mathbb{A}](Y)) \rightarrow
@@ -1425,56 +1457,77 @@ X * \; \mathbb{A} \rightarrow_{Nom} Y
 \end{array}
 $$
 
-<div style="display: flex; flex-direction: row; justify-content: center;">
+<br>
 
 $$
 \begin{array}{l}
 \text{bind}(\text{bind}^{-1}(f))(x)
 \\
 = \langle a \rangle \; \text{bind}^{-1}(f)(x, a)
-\; \text{where } a \; \# \; (\text{bind}^{-1}(f), x)
+\text{ for some } a \; \# \; x
 \\
 = \langle a \rangle \; (f(x) \; @ \; a)
-\; \text{where } a \; \# \; (\text{bind}^{-1}(f), x)
+\\
+\; \; \; \; f(x) \; @ \; a \text{ requires } a \; \# \; f(x)
+\\
+\; \; \; \; \; \; \; \; a \; \# \; x \land a \; \# \; f \; (f \text{ equivariant -- 13.1}) \implies a \; \# \; f(x) \; \text{TODO: prove?}
 \\
 \; \; \; \; \text{let } \langle a' \rangle x' = f(x)
 \\
-= \langle a \rangle (\langle a' \rangle x' \; @ \; a) \text{ where } ...
+= \langle a \rangle (\langle a' \rangle x' \; @ \; a)
 \\
-= \langle a \rangle \; (a' \; a) \cdot x' \text{ where } ...
+= \langle a \rangle \; (a' \; a) \cdot x'
 \\
-\; \; \; \; 
-\begin{array}{l}
-\exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a \; b) \cdot (a' \; a) \cdot x' = (a' \; b) \cdot x'
-\end{array}
+\; \; \; \; a \; \# f(x) \iff a \; \# \; \langle a' \rangle x' \implies a = a' \lor a \; \# \; x'
+\\ \; \\
+\; \; \; \; \text{case } a = a'
 \\
-TODO
+\; \; \; \; \; \; \; \; \langle a \rangle \; (a' \; a) \cdot x'
 \\
-= \langle a' \rangle x'
+\; \; \; \; \; \; \; \; = \langle a' \rangle \; (a' \; a') \cdot x'
 \\
-= f(x)
+\; \; \; \; \; \; \; \; = \langle a' \rangle x'
+\\
+\; \; \; \; \; \; \; \; = f(x)
+\\ \; \\
+\; \; \; \; \text{case } a \; \# \; x'
+\\
+\; \; \; \; \; \; \; \; \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a \; b) \cdot (a' \; a) \cdot x' = (a' \; b) \cdot x'
+\\
+\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot (a \; b) \cdot x' = (a' \; b) \cdot x' \text{ TODO: permuting swaps proof}
+\\
+\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \text{ TODO: prove?})
+\\ \; \\
+\; \; \; \; \; \; \; \; \langle a \rangle \; (a' \; a) \cdot x'
+\\
+\; \; \; \; \; \; \; \; = \langle a' \rangle x'
+\\
+\; \; \; \; \; \; \; \; = f(x)
 \end{array}
 $$
 
+<br>
+
 $$
 \begin{array}{l}
-\text{bind}^{-1}(\text{bind}(f))(x, a)
+\text{bind}^{-1}(\text{bind}(f))(x, a) \text{ where } a \; \# \; x
 \\
 = \text{bind}(f)(x) \; @ \; a
 \\
-= (\langle a' \rangle \; f(x, \text{fresh}_{(X * \mathbb{A} \rightarrow_{Nom} Y) \times X}(f, x))) \; @ \; a
-\; \text{where } a \; \# \; x \land a' \; \# \; (f, x)
+\; \; \; \; \text{bind}(f)(x) \; @ \; a \text{ requires } a \; \# \; \text{bind}(f)(x)
 \\
-= (a \; a') \cdot f(x, \text{fresh}(f, x))
-\; \text{where } a \; \# \; x \land a' \; \# \; (f, x)
+\; \; \; \; a \; \# \; x \land a \; \# \; \text{bind}(f) \; (\text{bind(f)} \text{ equivariant -- 13.1}) \implies a \; \# \; \text{bind}(f)(x)
 \\
-= \; ??? (\text{TODO})
+= (\langle a' \rangle f(x, a') \text{ for some } a' \; \# \; x) \; @ \; a \\
+= (a' \; a) \cdot f(x, a')
 \\
-= f(x, a)
+= f((a' \; a) \cdot x, (a' \; a) \cdot a') \; (f \; \text{equivariant})
+\\
+= f((a' \; a) \cdot x, a)
+\\
+= f(x, a) \; (a' \; \# \; x \land a \; \# \; x \implies (a' \; a) \cdot x = x \text{ TODO: prove?})
 \end{array}
 $$
-
-</div>
 
 ### Proof 14
 
