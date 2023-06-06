@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-05
+date: 2023-06-06
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -389,6 +389,8 @@ $$
 I can say *the* minimal support, because it's unique for every value
 (<a id="proof-4-link" href="#proof-4">A.4</a>). From now on I'll just refer to "the minimal support" as "the support".
 
+TODO: define the function that calculates minimal support.
+
 Putting it all into code:
 
 ```rust
@@ -457,6 +459,9 @@ pub mod support {
   }
 }
 ```
+
+Freshness "distributes" across functions: $a \; \# \; f \land a \; \# \; x \implies a \; \# \; f(x)$
+(<a id="proof-XXX-rename-link" href="#proof-XXX-rename">A.XXX-rename</a>).
 
 ### Name binding
 
@@ -579,7 +584,10 @@ $x \in X$, $x$ has a finite, minimal support.
 
 Nominal sets are the objects of a category ($\text{Nom}$) whose arrows are functions that preserve permutation
 actions: $\forall \pi, x. \; f(\pi \cdot x) = \pi \cdot f(x)$. These are called
-[equivariant](https://en.wikipedia.org/wiki/Equivariant_map) functions.
+[equivariant](https://en.wikipedia.org/wiki/Equivariant_map) functions. One important fact about equivariant functions
+is that they're supported by the empty set (<a id="proof-9-rename-link" href="#proof-9-rename">A.9-rename</a>).
+
+TODO: rename proof link ^^^
 
 The identity arrows are just the identity function on each nominal set. The identity function is
 equivariant (<a id="proof-8-link" href="#proof-8">A.8</a>). Composition of arrows is the composition
@@ -1154,6 +1162,32 @@ n), \; x = a
 \end{array}
 $$
 
+### Proof XXX-rename
+
+Freshness "distributes" across functions.
+<a href="#proof-XXX-rename-link">↩</a>
+
+$$
+\begin{array}{l}
+a \; \# \; f \land a \; \# \; x \implies a \; \# \; f(x)
+\\ \; \\
+a \; \# \; f
+\\
+\iff a \notin \text{support}_{min}(f)
+\\
+\iff a \notin \bar{a}
+\text{ for some } \bar{a} \text{ where } \bar{a} \; \text{supports} \; f \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; f \implies \bar{a} \subseteq \bar{b})
+\\ \; \\
+\text{given } \bar{c} \text{ where } \bar{c} \; \text{supports} \; f(x) \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; f(x) \implies \bar{a} \subseteq \bar{b})
+\\
+a \notin \bar{c}
+\\
+\iff a \; \# \; f(x) \; \square
+\end{array}
+$$
+
+TODO: finish this proof
+
 ### Proof 8
 
 The identity function is equivariant.
@@ -1161,6 +1195,35 @@ The identity function is equivariant.
 
 $$
 \text{id}(\pi \cdot x) = \pi \cdot x = \pi \cdot \text{id}(x)
+$$
+
+### Proof 9-rename
+
+Equivariant functions are supported by the empty set.
+<a href="#proof-9-rename-link">↩</a>
+
+$$
+\begin{array}{l}
+(\forall \pi, x. \; f (\pi \cdot x) = \pi \cdot f(x)) \implies \{\} \; \text{supports}_{min} \; f
+\\ \; \\
+\{\} \; \text{supports}_{min} \; f 
+\\
+\iff \{\} \; \text{supports} \; f \land (\forall \bar{x}. \; \bar{x} \; \text{supports} \; x \implies \{\} \subseteq \bar{x})
+\\
+\iff \{\} \; \text{supports} \; f \; (\forall \bar{x}. \; \{\} \subseteq \bar{x} \text{ trivial})
+\\ \; \\
+\{\} \; \text{supports} \; f
+\\
+\iff \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \pi \cdot f = f
+\\
+\iff \pi \cdot f = f
+\\
+\iff \forall x. \; \pi \cdot f(\pi^{-1} \cdot x) = f(x)
+\\
+\iff \forall x. \; \pi \cdot \pi^{-1} \cdot f(x) = f(x) \; (f \text{ equivariant})
+\\
+\iff \forall x. \; f(x) = f(x) \; \square
+\end{array}
 $$
 
 ### Proof 9
@@ -1358,13 +1421,13 @@ $$
 \\
 = f'_{(\pi \cdot x)}
 \\
-= f(\pi \cdot x, a)
+\; \; \; \; \forall a. \; f(\pi \cdot x, a)
 \\
-= f(\pi \cdot x, \pi \cdot \pi^{-1} \cdot a)
+\; \; \; \; = f(\pi \cdot x, \pi \cdot \pi^{-1} \cdot a)
 \\
-= \pi \cdot f(x, \pi^{-1} \cdot a)
+\; \; \; \; = \pi \cdot f(x, \pi^{-1} \cdot a)
 \\
-\text{TODO: this step???}
+= \pi \cdot f'_x
 \\
 = \pi \cdot \lambda f(x)
 \end{array}
@@ -1400,38 +1463,6 @@ $$
 
 $[\mathbb{A}]({-})$ is right adjoint to the functor ${}- * \; \mathbb{A}$ arising from the following
 nominal set: $X * \mathbb{A} = \{ \; (x, a) \; | \; x \in X, a \; \# \; x  \;\}$. <a href="#proof-13-link">↩</a>
-
-#### Lemma 1
-
-(TODO: where to put this?)
-
-Equivariant functions are supported by the empty set.
-
-$$
-\begin{array}{l}
-(\forall \pi, x. \; f (\pi \cdot x) = \pi \cdot f(x)) \implies \{\} \; \text{supports}_{min} \; f
-\\ \; \\
-\{\} \; \text{supports}_{min} \; f 
-\\
-\iff \{\} \; \text{supports} \; f \land (\forall \bar{x}. \; \bar{x} \; \text{supports} \; x \implies \{\} \subseteq \bar{x})
-\\
-\iff \{\} \; \text{supports} \; f \; (\forall \bar{x}. \; \{\} \subseteq \bar{x} \text{ trivial})
-\\ \; \\
-\{\} \; \text{supports} \; f
-\\
-\iff \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \pi \cdot f = f
-\\
-\iff \pi \cdot f = f
-\\
-\iff \forall x. \; \pi \cdot f(\pi^{-1} \cdot x) = f(x)
-\\
-\iff \forall x. \; \pi \cdot \pi^{-1} \cdot f(x) = f(x) \; (f \text{ equivariant})
-\\
-\iff \forall x. \; f(x) = f(x) \; \square
-\end{array}
-$$
-
-Main proof:
 
 $$
 \begin{array}{l}
@@ -1470,7 +1501,7 @@ $$
 \\
 \; \; \; \; f(x) \; @ \; a \text{ requires } a \; \# \; f(x)
 \\
-\; \; \; \; \; \; \; \; a \; \# \; x \land a \; \# \; f \; (f \text{ equivariant -- 13.1}) \implies a \; \# \; f(x) \; \text{TODO: prove?}
+\; \; \; \; \; \; \; \; a \; \# \; x \land a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \implies a \; \# \; f(x) \; (\text{A.XXX-rename})
 \\
 \; \; \; \; \text{let } \langle a' \rangle x' = f(x)
 \\
@@ -1478,7 +1509,7 @@ $$
 \\
 = \langle a \rangle \; (a' \; a) \cdot x'
 \\
-\; \; \; \; a \; \# f(x) \iff a \; \# \; \langle a' \rangle x' \implies a = a' \lor a \; \# \; x'
+\; \; \; \; a \; \# f(x) \iff a \; \# \; \langle a' \rangle x' \implies a = a' \lor a \; \# \; x' \; (\text{TODO: name and prove this})
 \\ \; \\
 \; \; \; \; \text{case } a = a'
 \\
@@ -1516,7 +1547,7 @@ $$
 \\
 \; \; \; \; \text{bind}(f)(x) \; @ \; a \text{ requires } a \; \# \; \text{bind}(f)(x)
 \\
-\; \; \; \; a \; \# \; x \land a \; \# \; \text{bind}(f) \; (\text{bind(f)} \text{ equivariant -- 13.1}) \implies a \; \# \; \text{bind}(f)(x)
+\; \; \; \; a \; \# \; x \land a \; \# \; \text{bind}(f) \; (\text{bind(f)} \text{ equivariant -- A.9-rename}) \implies a \; \# \; \text{bind}(f)(x) \; (\text{A.XXX-rename})
 \\
 = (\langle a' \rangle f(x, a') \text{ for some } a' \; \# \; x) \; @ \; a \\
 = (a' \; a) \cdot f(x, a')
@@ -1539,21 +1570,31 @@ $$
 \begin{array}{l}
 [\mathbb{A}](-{}) \dashv R
 \\ \; \\
-\text{unbind} : (X \rightarrow_{Nom} R(Y)) \rightarrow [\mathbb{A}] X \rightarrow_{Nom} Y
+\text{unbind} \; : \; (X \rightarrow_{Nom} R(Y)) \rightarrow [\mathbb{A}] X \rightarrow_{Nom} Y
 \\
 \text{unbind}(f)(\langle a \rangle x) = f(x)(a)
 \\ \; \\
-\text{unbind}^{-1} : ([\mathbb{A}] X \rightarrow_{Nom} Y) \rightarrow X \rightarrow_{Nom} R(Y)
+\text{unbind}^{-1} \; : \; ([\mathbb{A}] X \rightarrow_{Nom} Y) \rightarrow X \rightarrow_{Nom} R(Y)
 \\
 \text{unbind}^{-1}(f)(x) = \lambda a. \; f(\langle a \rangle x)
-\\
-\text{TODO: prove that } \forall a. \; a \# (\lambda a'. \; f(\langle a' \rangle x))(a)
-\\
-= \forall a. \; a \# f(\langle a \rangle x)
 \end{array}
 $$
 
-<div style="display: flex; flex-direction: row; justify-content: center;">
+<br>
+
+$$
+\begin{array}{l}
+\text{unbind}^{-1} \text{ requires } \forall a. \; a \; \# \; (\lambda a'. \; f(\langle a' \rangle x))(a)
+\\ \; \\
+\forall a. \; a \; \# \; (\lambda a'. \; f(\langle a' \rangle x))(a)
+\\
+\iff \forall a. \; a \; \# \; f(\langle a \rangle x)
+\\
+a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \land a \; \# \; \langle a \rangle x \; (\text{TODO: name / prove this}) \implies a \; \# \; f(\langle a \rangle x) \; (\text{A.XXX-rename})
+\end{array}
+$$
+
+<br>
 
 $$
 \begin{array}{l}
@@ -1563,7 +1604,7 @@ $$
 \\
 = (\lambda a'. \; f(\langle a' \rangle x))(a)
 \\
-= f(\langle a \rangle x)
+= f(\langle a \rangle x) \; (\beta \text{-equivalence})
 \end{array}
 $$
 
@@ -1571,13 +1612,13 @@ $$
 \begin{array}{l}
 \text{unbind}^{-1}(\text{unbind}(f))(x)
 \\
-= ... (\text{TODO})
+= \lambda a. \; \text{unbind}(f)(\langle a \rangle x)
 \\
-= f(x)
+= \lambda a. f(x)(a)
+\\
+= f(x) \; (\eta \text{-equivalence})
 \end{array}
 $$
-
-</div>
 
 [^please-correct-me]: Let me know if (when?) I'm wrong about this!
 
