@@ -28,6 +28,14 @@ graphics techniques, mostly used in games. There are lots of technical talks and
 
 ## Philosophy
 
+### Minding Our Way
+
+<https://mindingourway.com>
+
+Nate Soares' blog. The themes that stand out most for me are around agency, competence, and motivation.
+While they haven't posted in many years, I'll still be coming back to what they have already written in
+the years to come.
+
 ### Rationality from AI to Zombies
 
 <https://www.readthesequences.com>
