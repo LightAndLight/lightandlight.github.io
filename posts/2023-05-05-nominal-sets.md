@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-06
+date: 2023-06-08
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -1178,15 +1178,46 @@ a \; \# \; f
 \iff a \notin \bar{a}
 \text{ for some } \bar{a} \text{ where } \bar{a} \; \text{supports} \; f \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; f \implies \bar{a} \subseteq \bar{b})
 \\ \; \\
-\text{given } \bar{c} \text{ where } \bar{c} \; \text{supports} \; f(x) \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; f(x) \implies \bar{a} \subseteq \bar{b})
+\bar{a} \; \text{supports} \; f
 \\
-a \notin \bar{c}
+\iff \forall \pi. \; (\forall a \in \bar{a}. \; \pi(a) = a) \implies \pi \cdot f = f
+\\ \; \\
+a \; \# \; x
+\\
+\iff a \notin \text{support}_{min}(x)
+\\
+\iff a \notin \bar{b}
+\text{ for some } \bar{b} \text{ where } \bar{b} \; \text{supports} \; x \land (\forall \bar{a}. \; \bar{a} \; \text{supports} \; x \implies \bar{b} \subseteq \bar{a})
+\\ \; \\
+\bar{a} \; \text{supports} \; x
+\\
+\iff \forall \pi. \; (\forall a \in \bar{b}. \; \pi(a) = a) \implies \pi \cdot x = x
+\\ \; \\
+(\bar{a} \cap \bar{b}) \; \text{supports} \; f(x)
+\\
+\iff \forall \pi. \; (\forall a \in (\bar{a} \cap \bar{b}). \; \pi(a) = a) \implies \pi \cdot f(x) = f(x)
+\\
+\pi \cdot f(x)
+\\
+= (\pi \cdot f)(\pi \cdot x)
+\\
+= f(\pi \cdot x) \; (\bar{a} \; \text{supports} \; f)
+\\
+= f(x) \; (\bar{b} \; \text{supports} \; x)
+\\ \; \\
+a \notin (a \cap b) \; (a \notin \bar{a} \land a \notin \bar{b})
+\\ \; \\
+\text{given } \bar{c} \text{ where } \bar{c} \; \text{supports} \; f(x) \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; f(x) \implies \bar{c} \subseteq \bar{b})
+\\
+(\bar{a} \cap \bar{b}) \; \text{supports} \; f(x) \land a \notin (\bar{a} \cap \bar{b})
+\\
+\implies \bar{c} \subseteq (\bar{a} \cap \bar{b}) \land a \notin (\bar{a} \cap \bar{b}) \; (\bar{c} \text{ minimal})
+\\
+\implies a \notin \bar{c}
 \\
 \iff a \; \# \; f(x) \; \square
 \end{array}
 $$
-
-TODO: finish this proof
 
 ### Proof 8
 
