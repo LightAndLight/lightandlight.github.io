@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-08
+date: 2023-06-09
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -246,7 +246,7 @@ Permutations trivially act on names: $\pi \cdot a = \pi(a)$.
 
 ```
 
-Permutations also trivially act on themselves: $\pi_f \cdot \pi_g = \pi_f \circ \pi_g$.
+Permutations also trivially act on themselves: $\pi_f \cdot \pi_g = \pi_f \circ \pi_g$. (TODO: is this true? conjugations)
 
 ```rust
   impl Permutable for Permutation {
@@ -296,6 +296,8 @@ single-element product:
   }
 } // mod permutation
 ```
+
+TODO: reference permutation swapping lemma here?
 
 #### Permutations on functions
 
@@ -460,8 +462,13 @@ pub mod support {
 }
 ```
 
-Freshness "distributes" across functions: $a \; \# \; f \land a \; \# \; x \implies a \; \# \; f(x)$
-(<a id="proof-XXX-rename-link" href="#proof-XXX-rename">A.XXX-rename</a>).
+Some useful properties involving freshness:
+
+* Swapping fresh names does nothing: $a \; \# \; x \land b \; \# \; x \implies (a \; b) \cdot x = x$
+  (<a id="proof-YYY-rename-link" href="#proof-YYY-rename">A.YYY-rename</a>).
+
+* Freshness "distributes" across functions: $a \; \# \; f \land a \; \# \; x \implies a \; \# \; f(x)$
+  (<a id="proof-XXX-rename-link" href="#proof-XXX-rename">A.XXX-rename</a>).
 
 ### Name binding
 
@@ -543,8 +550,8 @@ impl <T: Permutable> Permutable for Binder<T> {
 }
 ```
 
-Support: $b \; \text{supports}_{min} (\langle a \rangle x) \iff b \neq a \land b \;
-\text{supports}_{min} x$.
+Support: $b \; \text{supports}_{min} (\langle a \rangle x) \; \iff \; b \neq a \; \land \; b \;
+\text{supports}_{min} x$. (TODO: prove this?) Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$.
 
 The support of a name binder excludes its bound name, which follows from it being a quotient:
 
@@ -1162,6 +1169,33 @@ n), \; x = a
 \end{array}
 $$
 
+### Proof YYY-rename
+
+Swapping fresh names does nothing.
+<a href="#proof-YYY-rename-link">↩</a>
+
+$$
+\begin{array}{l}
+a \; \# \; x \land b \; \# \; x \implies (a \; b) \cdot x = x
+\\ \; \\
+a \; \# \; x \land b \; \# \; x
+\\
+\iff a \notin \text{support}_{min}(x) \land b \notin \text{support}_{min}(x)
+\\
+\iff a \notin \bar{x} \land b \notin \bar{x} \text{ for some } \bar{x} \text{ where } \bar{x} \; \text{supports} \; x \land (\forall \bar{y}. \; \bar{y} \; \text{supports} \; x \implies \bar{x} \subseteq \bar{y})
+\\ \; \\
+\bar{x} \; \text{supports} \; x
+\\
+\iff \forall \pi. \; (\forall a \in \bar{x}. \; \pi(a) = a) \implies \pi \cdot x = x
+\\ \; \\
+\pi = (a \; b)
+\\
+\forall c \in \bar{x}. \; (a \; b)(c) = c \; (a \notin \bar{x} \land b \notin \bar{x} \implies \forall c \in \bar{x}. \; a \neq c \land b \neq c)
+\\
+\therefore \; (a \; b) \cdot x = x
+\end{array}
+$$
+
 ### Proof XXX-rename
 
 Freshness "distributes" across functions.
@@ -1490,6 +1524,30 @@ $$
 \end{array}
 $$
 
+### Proof ZZZ-rename
+
+Swapping can "commute" with a permutation. (Used in <a href="proof-13">A.13</a>)
+
+$$
+\begin{array}{l}
+\pi \circ (a \; b) = (\pi(a) \; \pi(b)) \circ \pi
+\\ \; \\
+\pi((a \; b)(x))
+\\ \; \\
+\text{case } x = a
+\\
+\; \; \; \; = \pi((a \; b)(a))
+\\
+\; \; \; \; = \pi(b)
+\\
+\; \; \; \; = (\pi(a) \; \pi(b))(\pi(a))
+\\
+\; \; \; \; = (\pi(a) \; \pi(b))(\pi(x))
+\end{array}
+$$
+
+TODO: finish proof
+
 ### Proof 13
 
 $[\mathbb{A}]({-})$ is right adjoint to the functor ${}- * \; \mathbb{A}$ arising from the following
@@ -1539,8 +1597,12 @@ $$
 = \langle a \rangle (\langle a' \rangle x' \; @ \; a)
 \\
 = \langle a \rangle \; (a' \; a) \cdot x'
+\\ \; \\
+\; \; \; \; a \; \# f(x)
 \\
-\; \; \; \; a \; \# f(x) \iff a \; \# \; \langle a' \rangle x' \implies a = a' \lor a \; \# \; x' \; (\text{TODO: name and prove this})
+\; \; \; \; \iff a \; \# \; \langle a' \rangle x'
+\\
+\; \; \; \; \iff a = a' \lor a \; \# \; x'
 \\ \; \\
 \; \; \; \; \text{case } a = a'
 \\
@@ -1558,7 +1620,7 @@ $$
 \\
 \; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot (a \; b) \cdot x' = (a' \; b) \cdot x' \text{ TODO: permuting swaps proof}
 \\
-\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \text{ TODO: prove?})
+\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \text{ --- A.YYY-rename})
 \\ \; \\
 \; \; \; \; \; \; \; \; \langle a \rangle \; (a' \; a) \cdot x'
 \\
