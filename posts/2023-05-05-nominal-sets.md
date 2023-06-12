@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-09
+date: 2023-06-12
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -297,8 +297,6 @@ single-element product:
 } // mod permutation
 ```
 
-TODO: reference permutation swapping lemma here?
-
 #### Permutations on functions
 
 Permutations can also act on functions: $(\pi \cdot f)(x) = \pi \cdot f(\pi^{-1} \cdot x)$. For my purposes this is only important in theory, so I won't
@@ -377,7 +375,7 @@ the names the value *actually* depends on. $\bar{a}$ is the minimal support of $
 
 $$
 \begin{array}{l}
-\text{supports}_{min} : \mathcal{P}(\mathbb{A}) \times X
+\text{supports}_{min} \; : \; \mathcal{P}(\mathbb{A}) \times X
 \\
 \text{supports}_{min} =
 \{ \;
@@ -389,9 +387,14 @@ $$
 $$
 
 I can say *the* minimal support, because it's unique for every value
-(<a id="proof-4-link" href="#proof-4">A.4</a>). From now on I'll just refer to "the minimal support" as "the support".
+(<a id="proof-4-link" href="#proof-4">A.4</a>). From now on I'll just refer to "the minimal support" as "the support", and use a "minimal
+support" function instead of the $\text{supports}_{min}$ relation:
 
-TODO: define the function that calculates minimal support.
+$$
+\begin{array}{l}
+\text{support} \; : \; X \rightarrow \mathcal{P}(\mathbb{A}) \text{ such that } \forall x. \; \text{support}(x) \; \text{supports}_{min} \; x
+\end{array}
+$$
 
 Putting it all into code:
 
@@ -1529,24 +1532,53 @@ $$
 Swapping can "commute" with a permutation. (Used in <a href="proof-13">A.13</a>)
 
 $$
-\begin{array}{l}
+\begin{array}{c}
 \pi \circ (a \; b) = (\pi(a) \; \pi(b)) \circ \pi
 \\ \; \\
-\pi((a \; b)(x))
+(\pi \circ (a \; b))(x)
+\\
+= \pi((a \; b)(x))
 \\ \; \\
-\text{case } x = a
+\begin{aligned}
+& \text{case } x = a
 \\
-\; \; \; \; = \pi((a \; b)(a))
+& = \pi((a \; b)(a))
 \\
-\; \; \; \; = \pi(b)
+& = \pi(b)
 \\
-\; \; \; \; = (\pi(a) \; \pi(b))(\pi(a))
+& = (\pi(a) \; \pi(b))(\pi(a))
 \\
-\; \; \; \; = (\pi(a) \; \pi(b))(\pi(x))
+& = (\pi(a) \; \pi(b))(\pi(x))
+\\
+& = ((\pi(a) \; \pi(b)) \circ \pi)(x)
+\end{aligned}
+\begin{aligned}
+& \text{case } x = b
+\\
+& = \pi((a \; b)(b))
+\\
+& = \pi(a)
+\\
+& = (\pi(a) \; \pi(b))(\pi(b))
+\\
+& = (\pi(a) \; \pi(b))(\pi(x))
+\\
+& = ((\pi(a) \; \pi(b)) \circ \pi)(x)
+\end{aligned}
+\\
+\begin{aligned}
+& \text{case } x \neq a \land x \neq b
+\\
+& = \pi((a \; b)(x))
+\\
+& = \pi(x)
+\\
+& = (\pi(a) \; \pi(b))(\pi(x)) \; (x \neq a \land x \neq b \implies \pi(x) \neq \pi(a) \land \pi(x) \neq \pi(b) \text{ --- } \pi \text{ injective})
+\\
+& = ((\pi(a) \; \pi(b)) \circ \pi)(x)
+\end{aligned}
 \end{array}
 $$
-
-TODO: finish proof
 
 ### Proof 13
 
@@ -1618,7 +1650,11 @@ $$
 \\
 \; \; \; \; \; \; \; \; \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a \; b) \cdot (a' \; a) \cdot x' = (a' \; b) \cdot x'
 \\
-\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot (a \; b) \cdot x' = (a' \; b) \cdot x' \text{ TODO: permuting swaps proof}
+\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land ((a \; b) \circ (a' \; a)) \cdot x' = (a' \; b) \cdot x'
+\\
+\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land ((a' \; b) \circ (a \; b)) \cdot x' = (a' \; b) \cdot x' \; (\pi \circ (a \; b) = (\pi(a) \; \pi(b)) \circ \pi \text{ --- A.ZZZ-rename})
+\\
+\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot (a \; b) \cdot x' = (a' \; b) \cdot x'
 \\
 \; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \text{ --- A.YYY-rename})
 \\ \; \\
@@ -1649,7 +1685,7 @@ $$
 \\
 = f((a' \; a) \cdot x, a)
 \\
-= f(x, a) \; (a' \; \# \; x \land a \; \# \; x \implies (a' \; a) \cdot x = x \text{ TODO: prove?})
+= f(x, a) \; (a' \; \# \; x \land a \; \# \; x \implies (a' \; a) \cdot x = x \text{ --- A.YYY-rename})
 \end{array}
 $$
 
