@@ -52,17 +52,16 @@ n))
 <span class="op">,</span></span>
 ```
 
-Hakyll's markup is way less granular than Jekyll's. `Expr::` marked up as a single token, and
+Hakyll's markup is way less granular than Jekyll's. For example, `Expr::` is marked up as a single token, and
 parentheses aren't marked up as tokens.
 [Here](https://github.com/jgm/skylighting/blob/da282a2c521e85417c9f73116b36cbc68e01ecbf/skylighting-format-blaze-html/src/Skylighting/Format/HTML.hs#L22-L55)
 is the "reference" for the CSS classes Pandoc uses - `pp` means "proprocessor token". Why is `Expr::` marked up as a "preprocessor token"? [Wat!?](https://www.destroyallsoftware.com/talks/wat)
 
-[Jekyll](https://jekyllrb.com/) uses [`rouge`](https://github.com/rouge-ruby/rouge) for syntax
-highlighting. My [Hakyll](https://jaspervdj.be/hakyll/) generator uses [`skylighting`](https://github.com/jgm/skylighting) ([Hackage](https://hackage.haskell.org/package/skylighting)) by way of
-[Pandoc](https://pandoc.org/).
-When I first noticed this issue, I blamed Pandoc, hence the title.
-After a bit of digging I realised that Pandoc isn't responsible for syntax highlighting itself. I
-chose to keep the title in the hope that other people with a similar problem will more easily find
+When I first noticed this issue I blamed [Pandoc](https://pandoc.org/) because that's what my [Hakyll](https://jaspervdj.be/hakyll/) generator
+uses for document processing.
+After a bit of digging I realised that Pandoc isn't responsible for syntax highlighting itself:
+it uses a package called [`skylighting`](https://github.com/jgm/skylighting) ([Hackage](https://hackage.haskell.org/package/skylighting)).
+I chose to keep the title in the hope that other people with a similar problem will more easily find
 this article.
 
 So what about `skylighting` leads to the crappier syntax highlighting? If I knew that then I might be able to improve it.
@@ -86,14 +85,23 @@ highlighter](https://github.com/jgm/skylighting/blob/da282a2c521e85417c9f73116b3
 while writing this post. The HTML attribute names are marked up as "error tokens", which I'm
 suppressing in this article by overriding the error token class style.
 
-`rouge` suffers from none of these issues because it defines its own syntax highlighting rules ([Rust rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/rust.rb#L6),
+[Jekyll](https://jekyllrb.com/) uses the [`rouge`](https://github.com/rouge-ruby/rouge) library for syntax highlighting.
+`rouge` suffers from none of the aforementioned issues because it defines its own syntax highlighting rules ([Rust rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/rust.rb#L6),
 [Haskell rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/haskell.rb#L6),
 [HTML rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/html.rb#L6)). I was
 pleasantly surprised by how clean and concise `rouge`'s syntax rules look. They're written in a Ruby DSL that appears carefully
 crafted and well suited to the task. The end result is files that are less than half the size of their corresponding Kate XML files,
 and with much less visual clutter. 
 
-Overall, the Kate syntax highlighting definitions seem to be lower quality.
+In my opinion, the Kate XML files bundled with `skylighting` produce lower quality syntax highlighting than `rouge`. It looks like
+the crappy syntax highlighting can be improved by changing the XML. If I were on a deadline then I'd create some patches and try
+to get them upstreamed. But because I have the time, I'd like to indulge myself: I think this is a poor use of XML would like to
+avoid contributing to it.
+
+Begin rant.
+XML is an okay markup language and a bad data format[^xml].
+Kate's syntax highlighting files are an example of the XML-as-a-data-format antipattern.
+End rant.
 
 * The responsible thing to do would be to improve the XML and upstream it
 * I have an ethical objection to using XML this way
@@ -138,3 +146,6 @@ Overall, the Kate syntax highlighting definitions seem to be lower quality.
 
 [^1]: Source: <https://pandoc.org/chunkedhtml-demo/13-syntax-highlighting.html>
 [^2]: See also: `dsPreprocessor` in <https://docs.kde.org/stable5/en/kate/katepart/highlight.html>
+[^xml]: [XML is almost always misused](https://www.devever.net/~hl/xml) and [A Brief Defense of XML](https://borretti.me/article/brief-defense-of-xml)
+    are two of my favourite articles on the topic.
+
