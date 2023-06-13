@@ -246,7 +246,7 @@ Permutations trivially act on names: $\pi \cdot a = \pi(a)$.
 
 ```
 
-Permutations also trivially act on themselves: $\pi_f \cdot \pi_g = \pi_f \circ \pi_g$. (TODO: is this true? conjugations)
+Permutations also trivially act on themselves: $\pi_f \cdot \pi_g = \pi_f \circ \pi_g$.
 
 ```rust
   impl Permutable for Permutation {
@@ -553,8 +553,8 @@ impl <T: Permutable> Permutable for Binder<T> {
 }
 ```
 
-Support: $b \; \text{supports}_{min} (\langle a \rangle x) \; \iff \; b \neq a \; \land \; b \;
-\text{supports}_{min} x$. (TODO: prove this?) Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$.
+Support: $\text{support} (\langle a \rangle x) \; = \text{support}(x) - \{ a \}$ (<a id="proof-BBY-rename-link" href="#proof-BBY-rename">A.BBY-rename</a>).
+Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$.
 
 The support of a name binder excludes its bound name, which follows from it being a quotient:
 
@@ -1265,6 +1265,34 @@ $$
 \text{id}(\pi \cdot x) = \pi \cdot x = \pi \cdot \text{id}(x)
 $$
 
+### Proof BBY-rename
+
+$\text{support}(\langle a \rangle x) = \text{support}(x) - \{ a \}$.
+<a href="#proof-BBY-rename-link">↩</a>
+
+$$
+\begin{array}{l}
+(\text{support}(x) - \{ a \}) \; \text{supports}_{min} \; \langle a \rangle x
+\\
+\iff ((\text{support}(x) - \{ a \}) \; \text{supports} \; \langle a \rangle x) \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; \langle a \rangle x \implies (\text{support}(x) - \{ a \}) \subseteq \bar{b})
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+(\text{support}(x) - \{ a \}) \; \text{supports} \; \langle a \rangle x
+\\
+\iff \forall \pi. \; (\forall b \in (\text{support}(x) - \{ a \}). \; \pi(b) = b) \implies \pi \cdot (\langle a \rangle x) = \langle a \rangle x
+\\ \; \\
+\pi \cdot (\langle a \rangle x)
+\\
+= \langle \pi(a) \rangle \pi \cdot x
+\\
+\exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (\pi(a) \; b) \cdot (\pi \cdot x)
+\text{TODO: continue proof}
+\end{array}
+$$
+
 ### Proof 9-rename
 
 Equivariant functions are supported by the empty set.
@@ -1719,7 +1747,7 @@ $$
 \\
 \iff \forall a. \; a \; \# \; f(\langle a \rangle x)
 \\
-a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \land a \; \# \; \langle a \rangle x \; (\text{TODO: name / prove this}) \implies a \; \# \; f(\langle a \rangle x) \; (\text{A.XXX-rename})
+a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \land a \; \# \; \langle a \rangle x \; (a = b \implies a \; \# \; \langle b \rangle x \text{ --- TODO: name / prove this}) \implies a \; \# \; f(\langle a \rangle x) \; (\text{A.XXX-rename})
 \end{array}
 $$
 
