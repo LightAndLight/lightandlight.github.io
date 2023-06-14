@@ -1288,8 +1288,17 @@ $$
 \\
 = \langle \pi(a) \rangle \pi \cdot x
 \\
-\exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (\pi(a) \; b) \cdot (\pi \cdot x)
-\text{TODO: continue proof}
+\text{case } \pi(a) = a
+\\
+\; \; \; \; = \langle a \rangle \pi \cdot x
+\\
+\; \; \; \; = \langle a \rangle x \; ((\forall b \in (\text{support}(x) - \{ a \}). \; \pi(b) = b) \land \pi(a) = a \implies \pi \cdot x = x \text{ --- } x \; \text{supports}_{min} \; \text{support}(x))
+\\
+\text{case } \pi(a) \neq a
+\\
+\; \; \; \; \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (\pi(a) \; b) \cdot (\pi \cdot x)
+\\
+\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = ((\pi(a) \; b) \circ \pi) \cdot x
 \end{array}
 $$
 
