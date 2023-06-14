@@ -1,6 +1,6 @@
 ---
 title: Why does Pandoc give me crappy syntax highlighting?
-date: 2023-06-09
+date: 2023-06-14
 permalink: /pandoc-crappy-syntax-highlighting
 tags:
 - programming
@@ -85,8 +85,8 @@ highlighter](https://github.com/jgm/skylighting/blob/da282a2c521e85417c9f73116b3
 while writing this post. The HTML attribute names are marked up as "error tokens", which I'm
 suppressing in this article by overriding the error token class style.
 
-[Jekyll](https://jekyllrb.com/) uses the [`rouge`](https://github.com/rouge-ruby/rouge) library for syntax highlighting.
-`rouge` suffers from none of the aforementioned issues because it defines its own syntax highlighting rules ([Rust rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/rust.rb#L6),
+[Jekyll](https://jekyllrb.com/) uses the [`rouge`](https://github.com/rouge-ruby/rouge) library for syntax highlighting, and
+suffers from none of the aforementioned issues because it defines its own syntax highlighting rules ([Rust rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/rust.rb#L6),
 [Haskell rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/haskell.rb#L6),
 [HTML rules](https://github.com/rouge-ruby/rouge/blob/5c052c2744515981f2720b1a4ee37b1123b0bae1/lib/rouge/lexers/html.rb#L6)). I was
 pleasantly surprised by how clean and concise `rouge`'s syntax rules look. They're written in a Ruby DSL that appears carefully
@@ -99,9 +99,30 @@ to get them upstreamed. But because I have the time, I'd like to indulge myself:
 avoid contributing to it.
 
 Begin rant.
-XML is an okay markup language and a bad data format[^xml].
-Kate's syntax highlighting files are an example of the XML-as-a-data-format antipattern.
+XML is an okay markup language and a bad data format[^xml], and Kate's syntax highlighting files are an example of the XML-as-a-data-format antipattern.
+It seems like the main purpose of these files is not written communication, like a page of a book.
+Rather, these files store processing instructions for a syntax highlighting program.
+One clue is the number of empty tags they use (e.g. [rust.xml#L372-L409](https://github.com/jgm/skylighting/blob/da282a2c521e85417c9f73116b36cbc68e01ecbf/skylighting-core/xml/rust.xml#L372-L409)).
+Empty tags are only occasionally useful when marking up a document intended for written communication.
+Tags normally have contents because they provide context for spans of text (e.g. bold this, italicise that).
+In the Kate XML files, empty tags proliferate because they're used to represent [product types](https://en.wikipedia.org/wiki/Product_type).
 End rant.
+
+`rouge` is an improvement because it uses Ruby as its data format.
+Ruby (like most other programming languages) is a decent choice for a data format because it has concise syntax for common data structures (e.g. strings, records, lists, maps)
+and supports comments so that developers can store documentation alongside their data.
+The main downside is that the data isn't very portable; it's easy to use from the language in which it's defined, but not so much from other languages.
+If I wanted to use the `rouge` syntax highlighting definitions in Haskell then I'd need to use some subset of a Ruby parser. Seems a little funny.
+The fact that Kate uses a ubiquitous format XML makes the data easier to reuse in libraries like `skylighting`.
+This is important to me.
+
+This means that I'd prefer a standardised data format for syntax highlighting descriptions.
+It should support common data structures and comments.
+Two candidates that come to mind are [YAML](https://yaml.org/) and [Dhall](https://dhall-lang.org/).
+
+A data format is a choice of meta-syntax for a syntax highlighting system.
+Next I'll think about semantics.
+Once the semantics are nailed down, I can develop a suitable syntax by intution.
 
 * The responsible thing to do would be to improve the XML and upstream it
 * I have an ethical objection to using XML this way
