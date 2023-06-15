@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-12
+date: 2023-06-15
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -1267,7 +1267,7 @@ $$
 
 ### Proof BBY-rename
 
-$\text{support}(\langle a \rangle x) = \text{support}(x) - \{ a \}$.
+The support of name binding: $\text{support}(\langle a \rangle x) = \text{support}(x) - \{ a \}$.
 <a href="#proof-BBY-rename-link">↩</a>
 
 $$
@@ -1288,6 +1288,8 @@ $$
 \\
 = \langle \pi(a) \rangle \pi \cdot x
 \\
+\text{guess? show: } \pi(a) \; \# \; (a, x) \land \pi \cdot x = (a \; \pi(a)) \cdot x
+\\
 \text{case } \pi(a) = a
 \\
 \; \; \; \; = \langle a \rangle \pi \cdot x
@@ -1298,9 +1300,17 @@ $$
 \\
 \; \; \; \; \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (\pi(a) \; b) \cdot (\pi \cdot x)
 \\
-\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = ((\pi(a) \; b) \circ \pi) \cdot x
+\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (\pi(a) \; b) \cdot (a \; \pi(a)) \cdot x \; (\text{TODO: how do I prove this step?})
+\\
+\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = ((\pi(a) \; b) \circ (a \; \pi(a))) \cdot x
+\\
+\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (a \; b) \cdot x \; (\text{TODO: swapping composes})
+\\
+\; \; \; \; = \langle a \rangle x
 \end{array}
 $$
+
+TODO: continue proof
 
 ### Proof 9-rename
 
