@@ -124,6 +124,45 @@ A data format is a choice of meta-syntax for a syntax highlighting system.
 Next I'll think about semantics.
 Once the semantics are nailed down, I can develop a suitable syntax by intution.
 
+I think a syntax highlighting description is essentially a
+[formal grammar](https://en.wikipedia.org/wiki/Formal_grammar) with instructions on how to annotate
+its [parse trees](https://en.wikipedia.org/wiki/Parse_tree). (TODO: or is it just a lexer marking up tokens? rouge / pygments approach)
+The syntax highligher parses a string according to a grammar and marks up text spans according to
+their location in the parse tree[^tree-sitter].
+If you squint, a Kate syntax highlighting description looks like a description of a
+[pushdown automaton](https://en.wikipedia.org/wiki/Pushdown_automaton) corresponding to a
+[context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar), combined with annotation
+instructions for the grammar's non-terminals.
+For this task, I'd rather just write the grammar productions directly.
+
+```dhall
+{
+  grammar = [
+    {
+      name = "expression",
+      content = [
+        Item [String "\\", Name "identifier", String "->", Name "expression"],
+        Item [OneOrMore (Name "enclosed expression")]
+      ]
+    },
+    {
+      name = "enclosed expression",
+      content = [
+        Item [Name "identifier"],
+        Item [String "(", Name "expression", String ")"]
+      ]
+    },
+    {
+      name = "identifier",
+      content = [
+        Regex "[a-z][a-zA-Z0-9]*"
+      ]
+    },
+  ],
+  annotations = ...
+}
+```
+
 * The responsible thing to do would be to improve the XML and upstream it
 * I have an ethical objection to using XML this way
   * XML is not a data format, it's a markup language https://www.devever.net/~hl/xml, https://borretti.me/article/brief-defense-of-xml
@@ -169,4 +208,5 @@ Once the semantics are nailed down, I can develop a suitable syntax by intution.
 [^2]: See also: `dsPreprocessor` in <https://docs.kde.org/stable5/en/kate/katepart/highlight.html>
 [^xml]: [XML is almost always misused](https://www.devever.net/~hl/xml) and [A Brief Defense of XML](https://borretti.me/article/brief-defense-of-xml)
     are two of my favourite articles on the topic.
-
+[^tree-sitter]: [Tree-sitter](https://tree-sitter.github.io) makes this explicit with its
+    [highlights system](https://tree-sitter.github.io/tree-sitter/syntax-highlighting#highlights), which does syntax highlighting by literally pattern matching on the parse tree.
