@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-15
+date: 2023-06-21
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -1288,29 +1288,41 @@ $$
 \\
 = \langle \pi(a) \rangle \pi \cdot x
 \\
-\text{guess? show: } \pi(a) \; \# \; (a, x) \land \pi \cdot x = (a \; \pi(a)) \cdot x
+\; \; \; \; \forall b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \implies (a \; b) \cdot x = (\pi(a) \; b) \cdot (\pi \cdot x)
 \\
-\text{case } \pi(a) = a
+\; \; \; \; (\pi(a) \; b) \cdot \pi \cdot x
 \\
-\; \; \; \; = \langle a \rangle \pi \cdot x
+\; \; \; \; \text{case } \pi(a) = a
 \\
-\; \; \; \; = \langle a \rangle x \; ((\forall b \in (\text{support}(x) - \{ a \}). \; \pi(b) = b) \land \pi(a) = a \implies \pi \cdot x = x \text{ --- } x \; \text{supports}_{min} \; \text{support}(x))
+\; \; \; \; \; \; \; \; = (a \; b) \cdot \pi \cdot x
 \\
-\text{case } \pi(a) \neq a
+\; \; \; \; \; \; \; \; = (a \; b) \cdot x \; (\pi(a) = a \land (\forall b \in (\text{support}(x) - \{a\}). \; \pi(b) = b) \implies \forall b \in \text{support}(x). \; \pi(b) = b)
 \\
-\; \; \; \; \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (\pi(a) \; b) \cdot (\pi \cdot x)
+\; \; \; \; \text{case } \pi(a) \neq a
 \\
-\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (\pi(a) \; b) \cdot (a \; \pi(a)) \cdot x \; (\text{TODO: how do I prove this step?})
+\; \; \; \; \; \; \; \; = (\pi(a) \; b) \cdot (a \; \pi(a)) \cdot x \; (\text{TODO: how to prove this?})
 \\
-\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = ((\pi(a) \; b) \circ (a \; \pi(a))) \cdot x
+\; \; \; \; \; \; \; \; = ((\pi(a) \; b) \circ (a \; \pi(a))) \cdot x
 \\
-\; \; \; \; \iff \exists b. \; b \; \# \; (a, x, \pi(a), \pi \cdot x) \land (a \; b) \cdot x = (a \; b) \cdot x \; (\text{TODO: swapping composes})
+\; \; \; \; \; \; \; \; = ((a \; b) \circ (\pi(a) \; b)) \cdot x \; (\text{TODO: reference permutation swapping})
 \\
-\; \; \; \; = \langle a \rangle x
+\; \; \; \; \; \; \; \; = (a \; b) \cdot (\pi(a) \; b) \cdot x
+\\
+\; \; \; \; \; \; \; \; \; \; \; \; \pi(a) \in \text{support}(x)
+\\
+\; \; \; \; \; \; \; \; \; \; \; \; \implies \pi(\pi(a)) = \pi(a) \; (\forall b \in (\text{support}(x) - \{a\}). \; \pi(b) = b)
+\\
+\; \; \; \; \; \; \; \; \; \; \; \; \implies \pi(a) = a \text{ --- contradiction}
+\\
+\; \; \; \; \; \; \; \; \; \; \; \; \therefore \pi(a) \; \# \; x
+\\
+\; \; \; \; \; \; \; \; = (a \; b) \cdot x \; (\pi(a) \; \# \; x \land b \; \# \; x \implies (\pi(a) \; b) \cdot x = x \text{ --- TODO: reference proof})
+\\
+= \langle a \rangle x
 \end{array}
 $$
 
-TODO: continue proof
+TODO: all my exists-fresh proofs are actually forall-fresh proofs. prove that connection.
 
 ### Proof 9-rename
 
