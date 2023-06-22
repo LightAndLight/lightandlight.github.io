@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-21
+date: 2023-06-22
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -115,7 +115,7 @@ variable binding library.
 
 ## Nominal sets
 
-Nominal sets[^nominal-logic]<sup>,</sup>[^alpha-structural-recursion-and-induction]<sup>,</sup>[^nominal-techniques] is a theory of
+Nominal sets[^names-and-symmetry]<sup>,</sup>[^nominal-logic]<sup>,</sup>[^alpha-structural-recursion-and-induction]<sup>,</sup>[^nominal-techniques] is a theory of
 names and name binding, intended to help with implementing and verifying programming languages. Its most
 remarkable feature is an account of algebraic datatypes and recursion modulo [alpha
 equivalence](https://stackoverflow.com/a/47762545/2884502). In practise, this gives an elegant way
@@ -1265,6 +1265,56 @@ $$
 \text{id}(\pi \cdot x) = \pi \cdot x = \pi \cdot \text{id}(x)
 $$
 
+### Proof XAG-rename
+
+$$
+\begin{array}{c}
+\exists b. \; b \; \# \; (a, x, a', x') \land (a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\iff
+\\
+\forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
+\end{array}
+$$
+
+TODO: put this proof into context, explain, etc.
+
+#### Forward
+
+$$
+\begin{array}{l}
+\text{assume } \exists b. \; b \; \# \; (a, x, a', x') \land (a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\text{assume } \forall b'. \; b' \; \# \; (a, x, a' x')
+\\
+(a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\iff (b \; b') \cdot (a \; b) \cdot x = (b \; b') \cdot (a' \; b) \cdot x'
+\\
+\iff ((b \; b') \circ (a \; b)) \cdot x = ((b \; b') \circ (a' \; b)) \cdot x'
+\\
+\iff ((a \; b') \circ (b \; b')) \cdot x = ((a' \; b') \circ (b \; b')) \cdot x' \; (\text{TODO: reference permutation swapping proof})
+\\
+\iff (a \; b') \cdot (b \; b') \cdot x = (a' \; b') \cdot (b \; b') \cdot x'
+\\
+\iff (a \; b') \cdot x = (a' \; b') \cdot x' \; (\text{TODO: reference freshness swapping})
+\end{array}
+$$
+  
+#### Backward
+
+$$
+\begin{array}{l}
+\text{assume } \forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\exists b'. \; b' \; \# \; (a, x, a', x') \; (\text{TODO: talk about choose-a-fresh-name})
+\\
+\land
+\\
+(a \; b') \cdot x = (a' \; b') \cdot x' \; (\text{original assumption})
+\end{array}
+$$
+
 ### Proof BBY-rename
 
 The support of name binding: $\text{support}(\langle a \rangle x) = \text{support}(x) - \{ a \}$.
@@ -1304,19 +1354,19 @@ $$
 \\
 \; \; \; \; \; \; \; \; = ((\pi(a) \; b) \circ (a \; \pi(a))) \cdot x
 \\
-\; \; \; \; \; \; \; \; = ((a \; b) \circ (\pi(a) \; b)) \cdot x \; (\text{TODO: reference permutation swapping})
+\; \; \; \; \; \; \; \; = ((a \; b) \circ (\pi(a) \; b)) \cdot x \; (\text{A.ZZZ-rename})
 \\
 \; \; \; \; \; \; \; \; = (a \; b) \cdot (\pi(a) \; b) \cdot x
 \\
-\; \; \; \; \; \; \; \; \; \; \; \; \pi(a) \in \text{support}(x)
+\; \; \; \; \; \; \; \; \; \; \; \; \text{assume } \pi(a) \in \text{support}(x)
 \\
-\; \; \; \; \; \; \; \; \; \; \; \; \implies \pi(\pi(a)) = \pi(a) \; (\forall b \in (\text{support}(x) - \{a\}). \; \pi(b) = b)
+\; \; \; \; \; \; \; \; \; \; \; \; \implies \pi(\pi(a)) = \pi(a) \; ((\pi(a) \neq a \implies \pi(a) \in (\text{support}(x) - \{a\})) \land \forall b \in (\text{support}(x) - \{a\}). \; \pi(b) = b)
 \\
 \; \; \; \; \; \; \; \; \; \; \; \; \implies \pi(a) = a \text{ --- contradiction}
 \\
 \; \; \; \; \; \; \; \; \; \; \; \; \therefore \pi(a) \; \# \; x
 \\
-\; \; \; \; \; \; \; \; = (a \; b) \cdot x \; (\pi(a) \; \# \; x \land b \; \# \; x \implies (\pi(a) \; b) \cdot x = x \text{ --- TODO: reference proof})
+\; \; \; \; \; \; \; \; = (a \; b) \cdot x \; (\pi(a) \; \# \; x \land b \; \# \; x \implies (\pi(a) \; b) \cdot x = x \text{ --- A.YYY-rename})
 \\
 = \langle a \rangle x
 \end{array}
@@ -1809,6 +1859,9 @@ $$
 $$
 
 [^please-correct-me]: Let me know if (when?) I'm wrong about this!
+
+[^names-and-symmetry]: Pitts, A. M. (2013). Nominal sets: Names and symmetry in computer science.
+    Cambridge University Press.
 
 [^nominal-logic]: Pitts, A. M. (2003). Nominal logic, a first order theory of names and binding.
     Information and computation, 186(2), 165-193.
