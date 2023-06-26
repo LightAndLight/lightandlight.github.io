@@ -470,6 +470,62 @@ $$
 \end{array}
 $$
 
+### Proof BBZ-rename
+
+$a \; \# \; \langle b \rangle x \iff a = b \lor a \; \# \; x$ &nbsp; <a href="nominal-sets#proof-BBZ-rename-link">↩</a>
+
+#### Forward
+
+$$
+\begin{array}{l}
+\text{assume } a \; \# \; \langle b \rangle x
+\\
+\text{case } a = b
+\\
+\; \; \; \; a = b
+\\
+\text{case } a \neq b
+\\
+\; \; \; \; a \; \# \; x \iff a \notin \text{support}(x) - \{b\}
+\\
+\; \; \; \; \implies a \notin \text{support}(x)
+\\
+\; \; \; \; \iff a \; \# \; x
+\end{array}
+$$
+
+#### Backward
+
+$$
+\begin{array}{l}
+\text{assume } a = b \lor a \; \# \; x
+\\
+\text{case } a = b
+\\
+\; \; \; \; \text{support}(\langle b \rangle x)
+\\
+\; \; \; \; = \text{support}(x) - \{b\}
+\\
+\; \; \; \; = \text{support}(x) - \{a\}
+\\
+\; \; \; \; a \notin \text{support}(x) - \{a\}
+\\
+\; \; \; \; \iff a \; \# \; \langle b \rangle x
+\\
+\text{case } a \; \# \; x
+\\
+\; \; \; \; \text{support}(\langle b \rangle x)
+\\
+\; \; \; \; = \text{support}(x) - \{b\}
+\\
+\; \; \; \; a \; \# \; x \iff a \notin \text{support}(x)
+\\
+\; \; \; \; \implies a \notin \text{support}(x) - \{b\}
+\\
+\; \; \; \; \iff a \; \# \; \langle b \rangle x
+\end{array}
+$$
+
 ### Proof 9-rename
 
 Equivariant functions are supported by the empty set.
@@ -926,7 +982,7 @@ $$
 \\
 \iff \forall a. \; a \; \# \; f(\langle a \rangle x)
 \\
-a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \land a \; \# \; \langle a \rangle x \; (a = b \implies a \; \# \; \langle b \rangle x \text{ --- TODO: name / prove this}) \implies a \; \# \; f(\langle a \rangle x) \; (\text{A.XXX-rename})
+a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \land a \; \# \; \langle a \rangle x \; (a = b \implies a \; \# \; \langle b \rangle x \text{ --- A.BBZ-rename}) \implies a \; \# \; f(\langle a \rangle x) \; (\text{A.XXX-rename})
 \end{array}
 $$
 

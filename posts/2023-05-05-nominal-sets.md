@@ -554,7 +554,7 @@ impl <T: Permutable> Permutable for Binder<T> {
 ```
 
 Support: $\text{support} (\langle a \rangle x) \; = \text{support}(x) - \{ a \}$ (<a id="proof-BBY-rename-link" href="nominal-sets-proofs#proof-BBY-rename">A.BBY-rename</a>).
-Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$.
+Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$ (<a id="proof-BBZ-rename-link" href="nominal-sets-proofs#proof-BBZ-rename">A.BBZ-rename</a>).
 
 The support of a name binder excludes its bound name, which follows from it being a quotient:
 
