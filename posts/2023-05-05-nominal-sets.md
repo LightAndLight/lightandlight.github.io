@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-26
+date: 2023-06-27
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -465,6 +465,13 @@ pub mod support {
 }
 ```
 
+Since atoms are drawn from a countably infinite set, we take as an axiom that for any set of atoms there exists an atom that is fresh for them:
+<span id="axiom-choose-a-fresh-name">
+$\forall \bar{x} \in \mathcal{P}(\mathbb{A}). \; \exists a. \; a \; \# \; \bar{x}$
+</span>.
+This is known as the "choose-a-fresh-name" principle, and it's what motivates the global number generator I use for
+`Name`s.
+
 Some useful properties involving freshness:
 
 * Swapping fresh names does nothing: $a \; \# \; x \land b \; \# \; x \implies (a \; b) \cdot x = x$
@@ -553,15 +560,8 @@ impl <T: Permutable> Permutable for Binder<T> {
 }
 ```
 
-Support: $\text{support} (\langle a \rangle x) \; = \text{support}(x) - \{ a \}$ (<a id="proof-BBY-rename-link" href="nominal-sets-proofs#proof-BBY-rename">A.BBY-rename</a>).
+The support of a name binder excludes its bound name: $\text{support} (\langle a \rangle x) \; = \text{support}(x) - \{ a \}$ (<a id="proof-BBY-rename-link" href="nominal-sets-proofs#proof-BBY-rename">A.BBY-rename</a>).
 Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$ (<a id="proof-BBZ-rename-link" href="nominal-sets-proofs#proof-BBZ-rename">A.BBZ-rename</a>).
-
-The support of a name binder excludes its bound name, which follows from it being a quotient:
-
-The definition of support uses equality in its consequent, $\pi \cdot x = x$,
-and name binders are considered equal when their bound names can be renamed
-consistently, which means that we can have permutations $\pi$ where $\pi(a) \neq a$
-that still satisfy $\pi \cdot \langle a \rangle x = x$.
 
 ```rust
 impl <T: Supported> Supported for Binder<T> {
@@ -586,6 +586,12 @@ impl Clone for Binder<T> {
   }
 }
 ```
+
+When reasoning about binder equality, it's often inconvenient to find an atom $b \; \# \; (a, x, a', x')$
+such that $(a \; b) \cdot x = (a' \; b) \cdot$. When that's the case, we prove an
+equivalent property: $\forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'$
+(<a id="proof-XAG-rename-link" href="nominal-sets-proofs#proof-XAG-rename">A.XAG-rename</a>).
+Any specific fresh atom is interchangeable with all fresh atoms that satisfy the same conditions.
 
 ### The category of nominal sets
 

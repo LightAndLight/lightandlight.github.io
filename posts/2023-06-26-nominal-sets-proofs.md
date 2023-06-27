@@ -2,7 +2,7 @@
 title: "Nominal Sets: Appendix A (Proofs)"
 author: ielliott95
 permalink: /nominal-sets-proofs
-date: 2023-06-26
+date: 2023-06-27
 excerpt: |
   The proofs for my <a href="nominal-sets">Nominal Sets article</a>
 math: true
@@ -365,6 +365,8 @@ $$
 
 ### Proof XAG-rename
 
+The interchangeability of "some fresh" and "any fresh". <a href="nominal-sets#proof-XAG-rename-link">↩</a>
+
 $$
 \begin{array}{c}
 \exists b. \; b \; \# \; (a, x, a', x') \land (a \; b) \cdot x = (a' \; b) \cdot x'
@@ -374,8 +376,6 @@ $$
 \forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
 \end{array}
 $$
-
-TODO: put this proof into context, explain, etc.
 
 #### Forward
 
@@ -391,7 +391,7 @@ $$
 \\
 \iff ((b \; b') \circ (a \; b)) \cdot x = ((b \; b') \circ (a' \; b)) \cdot x'
 \\
-\iff ((a \; b') \circ (b \; b')) \cdot x = ((a' \; b') \circ (b \; b')) \cdot x' \; (\text{ --- A.ZZZ-rename})
+\iff ((a \; b') \circ (b \; b')) \cdot x = ((a' \; b') \circ (b \; b')) \cdot x' \; (\text{A.ZZZ-rename})
 \\
 \iff (a \; b') \cdot (b \; b') \cdot x = (a' \; b') \cdot (b \; b') \cdot x'
 \\
@@ -405,7 +405,7 @@ $$
 \begin{array}{l}
 \text{assume } \forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
 \\
-\exists b'. \; b' \; \# \; (a, x, a', x') \; (\text{TODO: talk about choose-a-fresh-name})
+\exists b'. \; b' \; \# \; (a, x, a', x') \; (\text{"choose-a-fresh-name"})
 \\
 \land
 \\
