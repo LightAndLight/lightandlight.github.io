@@ -2,7 +2,7 @@
 title: "Nominal Sets: Appendix A (Proofs)"
 author: ielliott95
 permalink: /nominal-sets-proofs
-date: 2023-06-27
+date: 2023-06-28
 excerpt: |
   The proofs for my <a href="nominal-sets">Nominal Sets article</a>
 math: true
@@ -11,6 +11,41 @@ math: true
 Here are the proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 This was a personal exercise to improve my mathematical reasoning; I don't expect anyone to read it.
 That said, if you do find any mistakes then please let me know!
+
+### Proof 0-rename
+
+Every finite permutation can be decomposed into a sequence of swaps.
+<a href="nominal-sets#proof-0-rename-link">↩</a>
+
+$$
+\forall \pi. \; \pi = (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n)) \text{ where } a_i \neq \pi(a_i) \neq \pi(a_j) \neq a_j
+$$
+
+TODO: review
+
+$$
+\begin{array}{l}
+\text{case } \{ \; x \; | \; \pi(x) \neq x \; \} = \emptyset
+\\
+\; \; \; \; \text{trivial}
+\\
+\text{case } \{ \; x \; | \; \pi(x) \neq x \; \} = S \cup \{a\} \text{ where } a \notin S
+\\
+\; \; \; \; \text{assume } \forall \pi'. \; \pi'(a) = a \land \{ \; \pi'(b) = \pi(b) \; | \; b \in S \; \} \implies \pi' = (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n)) 
+\\
+\; \; \; \; \pi
+\\
+\; \; \; \; = (a \; \pi(a)) \circ (a \; \pi(a)) \circ \pi
+\\
+\; \; \; \; \; \; \; \; \pi' = (a \; \pi(a)) \circ \pi
+\\
+\; \; \; \; \; \; \; \; \; \; \; \; \pi'(a) = ((a \; \pi(a)) \circ \pi)(a) = (a \; \pi(a))(\pi(a)) = a
+\\
+\; \; \; \; \; \; \; \; \; \; \; \; \pi'(b) = ((a \; \pi(a)) \circ \pi)(b) = (a \; \pi(a))(\pi(b)) = \pi(b) \text{ for } b \neq a
+\\
+\; \; \; \; = (a \; \pi(a)) \circ (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n))
+\end{array}
+$$
 
 ### Proof 1
 
@@ -448,7 +483,11 @@ $$
 \\
 \; \; \; \; \text{case } \pi(a) \neq a
 \\
-\; \; \; \; \; \; \; \; = (\pi(a) \; b) \cdot (a \; \pi(a)) \cdot x \; (\text{TODO: how to prove this?})
+\; \; \; \; \; \; \; \; \; \; \; \; \pi = (a \; \pi(a)) \circ (b_1 \; \pi(b_1)) \circ ... \circ (b_n \; \pi(b_n)) \; (\text{A.0-rename})
+\\
+\; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \text{ for all } b_i \in \mathbb{A} - \text{support}(x) - \{a\} \text{ where } \pi(b_i) \notin \text{support}(x) \land \pi(b_i) \neq \pi(b_j) \neq b_j \neq b_i \neq a \neq \pi(a)
+\\
+\; \; \; \; \; \; \; \; = (\pi(a) \; b) \cdot (a \; \pi(a)) \cdot x \; (b_i \; \# \; x \land \pi(b_i) \; \# \; x \text{ --- TODO: reference fresh redundant})
 \\
 \; \; \; \; \; \; \; \; = ((\pi(a) \; b) \circ (a \; \pi(a))) \cdot x
 \\
@@ -469,6 +508,8 @@ $$
 = \langle a \rangle x
 \end{array}
 $$
+
+TODO: review
 
 ### Proof BBZ-rename
 

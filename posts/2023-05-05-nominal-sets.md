@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-27
+date: 2023-06-28
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -10,7 +10,7 @@ math: true
 ---
 
 <div class="intro-wrapper">
-<div class="intro">
+\text{TODO: how to prove this?}<div class="intro">
 
 For years I've used [De
 Bruijn indices](https://en.wikipedia.org/wiki/De_Bruijn_index), in part because
@@ -136,10 +136,15 @@ A theory that deals with alpha equivalence needs a notion of "renaming variables
 [permutations](https://en.wikipedia.org/wiki/Permutation) of names.
 
 A permutation of names (from here on, just "a permutation") is a bijection on names. I'll write
-$\Pi$ for the set of permutations, and $\pi$ for any particular permutation.
+$\Pi$ for the set of permutations, and $\pi$ for any particular permutation. A permutation
+$\pi$ is "finite" when a finite set of atoms $a$ satisfies $\pi(a) \neq a$.
 
 The fundamental permutation is the swapping of two names, written $(a \; b)$. $(a \; b)$ is
 the bijection mapping $a$ to $b$, $b$ to $a$, and any other name to itself.
+Every finite permutation can be
+decomposed into a sequence of swaps
+(<a id="proof-0-rename-link" href="nominal-sets-proofs#proof-0-rename">A.0-rename</a>).
+
 
 Being functions, permutations are used by *applying* them to names, written $\pi(a)$.
 
