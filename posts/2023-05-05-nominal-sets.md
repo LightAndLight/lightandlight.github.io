@@ -2,15 +2,18 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-28
+date: 2023-06-29T06:41:00Z
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
 math: true
+tags:
+  - programming
+  - mathematics
 ---
 
 <div class="intro-wrapper">
-\text{TODO: how to prove this?}<div class="intro">
+<div class="intro">
 
 For years I've used [De
 Bruijn indices](https://en.wikipedia.org/wiki/De_Bruijn_index), in part because
@@ -143,7 +146,7 @@ The fundamental permutation is the swapping of two names, written $(a \; b)$. $(
 the bijection mapping $a$ to $b$, $b$ to $a$, and any other name to itself.
 Every finite permutation can be
 decomposed into a sequence of swaps
-(<a id="proof-0-rename-link" href="nominal-sets-proofs#proof-0-rename">A.0-rename</a>).
+(<a id="proof-1-link" href="nominal-sets-proofs#proof-1">A.1</a>).
 
 
 Being functions, permutations are used by *applying* them to names, written $\pi(a)$.
@@ -332,9 +335,9 @@ In English: $\bar{a} \; \text{supports} \; x$ when all permutations that keep th
 the same ($\pi \cdot x = x$).
 
 For example, every name must support itself: $\{a\} \; \text{supports} \; a$
-(<a id="proof-1-link" href="nominal-sets-proofs#proof-1">A.1</a>). 
+(<a id="proof-2-link" href="nominal-sets-proofs#proof-2">A.2</a>). 
 More importantly, $\neg (\{a\} \; \text{supports} \; a)$ is false
-(<a id="proof-2-link" href="nominal-sets-proofs#proof-2">A.2</a>).
+(<a id="proof-3-link" href="nominal-sets-proofs#proof-3">A.3</a>).
 
 Pairs are supported element-wise:
 
@@ -373,7 +376,7 @@ $$
 
 The definition of $\text{supports}$ is a bit "loose", because it allows names that don't occur in a value
 to support said value. For example, for names $a$ and $b$, $\{a,b\} \; \text{supports} \; a$
-(<a id="proof-3-link" href="nominal-sets-proofs#proof-3">A.3</a>).
+(<a id="proof-4-link" href="nominal-sets-proofs#proof-4">A.4</a>).
 
 The notion of *minimal* support tightens this up. The minimal support of a value consists of only
 the names the value *actually* depends on. $\bar{a}$ is the minimal support of $x$ when it is a subset of all other sets that support $x$:
@@ -392,7 +395,7 @@ $$
 $$
 
 I can say *the* minimal support, because it's unique for every value
-(<a id="proof-4-link" href="nominal-sets-proofs#proof-4">A.4</a>). From now on I'll just refer to "the minimal support" as "the support", and use a "minimal
+(<a id="proof-5-link" href="nominal-sets-proofs#proof-5">A.5</a>). From now on I'll just refer to "the minimal support" as "the support", and use a "minimal
 support" function instead of the $\text{supports}_{min}$ relation:
 
 $$
@@ -446,15 +449,15 @@ pub mod support {
 
 I think of the support of a function as the set of names that have been "captured" by the function.
 The identity function captures no names, so it's supported by the empty set
-(<a id="proof-5-link" href="nominal-sets-proofs#proof-5">A.5</a>).
+(<a id="proof-6-link" href="nominal-sets-proofs#proof-6">A.6</a>).
 A function that compares its two name arguments and nothing else 
 (like $\text{cmp}(a, b) = a \stackrel{?}{=} b$)
 is also supported by the empty set
-(<a id="proof-6-link" href="nominal-sets-proofs#proof-6">A.6</a>).
+(<a id="proof-7-link" href="nominal-sets-proofs#proof-7">A.7</a>).
 A function that references names other than its arguments has those names in its support. For
 example, $a$ and $b$ must be in the support of $\text{iffy}(x) = \text{if } a \stackrel{?}{=} x \text{ then } b
 \text{ else } x$
-(<a id="proof-7-link" href="nominal-sets-proofs#proof-7">A.7</a>). 
+(<a id="proof-8-link" href="nominal-sets-proofs#proof-8">A.8</a>). 
 
 ### Freshness
 
@@ -480,10 +483,10 @@ This is known as the "choose-a-fresh-name" principle, and it's what motivates th
 Some useful properties involving freshness:
 
 * Swapping fresh names does nothing: $a \; \# \; x \land b \; \# \; x \implies (a \; b) \cdot x = x$
-  (<a id="proof-YYY-rename-link" href="nominal-sets-proofs#proof-YYY-rename">A.YYY-rename</a>).
+  (<a id="proof-9-link" href="nominal-sets-proofs#proof-9">A.9</a>).
 
 * Freshness "distributes" across functions: $a \; \# \; f \land a \; \# \; x \implies a \; \# \; f(x)$
-  (<a id="proof-XXX-rename-link" href="nominal-sets-proofs#proof-XXX-rename">A.XXX-rename</a>).
+  (<a id="proof-10-link" href="nominal-sets-proofs#proof-10">A.10</a>).
 
 ### Name binding
 
@@ -565,8 +568,8 @@ impl <T: Permutable> Permutable for Binder<T> {
 }
 ```
 
-The support of a name binder excludes its bound name: $\text{support} (\langle a \rangle x) \; = \text{support}(x) - \{ a \}$ (<a id="proof-BBY-rename-link" href="nominal-sets-proofs#proof-BBY-rename">A.BBY-rename</a>).
-Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$ (<a id="proof-BBZ-rename-link" href="nominal-sets-proofs#proof-BBZ-rename">A.BBZ-rename</a>).
+The support of a name binder excludes its bound name: $\text{support} (\langle a \rangle x) \; = \text{support}(x) - \{ a \}$ (<a id="proof-11-link" href="nominal-sets-proofs#proof-11">A.11</a>).
+Freshness is the negation of this: $b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x$ (<a id="proof-12-link" href="nominal-sets-proofs#proof-12">A.12</a>).
 
 ```rust
 impl <T: Supported> Supported for Binder<T> {
@@ -595,7 +598,7 @@ impl Clone for Binder<T> {
 When reasoning about binder equality, it's often inconvenient to find an atom $b \; \# \; (a, x, a', x')$
 such that $(a \; b) \cdot x = (a' \; b) \cdot$. When that's the case, we prove an
 equivalent property: $\forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'$
-(<a id="proof-XAG-rename-link" href="nominal-sets-proofs#proof-XAG-rename">A.XAG-rename</a>).
+(<a id="proof-13-link" href="nominal-sets-proofs#proof-13">A.13</a>).
 Any specific fresh atom is interchangeable with all fresh atoms that satisfy the same conditions.
 
 ### The category of nominal sets
@@ -606,31 +609,27 @@ $x \in X$, $x$ has a finite, minimal support.
 Nominal sets are the objects of a category ($\text{Nom}$) whose arrows are functions that preserve permutation
 actions: $\forall \pi, x. \; f(\pi \cdot x) = \pi \cdot f(x)$. These are called
 [equivariant](https://en.wikipedia.org/wiki/Equivariant_map) functions. One important fact about equivariant functions
-is that they're supported by the empty set (<a id="proof-9-rename-link" href="nominal-sets-proofs#proof-9-rename">A.9-rename</a>).
-
-TODO: rename proof link ^^^
+is that they're supported by the empty set (<a id="proof-14-link" href="nominal-sets-proofs#proof-14">A.14</a>).
 
 The identity arrows are just the identity function on each nominal set. The identity function is
-equivariant (<a id="proof-8-link" href="nominal-sets-proofs#proof-8">A.8</a>). Composition of arrows is the composition
+equivariant (<a id="proof-15-link" href="nominal-sets-proofs#proof-15">A.15</a>). Composition of arrows is the composition
 of equivariant functions, which preserves equivariance
-(<a id="proof-9-link" href="nominal-sets-proofs#proof-9">A.9</a>). I'll use $\rightarrow_{Nom}$ for $\text{Nom}$ arrows,
+(<a id="proof-16-link" href="nominal-sets-proofs#proof-16">A.16</a>). I'll use $\rightarrow_{Nom}$ for $\text{Nom}$ arrows,
 e.g. $X \rightarrow_{Nom} Y$.
 
 $\text{Nom}$ has a [terminal object](https://en.wikipedia.org/wiki/Terminal_object), which is the
-singleton set (<a id="proof-10-rename-link" href="nominal-sets-proofs#proof-10-rename">A.10-rename</a>).
-
-TODO: rename link ^^^^
+singleton set (<a id="proof-17-link" href="nominal-sets-proofs#proof-17">A.17</a>).
 
 $\text{Nom}$ has [products](https://en.wikipedia.org/wiki/Product_(category_theory)), which
 are pairs of nominal sets, because introduction and elimination of pairs are equivariant
-(<a id="proof-10-link" href="nominal-sets-proofs#proof-10">A.10</a>).
+(<a id="proof-18-link" href="nominal-sets-proofs#proof-18">A.18</a>).
 
 $\text{Nom}$ has [coproducts](https://en.wikipedia.org/wiki/Coproduct), which is the normal
 disjoint union on sets, because introduction and elimination of coproducts are equivariant
-(<a id="proof-11-link" href="nominal-sets-proofs#proof-11">A.11</a>).
+(<a id="proof-19-link" href="nominal-sets-proofs#proof-19">A.19</a>).
 
 $\text{Nom}$ has [exponentials](https://en.wikipedia.org/wiki/Exponential_object), in the form of
-finitely supported functions between nominal sets (<a id="proof-12-link" href="nominal-sets-proofs#proof-12">A.12</a>).
+finitely supported functions between nominal sets (<a id="proof-20-link" href="nominal-sets-proofs#proof-20">A.20</a>).
 
 These facts have two important consequences for programmers:
 
@@ -673,7 +672,7 @@ $[\mathbb{A}]({-})$ has left and right [adjoints](https://en.wikipedia.org/wiki/
 
 $[\mathbb{A}]({-})$ is right adjoint to the functor ${}- * \; \mathbb{A}$ arising from the following
 nominal set: $X * \mathbb{A} = \{ \; (x, a) \; | \; x \in X, a \; \# \; x  \;\}$ (<a id
-="proof-13-link" href="nominal-sets-proofs#proof-13">A.13</a>).
+="proof-22-link" href="nominal-sets-proofs#proof-22">A.22</a>).
 
 $$
 \frac{
@@ -704,7 +703,7 @@ The "rightward" direction of the adjunction ($\text{bind}$) describes a way to c
 $[\mathbb{A}]({-})$ is left adjoint to this functor:
 $R(Y) = \{ \; f \; | \; f \in Y^{\mathbb{A}}, \; \forall a. \; a \; \# \; f(a) \;
 \}$ (<a id
-="proof-14-link" href="nominal-sets-proofs#proof-14">A.14</a>).
+="proof-23-link" href="nominal-sets-proofs#proof-23">A.23</a>).
 
 $$
 \frac{
@@ -892,11 +891,11 @@ impl Subst<Expr> for Expr {
 
 While the library I've sketched so far is *okay*, it's not something I'd publish. Here are some outstanding issues, concerns, and questions:
 
-* I don't like is the lack of support for mutability. Functions like `permute_by` and
+* I don't like the lack of support for mutability. Functions like `permute_by` and
   `subst` end up rebuilding the value they're acting on. This is a waste of time when I have exclusive
   access to the value; I should be able to mutate the value in place and skip "reconstructing" the result.
 
-* The implementation of `PartialEq` for `Binder`:
+* The implementation of `PartialEq` for `Binder` is wasteful:
 
   ```rust
   fn eq(&self, other: &Self) -> bool {

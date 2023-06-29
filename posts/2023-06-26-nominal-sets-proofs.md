@@ -2,36 +2,42 @@
 title: "Nominal Sets: Appendix A (Proofs)"
 author: ielliott95
 permalink: /nominal-sets-proofs
-date: 2023-06-28
+date: 2023-06-29T06:40:00Z
 excerpt: |
-  The proofs for my <a href="nominal-sets">Nominal Sets article</a>
+  The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 math: true
+tags:
+  - mathematics
 ---
 
 Here are the proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 This was a personal exercise to improve my mathematical reasoning; I don't expect anyone to read it.
 That said, if you do find any mistakes then please let me know!
 
-### Proof 0-rename
+## Proof 1
 
 Every finite permutation can be decomposed into a sequence of swaps.
-<a href="nominal-sets#proof-0-rename-link">↩</a>
+<a href="nominal-sets#proof-1-link">↩</a>
 
 $$
 \forall \pi. \; \pi = (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n)) \text{ where } a_i \neq \pi(a_i) \neq \pi(a_j) \neq a_j
 $$
 
-TODO: review
-
 $$
 \begin{array}{l}
+\text{Induction on } \{ \; x \; | \; \pi(x) \neq x \; \} \text{:}
+\\
 \text{case } \{ \; x \; | \; \pi(x) \neq x \; \} = \emptyset
 \\
 \; \; \; \; \text{trivial}
 \\
 \text{case } \{ \; x \; | \; \pi(x) \neq x \; \} = S \cup \{a\} \text{ where } a \notin S
 \\
-\; \; \; \; \text{assume } \forall \pi'. \; \pi'(a) = a \land \{ \; \pi'(b) = \pi(b) \; | \; b \in S \; \} \implies \pi' = (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n)) 
+\; \; \; \; \text{assume } \forall \pi'. \; \pi'(a) = a \land \{ \; \pi'(b) = \pi(b) \; | \; b \in S \; \}
+\;
+\implies
+\;
+\pi' = (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n)) 
 \\
 \; \; \; \; \pi
 \\
@@ -43,14 +49,14 @@ $$
 \\
 \; \; \; \; \; \; \; \; \; \; \; \; \pi'(b) = ((a \; \pi(a)) \circ \pi)(b) = (a \; \pi(a))(\pi(b)) = \pi(b) \text{ for } b \neq a
 \\
-\; \; \; \; = (a \; \pi(a)) \circ (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n))
+\; \; \; \; = (a \; \pi(a)) \circ (a_1 \; \pi(a_1)) \circ ... \circ (a_n \; \pi(a_n)) \; (\text{inductive hypothesis})
 \end{array}
 $$
 
-### Proof 1
+## Proof 2
 
 Every name must support itself: $\{a\} \; \text{supports} \; a$.
-<a href="nominal-sets#proof-1-link">↩</a>
+<a href="nominal-sets#proof-2-link">↩</a>
 
 $$
 \begin{array}{c}
@@ -67,10 +73,10 @@ $$
 \end{array}
 $$
 
-### Proof 2
+## Proof 3
 
 $\neg (\{a\} \; \text{supports} \; a)$ is false.
-<a href="nominal-sets#proof-2-link">↩</a>
+<a href="nominal-sets#proof-3-link">↩</a>
 
 $$
 \begin{array}{c}
@@ -89,10 +95,10 @@ $$
 \end{array}
 $$
 
-### Proof 3
+## Proof 4
 
 For names $a$ and $b$, $\{a,b\} \; \text{supports} \; a$.
-<a href="nominal-sets#proof-3-link">↩</a>
+<a href="nominal-sets#proof-4-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -111,10 +117,10 @@ $$
 \end{array}
 $$
 
-### Proof 4
+## Proof 5
 
 Uniqueness of minimal supports.
-<a href="nominal-sets#proof-4-link">↩</a>
+<a href="nominal-sets#proof-5-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -185,10 +191,10 @@ x \in X, \;
 \end{array}
 $$
 
-### Proof 5
+## Proof 6
 
 The identity function is supported by the empty set.
-<a href="nominal-sets#proof-5-link">↩</a>
+<a href="nominal-sets#proof-6-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -203,10 +209,10 @@ $$
 \end{array}
 $$
 
-### Proof 6
+## Proof 7
 
 $\text{cmp}(a, b) = a \stackrel{?}{=} b$ is supported by the empty set.
-<a href="nominal-sets#proof-6-link">↩</a>
+<a href="nominal-sets#proof-7-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -257,13 +263,13 @@ $$
 \end{array}
 $$
 
-### Proof 7
+## Proof 8
 
 $a$ and $b$ must be in the support of $\text{iffy}(x) = \text{if } a \stackrel{?}{=} x \text{ then } b
 \text{ else } x$.
-<a href="nominal-sets#proof-7-link">↩</a>
+<a href="nominal-sets#proof-8-link">↩</a>
 
-#### When $a$ is missing
+### When $a$ is missing
 
 $$
 \begin{array}{l}
@@ -284,7 +290,7 @@ n), \; x = a
 \end{array}
 $$
 
-#### When $b$ is missing
+### When $b$ is missing
 
 $$
 \begin{array}{l}
@@ -305,10 +311,10 @@ n), \; x = a
 \end{array}
 $$
 
-### Proof YYY-rename
+## Proof 9
 
 Swapping fresh names does nothing.
-<a href="nominal-sets#proof-YYY-rename-link">↩</a>
+<a href="nominal-sets#proof-9-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -332,10 +338,10 @@ a \; \# \; x \land b \; \# \; x
 \end{array}
 $$
 
-### Proof XXX-rename
+## Proof 10
 
 Freshness "distributes" across functions.
-<a href="nominal-sets#proof-XXX-rename-link">↩</a>
+<a href="nominal-sets#proof-10-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -385,73 +391,14 @@ a \notin (a \cap b) \; (a \notin \bar{a} \land a \notin \bar{b})
 \\
 \implies a \notin \bar{c}
 \\
-\iff a \; \# \; f(x) \; \square
+\iff a \; \# \; f(x)
 \end{array}
 $$
 
-### Proof 8
-
-The identity function is equivariant.
-<a href="nominal-sets#proof-8-link">↩</a>
-
-$$
-\text{id}(\pi \cdot x) = \pi \cdot x = \pi \cdot \text{id}(x)
-$$
-
-### Proof XAG-rename
-
-The interchangeability of "some fresh" and "any fresh". <a href="nominal-sets#proof-XAG-rename-link">↩</a>
-
-$$
-\begin{array}{c}
-\exists b. \; b \; \# \; (a, x, a', x') \land (a \; b) \cdot x = (a' \; b) \cdot x'
-\\
-\iff
-\\
-\forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
-\end{array}
-$$
-
-#### Forward
-
-$$
-\begin{array}{l}
-\text{assume } \exists b. \; b \; \# \; (a, x, a', x') \land (a \; b) \cdot x = (a' \; b) \cdot x'
-\\
-\text{assume } \forall b'. \; b' \; \# \; (a, x, a' x')
-\\
-(a \; b) \cdot x = (a' \; b) \cdot x'
-\\
-\iff (b \; b') \cdot (a \; b) \cdot x = (b \; b') \cdot (a' \; b) \cdot x'
-\\
-\iff ((b \; b') \circ (a \; b)) \cdot x = ((b \; b') \circ (a' \; b)) \cdot x'
-\\
-\iff ((a \; b') \circ (b \; b')) \cdot x = ((a' \; b') \circ (b \; b')) \cdot x' \; (\text{A.ZZZ-rename})
-\\
-\iff (a \; b') \cdot (b \; b') \cdot x = (a' \; b') \cdot (b \; b') \cdot x'
-\\
-\iff (a \; b') \cdot x = (a' \; b') \cdot x' \; (b \; \# \; x' \land b' \; \# \; x' \text{ --- A.YYY-rename})
-\end{array}
-$$
-  
-#### Backward
-
-$$
-\begin{array}{l}
-\text{assume } \forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
-\\
-\exists b'. \; b' \; \# \; (a, x, a', x') \; (\text{"choose-a-fresh-name"})
-\\
-\land
-\\
-(a \; b') \cdot x = (a' \; b') \cdot x' \; (\text{original assumption})
-\end{array}
-$$
-
-### Proof BBY-rename
+## Proof 11
 
 The support of name binding: $\text{support}(\langle a \rangle x) = \text{support}(x) - \{ a \}$.
-<a href="nominal-sets#proof-BBY-rename-link">↩</a>
+<a href="nominal-sets#proof-11-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -483,15 +430,15 @@ $$
 \\
 \; \; \; \; \text{case } \pi(a) \neq a
 \\
-\; \; \; \; \; \; \; \; \; \; \; \; \pi = (a \; \pi(a)) \circ (b_1 \; \pi(b_1)) \circ ... \circ (b_n \; \pi(b_n)) \; (\text{A.0-rename})
+\; \; \; \; \; \; \; \; \; \; \; \; \pi = (a \; \pi(a)) \circ (b_1 \; \pi(b_1)) \circ ... \circ (b_n \; \pi(b_n)) \; (\text{A.1})
 \\
 \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \text{ for all } b_i \in \mathbb{A} - \text{support}(x) - \{a\} \text{ where } \pi(b_i) \notin \text{support}(x) \land \pi(b_i) \neq \pi(b_j) \neq b_j \neq b_i \neq a \neq \pi(a)
 \\
-\; \; \; \; \; \; \; \; = (\pi(a) \; b) \cdot (a \; \pi(a)) \cdot x \; (b_i \; \# \; x \land \pi(b_i) \; \# \; x \text{ --- TODO: reference fresh redundant})
+\; \; \; \; \; \; \; \; = (\pi(a) \; b) \cdot (a \; \pi(a)) \cdot x \; (b_i \; \# \; x \land \pi(b_i) \; \# \; x \text{A.9})
 \\
 \; \; \; \; \; \; \; \; = ((\pi(a) \; b) \circ (a \; \pi(a))) \cdot x
 \\
-\; \; \; \; \; \; \; \; = ((a \; b) \circ (\pi(a) \; b)) \cdot x \; (\text{A.ZZZ-rename})
+\; \; \; \; \; \; \; \; = ((a \; b) \circ (\pi(a) \; b)) \cdot x \; (\text{A.21})
 \\
 \; \; \; \; \; \; \; \; = (a \; b) \cdot (\pi(a) \; b) \cdot x
 \\
@@ -503,19 +450,17 @@ $$
 \\
 \; \; \; \; \; \; \; \; \; \; \; \; \therefore \pi(a) \; \# \; x
 \\
-\; \; \; \; \; \; \; \; = (a \; b) \cdot x \; (\pi(a) \; \# \; x \land b \; \# \; x \implies (\pi(a) \; b) \cdot x = x \text{ --- A.YYY-rename})
+\; \; \; \; \; \; \; \; = (a \; b) \cdot x \; (\pi(a) \; \# \; x \land b \; \# \; x \implies (\pi(a) \; b) \cdot x = x \text{ --- A.9})
 \\
 = \langle a \rangle x
 \end{array}
 $$
 
-TODO: review
+## Proof 12
 
-### Proof BBZ-rename
+$a \; \# \; \langle b \rangle x \iff a = b \lor a \; \# \; x$ &nbsp; <a href="nominal-sets#proof-12-link">↩</a>
 
-$a \; \# \; \langle b \rangle x \iff a = b \lor a \; \# \; x$ &nbsp; <a href="nominal-sets#proof-BBZ-rename-link">↩</a>
-
-#### Forward
+### Forward
 
 $$
 \begin{array}{l}
@@ -535,7 +480,7 @@ $$
 \end{array}
 $$
 
-#### Backward
+### Backward
 
 $$
 \begin{array}{l}
@@ -567,10 +512,60 @@ $$
 \end{array}
 $$
 
-### Proof 9-rename
+## Proof 13
+
+The interchangeability of "some fresh" and "any fresh". <a href="nominal-sets#proof-13-link">↩</a>
+
+$$
+\begin{array}{c}
+\exists b. \; b \; \# \; (a, x, a', x') \land (a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\iff
+\\
+\forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
+\end{array}
+$$
+
+### Forward
+
+$$
+\begin{array}{l}
+\text{assume } \exists b. \; b \; \# \; (a, x, a', x') \land (a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\text{assume } \forall b'. \; b' \; \# \; (a, x, a' x')
+\\
+(a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\iff (b \; b') \cdot (a \; b) \cdot x = (b \; b') \cdot (a' \; b) \cdot x'
+\\
+\iff ((b \; b') \circ (a \; b)) \cdot x = ((b \; b') \circ (a' \; b)) \cdot x'
+\\
+\iff ((a \; b') \circ (b \; b')) \cdot x = ((a' \; b') \circ (b \; b')) \cdot x' \; (\text{A.21})
+\\
+\iff (a \; b') \cdot (b \; b') \cdot x = (a' \; b') \cdot (b \; b') \cdot x'
+\\
+\iff (a \; b') \cdot x = (a' \; b') \cdot x' \; (b \; \# \; x' \land b' \; \# \; x' \text{ --- A.9})
+\end{array}
+$$
+  
+### Backward
+
+$$
+\begin{array}{l}
+\text{assume } \forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'
+\\
+\exists b'. \; b' \; \# \; (a, x, a', x') \; (\text{"choose-a-fresh-name"})
+\\
+\land
+\\
+(a \; b') \cdot x = (a' \; b') \cdot x' \; (\text{original assumption})
+\end{array}
+$$
+
+## Proof 14
 
 Equivariant functions are supported by the empty set.
-<a href="nominal-sets#proof-9-rename-link">↩</a>
+<a href="nominal-sets#proof-14-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -586,20 +581,29 @@ $$
 \\
 \iff \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \pi \cdot f = f
 \\
-\iff \pi \cdot f = f
+\forall x. \; (\pi \cdot f)(x)
 \\
-\iff \forall x. \; \pi \cdot f(\pi^{-1} \cdot x) = f(x)
+= \pi \cdot f(\pi^{-1} \cdot x)
 \\
-\iff \forall x. \; \pi \cdot \pi^{-1} \cdot f(x) = f(x) \; (f \text{ equivariant})
+= \pi \cdot \pi^{-1} f(x) (f \text{ equivariant})
 \\
-\iff \forall x. \; f(x) = f(x) \; \square
+= f(x)
 \end{array}
 $$
 
-### Proof 9
+## Proof 15
+
+The identity function is equivariant.
+<a href="nominal-sets#proof-15-link">↩</a>
+
+$$
+\text{id}(\pi \cdot x) = \pi \cdot x = \pi \cdot \text{id}(x)
+$$
+
+## Proof 16
 
 The composition of two equivariant functions is equivariant.
-<a href="nominal-sets#proof-9-link">↩</a>
+<a href="nominal-sets#proof-16-link">↩</a>
 
 $$
 \begin{array}{lll}
@@ -611,10 +615,10 @@ $$
 \end{array}
 $$
 
-### Proof 10-rename
+## Proof 17
 
 $\text{Nom}$ has a terminal object, which is the singleton set. <a
-href="nominal-sets#proof-10-rename-link">↩</a>
+href="nominal-sets#proof-17-link">↩</a>
 
 The singleton set $\{*\}$ has the trivial permutation action $\pi \cdot * = *$.
 
@@ -642,10 +646,10 @@ $$
 \end{array}
 $$
 
-### Proof 10
+## Proof 18
 
 Introduction and elimination of pairs is equivariant.
-<a href="nominal-sets#proof-10-link">↩</a>
+<a href="nominal-sets#proof-18-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -689,10 +693,10 @@ $$
 \end{array}
 $$
 
-### Proof 11
+## Proof 19
 
 Introduction and elimination of coproducts is equivariant.
-<a href="nominal-sets#proof-11-link">↩</a>
+<a href="nominal-sets#proof-19-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -735,10 +739,10 @@ $$
 \end{array}
 $$
 
-### Proof 12
+## Proof 20
 
 Finitely supported functions between nominal sets are exponential objects.
-<a href="nominal-sets#proof-12-link">↩</a>
+<a href="nominal-sets#proof-20-link">↩</a>
 
 Firstly, not all functions are finitely supported, which means that in general $A \rightarrow B$
 (for nominal sets $A$ and $B$) is
@@ -829,9 +833,9 @@ $$
 \end{array}
 $$
 
-### Proof ZZZ-rename
+## Proof 21
 
-Swapping can "commute" with a permutation. (Used in <a href="proof-13">A.13</a>)
+Swapping can "commute" with a permutation. (Used in <a href="#proof-22">A.22</a>)
 
 $$
 \begin{array}{c}
@@ -882,10 +886,10 @@ $$
 \end{array}
 $$
 
-### Proof 13
+## Proof 22
 
 $[\mathbb{A}]({-})$ is right adjoint to the functor ${}- * \; \mathbb{A}$ arising from the following
-nominal set: $X * \mathbb{A} = \{ \; (x, a) \; | \; x \in X, a \; \# \; x  \;\}$. <a href="nominal-sets#proof-13-link">↩</a>
+nominal set: $X * \mathbb{A} = \{ \; (x, a) \; | \; x \in X, a \; \# \; x  \;\}$. <a href="nominal-sets#proof-22-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -924,7 +928,7 @@ $$
 \\
 \; \; \; \; f(x) \; @ \; a \text{ requires } a \; \# \; f(x)
 \\
-\; \; \; \; \; \; \; \; a \; \# \; x \land a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \implies a \; \# \; f(x) \; (\text{A.XXX-rename})
+\; \; \; \; \; \; \; \; a \; \# \; x \land a \; \# \; f \; (f \text{ equivariant -- A.14}) \implies a \; \# \; f(x) \; (\text{A.10})
 \\
 \; \; \; \; \text{let } \langle a' \rangle x' = f(x)
 \\
@@ -954,13 +958,13 @@ $$
 \\
 \; \; \; \; \; \; \; \; \iff \forall b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \implies ((a \; b) \circ (a' \; a)) \cdot x' = (a' \; b) \cdot x'
 \\
-\; \; \; \; \; \; \; \; \iff \forall b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \implies ((a' \; b) \circ (a \; b)) \cdot x' = (a' \; b) \cdot x' \; (\pi \circ (a \; b) = (\pi(a) \; \pi(b)) \circ \pi \text{ --- A.ZZZ-rename})
+\; \; \; \; \; \; \; \; \iff \forall b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \implies ((a' \; b) \circ (a \; b)) \cdot x' = (a' \; b) \cdot x' \; (\pi \circ (a \; b) = (\pi(a) \; \pi(b)) \circ \pi \text{ --- A.21})
 \\
 \; \; \; \; \; \; \; \; \iff \forall b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \implies (a' \; b) \cdot (a \; b) \cdot x' = (a' \; b) \cdot x'
 \\
-\; \; \; \; \; \; \; \; \iff \forall b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \implies (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \text{ --- A.YYY-rename})
+\; \; \; \; \; \; \; \; \iff \forall b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \implies (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \text{ --- A.9})
 \\
-\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \; (\text{A.XAG-rename})
+\; \; \; \; \; \; \; \; \iff \exists b. \; b \; \# \; (a, (a' \; a) \cdot x', a', x') \land (a' \; b) \cdot x' = (a' \; b) \cdot x' \; (a \; \# \; x' \land b \; \# \; x' \implies (a \; b) \cdot x' = x' \; (\text{A.13})
 \\ \; \\
 \; \; \; \; \; \; \; \; \langle a \rangle \; (a' \; a) \cdot x'
 \\
@@ -980,7 +984,7 @@ $$
 \\
 \; \; \; \; \text{bind}(f)(x) \; @ \; a \text{ requires } a \; \# \; \text{bind}(f)(x)
 \\
-\; \; \; \; a \; \# \; x \land a \; \# \; \text{bind}(f) \; (\text{bind(f)} \text{ equivariant -- A.9-rename}) \implies a \; \# \; \text{bind}(f)(x) \; (\text{A.XXX-rename})
+\; \; \; \; a \; \# \; x \land a \; \# \; \text{bind}(f) \; (\text{bind(f)} \text{ equivariant -- A.14}) \implies a \; \# \; \text{bind}(f)(x) \; (\text{A.10})
 \\
 = (\langle a' \rangle f(x, a') \text{ for some } a' \; \# \; x) \; @ \; a \\
 = (a' \; a) \cdot f(x, a')
@@ -989,15 +993,15 @@ $$
 \\
 = f((a' \; a) \cdot x, a)
 \\
-= f(x, a) \; (a' \; \# \; x \land a \; \# \; x \implies (a' \; a) \cdot x = x \text{ --- A.YYY-rename})
+= f(x, a) \; (a' \; \# \; x \land a \; \# \; x \implies (a' \; a) \cdot x = x \text{ --- A.9})
 \end{array}
 $$
 
-### Proof 14
+## Proof 23
 
 $[\mathbb{A}]({-})$ is left adjoint to this functor:
 $R(Y) = \{ \; f \; | \; f \in Y^{\mathbb{A}}, \; \forall a. \; a \; \# \; f(a) \;
-\}$. <a href="nominal-sets#proof-14-link">↩</a>
+\}$. <a href="nominal-sets#proof-23-link">↩</a>
 
 $$
 \begin{array}{l}
@@ -1023,7 +1027,7 @@ $$
 \\
 \iff \forall a. \; a \; \# \; f(\langle a \rangle x)
 \\
-a \; \# \; f \; (f \text{ equivariant -- A.9-rename}) \land a \; \# \; \langle a \rangle x \; (a = b \implies a \; \# \; \langle b \rangle x \text{ --- A.BBZ-rename}) \implies a \; \# \; f(\langle a \rangle x) \; (\text{A.XXX-rename})
+a \; \# \; f \; (f \text{ equivariant -- A.14}) \land a \; \# \; \langle a \rangle x \; (a = b \implies a \; \# \; \langle b \rangle x \text{ --- A.12}) \implies a \; \# \; f(\langle a \rangle x) \; (\text{A.10})
 \end{array}
 $$
 
