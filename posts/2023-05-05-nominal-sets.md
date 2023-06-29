@@ -44,7 +44,7 @@ and that line of reasoning continues to motivate me. More recently, [Paul Graham
 more eloquent [essay](http://www.paulgraham.com/words.html) on the topic.
 
 The second is to contribute another introduction to nominal sets. I learned about nominal sets from
-primary sources: a few papers from the pioneering authors, and slides from tutorials they'd given.
+primary sources: a book (via my state library) and few papers from the pioneering authors, and slides from tutorials they'd given.
 In total, five or six resources from two authors. When I didn't understand something I cycled
 between the resources, as if trying to triangulate an understanding. I think that more explanations, written by different people, would have increased the chances
 of finding an explanation that clicked for me. While I cover the same introductory topics
