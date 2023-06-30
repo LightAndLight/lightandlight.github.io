@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-29T06:41:00Z
+date: 2023-06-30T06:41:00Z
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -22,12 +22,12 @@ intended) De Bruijn indexed binders in a simple and type-safe way. Having learne
 [Ipso](https://github.com/lightandlight/ipso), which is written in Rust. I wished I had `bound`, so I tried to port it to
 Rust. Unfortunately, `bound` relies on [polymorphic
 recursion](https://en.wikipedia.org/wiki/Polymorphic_recursion), which Rust 
-[doesn't support](https://github.com/rust-lang/rust/issues/4287#issuecomment-11846582).
+[doesn't really support](https://github.com/rust-lang/rust/issues/4287#issuecomment-11846582).
 
 Writing all that variable binding machinery in Rust was tolerable, but Ipso probably isn't the last
 programming language that I'll build with Rust. When it's time for me to build the next one, I'd
 like to use a variable binding library instead. I think
-[`moniker`](https://docs.rs/moniker/latest/moniker/) is the only[^please-correct-me] library on
+[`moniker`](https://docs.rs/moniker/latest/moniker/) is the only[^please-correct-me] such library on
 [crates.io](https://crates.io/), and I might yet use it. In the meantime, I'd
 like to explore an alternative way of tackling the problem, inspired by a formalism called "nominal sets".
 
@@ -45,8 +45,8 @@ more eloquent [essay](http://www.paulgraham.com/words.html) on the topic.
 
 The second is to contribute another introduction to nominal sets. I learned about nominal sets from
 primary sources: a book (via my state library) and few papers from the pioneering authors, and slides from tutorials they'd given.
-In total, five or six resources from two authors. When I didn't understand something I cycled
-between the resources, as if trying to triangulate an understanding. I think that more explanations, written by different people, would have increased the chances
+In total, five or six resources from a couple of authors. When I didn't understand something I cycled
+between resources, as if trying to triangulate an understanding. I think that more explanations, written by different people, would have increased the chances
 of finding an explanation that clicked for me. While I cover the same introductory topics
 as the primary sources, I hope that I'll do it differently enough to be valuable to someone.
 
@@ -139,7 +139,9 @@ A theory that deals with alpha equivalence needs a notion of "renaming variables
 [permutations](https://en.wikipedia.org/wiki/Permutation) of names.
 
 A permutation of names (from here on, just "a permutation") is a bijection on names. I'll write
-$\Pi$ for the set of permutations, and $\pi$ for any particular permutation. A permutation
+$\Pi$ for the set of permutations, and $\pi$ for any particular permutation.
+Being functions, permutations are used by *applying* them to names, written $\pi(a)$.
+A permutation
 $\pi$ is "finite" when a finite set of atoms $a$ satisfies $\pi(a) \neq a$.
 
 The fundamental permutation is the swapping of two names, written $(a \; b)$. $(a \; b)$ is
@@ -148,10 +150,7 @@ Every finite permutation can be
 decomposed into a sequence of swaps
 (<a id="proof-1-link" href="nominal-sets-proofs#proof-1">A.1</a>).
 
-
-Being functions, permutations are used by *applying* them to names, written $\pi(a)$.
-
-In Rust I represent permutations using a `HashMap`. Applying takes keys to values, and any names not
+In Rust I represent (finite) permutations using a `HashMap`. Applying takes keys to values, and any names not
 in the `HashMap` are mapped to themselves. In other words, the `HashMap` represents a
 permutation $\pi$ by storing a pair $(x, \pi(x))$ for
 each $x$ where $\pi(x) \neq x$.
@@ -216,7 +215,7 @@ permutations.
 first expected. The final permutation $\pi_f \circ \pi_g$ is constructed in two parts. The first
 part (1) computes $\pi_f(\pi_g(x))$ for all $x$ where $\pi_g(x) \neq x$. The second part (2)
 computes $\pi_f(x)$ for all $x$ where $\pi_g(x) = x$. For these values, $\pi_f(\pi_g(x)) =
-\pi_f(x)$.
+\pi_f(x)$. The first time I wrote this function, I mistakenly thought the first part would be enough.
 
 Names are aren't the only thing that can be affected by a permutation. "Applying" a permutation
 generalises to other sets as the [action](https://mathworld.wolfram.com/GroupAction.html) of
@@ -336,7 +335,7 @@ the same ($\pi \cdot x = x$).
 
 For example, every name must support itself: $\{a\} \; \text{supports} \; a$
 (<a id="proof-2-link" href="nominal-sets-proofs#proof-2">A.2</a>). 
-More importantly, $\neg (\{a\} \; \text{supports} \; a)$ is false
+More importantly, $\exists b. \; b \neq a \; \land \; \{b\} \; \text{supports} \; a$ is false
 (<a id="proof-3-link" href="nominal-sets-proofs#proof-3">A.3</a>).
 
 Pairs are supported element-wise:
@@ -448,7 +447,7 @@ pub mod support {
 #### The support of a function
 
 I think of the support of a function as the set of names that have been "captured" by the function.
-The identity function captures no names, so it's supported by the empty set
+The identity function returns its argument and does nothing else, so it's supported by the empty set
 (<a id="proof-6-link" href="nominal-sets-proofs#proof-6">A.6</a>).
 A function that compares its two name arguments and nothing else 
 (like $\text{cmp}(a, b) = a \stackrel{?}{=} b$)
@@ -498,7 +497,7 @@ $$
 \begin{array}{l}
 [\mathbb{A}]X = (\mathbb{A} \times X) / \sim_\alpha
 \\ \; \\
-\sim_\alpha \; : (\mathbb{A} \times X) \times (\mathbb{A} \times X)
+\sim_\alpha \; : \; (\mathbb{A} \times X) \times (\mathbb{A} \times X)
 \\
 \sim_\alpha \; = \{ \; 
 ((a, x), (a', x')) \; | \;

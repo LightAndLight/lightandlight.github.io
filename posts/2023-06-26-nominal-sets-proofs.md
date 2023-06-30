@@ -2,7 +2,7 @@
 title: "Nominal Sets: Appendix A (Proofs)"
 author: ielliott95
 permalink: /nominal-sets-proofs
-date: 2023-06-29T06:40:00Z
+date: 2023-06-30T06:40:00Z
 excerpt: |
   The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 math: true
@@ -75,23 +75,29 @@ $$
 
 ## Proof 3
 
-$\neg (\{a\} \; \text{supports} \; a)$ is false.
+$\exists b. \; b \neq a \; \land \; \{b\} \; \text{supports} \; a$ is false.
 <a href="nominal-sets#proof-3-link">↩</a>
 
 $$
 \begin{array}{c}
 \begin{array}{lll}
-& \neg (\{a\} \; \text{supports} \; a)
+& \exists b. \; b \neq a \; \land \; \{b\} \; \text{supports} \; a
 \\
-= & \neg (\forall \pi. \; (\forall a \in \{a\}. \; \pi(a) = a) \implies \pi \cdot a = a)
+= & \exists b. \; b \neq a \; \land (\forall \pi. \; (\forall a \in \{b\}. \; \pi(a) = a) \implies \pi \cdot a = a)
 \\
-= & \neg (\forall \pi. \; (\pi(a) = a) \implies \pi \cdot a = a) & (\text{singleton set})
+= & \exists b. \; b \neq a \; \land (\forall \pi. \; \pi(b) = b \implies \pi \cdot a = a)
 \\
-= & \neg (\forall \pi. \; \pi(a) = a \implies \pi(a) = a) &
-(\text{definition of } \cdot)
 \end{array}
-\\ \; \\
-\neg (\forall \pi. \; \pi(a) = a \implies \pi(a) = a) \;\;\;\; \text{contradiction}
+\\
+\begin{array}{l}
+\text{assume } \exists b. \; b \neq a \; \land (\forall \pi. \; \pi(b) = b \implies \pi \cdot a = a)
+\\
+\text{counterexample: } \pi = (a \; c) \; (a \neq b \neq c)
+\\
+\; \; \; \; (a \; c)(b) = b \implies (a \; c)(a) = a
+\\
+\; \; \; \; \text{but } (a \; c)(a) = c \text{ --- contradiction}
+\end{array}
 \end{array}
 $$
 
@@ -198,14 +204,11 @@ The identity function is supported by the empty set.
 
 $$
 \begin{array}{l}
-\forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x. \; \pi \cdot id(\pi^{-1}
-\cdot x) = id(x)
+\forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x. \; \pi \cdot id(\pi^{-1} \cdot x) = id(x)
 \\
-= \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x. \; \pi \cdot \pi^{-1} \cdot x = x
-\\
-= \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x. \; x = x
-\\
-= \forall \pi. \; \text{true} \implies \forall x. \; x = x \;\;\;\; \text{trivial}
+\iff \; \forall \pi. \; \forall x. \; \pi \cdot id(\pi^{-1} \cdot x) = x
+\\ \; \\
+\pi \cdot id(\pi^{-1} \cdot x) = \pi \cdot \pi^{1} \cdot x = x
 \end{array}
 $$
 
@@ -219,47 +222,37 @@ $$
 \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x, y. \; \pi \cdot \text{cmp}(\pi^{-1}
 \cdot (x, y)) = \text{cmp}(x, y)
 \\
-= \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x, y. \; \pi \cdot \text{cmp}(\pi^{-1}
+\iff \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x, y. \; \pi \cdot \text{cmp}(\pi^{-1}
 \cdot x, \pi^{-1} \cdot y) = \text{cmp}(x, y)
 \\
-= \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x, y. \; \pi \cdot ((\pi^{-1}
+\iff \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x, y. \; \pi \cdot ((\pi^{-1}
 \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)) = (x \stackrel{?}{=} y)
 \\
-= \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x, y. \; ((\pi^{-1}
+\iff \forall \pi. \; (\forall a \in \{\}. \; \pi(a) = a) \implies \forall x, y. \; ((\pi^{-1}
 \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)) = (x \stackrel{?}{=} y) \;\;\;\; (\text{booleans contain no names})
 \\
-= \forall \pi. \; \forall x, y. \; ((\pi^{-1}
+\iff \forall \pi. \; \forall x, y. \; ((\pi^{-1}
 \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)) = (x \stackrel{?}{=} y)
-\end{array}
-$$
-
-$$
-\forall \pi. \; \forall x, y. \; x = y \implies ((\pi^{-1}
-\cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)) = \text{true}
-$$
-
-$$
-\begin{array}{l}
-(\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)
+\\ \; \\
+\text{case } x = y
 \\
-= (\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot x)
+\; \; \; \; \iff ((\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)) = \text{true}
 \\
-= \text{true}
-\end{array}
-$$
-
-$$
-\forall \pi. \; \forall x, y. \; x \neq y \implies ((\pi^{-1}
-\cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)) = \text{false}
-$$
-
-$$
-\begin{array}{l}
-(\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)
+\; \; \; \; (\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)
 \\
-= x' \stackrel{?}{=} y' \text{ where } x' \neq y' \;\;\;\; (\text{injectivity of } \pi^{-1})
+\; \; \; \; = (\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot x) \; (x = y)
 \\
-= \text{false}
+\; \; \; \; = \text{true}
+\\ \; \\
+\text{case } x \neq y
+\\
+\; \; \; \; \iff ((\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)) = \text{false}
+\\
+\; \; \; \; (\pi^{-1} \cdot x) \stackrel{?}{=} (\pi^{-1} \cdot y)
+\\
+\; \; \; \; = x' \stackrel{?}{=} y' \text{ where } x' \neq y' \;\;\;\; (\text{injectivity of } \pi^{-1})
+\\
+\; \; \; \; = \text{false}
 \end{array}
 $$
 
@@ -369,25 +362,25 @@ a \; \# \; x
 \\
 \iff \forall \pi. \; (\forall a \in \bar{b}. \; \pi(a) = a) \implies \pi \cdot x = x
 \\ \; \\
-(\bar{a} \cap \bar{b}) \; \text{supports} \; f(x)
+(\bar{a} \cup \bar{b}) \; \text{supports} \; f(x)
 \\
-\iff \forall \pi. \; (\forall a \in (\bar{a} \cap \bar{b}). \; \pi(a) = a) \implies \pi \cdot f(x) = f(x)
+\iff \forall \pi. \; (\forall a \in (\bar{a} \cup \bar{b}). \; \pi(a) = a) \implies \pi \cdot f(x) = f(x)
 \\
 \pi \cdot f(x)
 \\
 = (\pi \cdot f)(\pi \cdot x)
 \\
-= f(\pi \cdot x) \; (\bar{a} \; \text{supports} \; f)
+= f(\pi \cdot x) \; ((\forall a \in (\bar{a} \cup \bar{b}). \; \pi(a) = a) \implies (\forall a \in \bar{a}. \; \pi(a) = a) \text{, } \bar{a} \; \text{supports} \; f)
 \\
-= f(x) \; (\bar{b} \; \text{supports} \; x)
+= f(x) \; ((\forall a \in (\bar{a} \cup \bar{b}). \; \pi(a) = a) \implies (\forall a \in \bar{b}. \; \pi(a) = a) \text{, } \bar{b} \; \text{supports} \; x)
 \\ \; \\
-a \notin (a \cap b) \; (a \notin \bar{a} \land a \notin \bar{b})
+a \notin (\bar{a} \cup \bar{b}) \; (a \notin \bar{a} \land a \notin \bar{b})
 \\ \; \\
 \text{given } \bar{c} \text{ where } \bar{c} \; \text{supports} \; f(x) \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; f(x) \implies \bar{c} \subseteq \bar{b})
 \\
-(\bar{a} \cap \bar{b}) \; \text{supports} \; f(x) \land a \notin (\bar{a} \cap \bar{b})
+(\bar{a} \cup \bar{b}) \; \text{supports} \; f(x) \land a \notin (\bar{a} \cup \bar{b})
 \\
-\implies \bar{c} \subseteq (\bar{a} \cap \bar{b}) \land a \notin (\bar{a} \cap \bar{b}) \; (\bar{c} \text{ minimal})
+\implies \bar{c} \subseteq (\bar{a} \cup \bar{b}) \land a \notin (\bar{a} \cup \bar{b}) \; (\bar{c} \text{ minimal})
 \\
 \implies a \notin \bar{c}
 \\
@@ -407,6 +400,8 @@ $$
 \iff ((\text{support}(x) - \{ a \}) \; \text{supports} \; \langle a \rangle x) \land (\forall \bar{b}. \; \bar{b} \; \text{supports} \; \langle a \rangle x \implies (\text{support}(x) - \{ a \}) \subseteq \bar{b})
 \end{array}
 $$
+
+### Support
 
 $$
 \begin{array}{l}
@@ -455,6 +450,23 @@ $$
 = \langle a \rangle x
 \end{array}
 $$
+
+### Minimality
+
+$$
+\begin{array}{l}
+\forall \bar{b}. \; \bar{b} \; \text{supports} \; \langle a \rangle x \implies (\text{support}(x) - \{a\}) \subseteq \bar{b}
+\\ \; \\
+\bar{b} \; \text{supports} \; \langle a \rangle x
+\\
+\iff \forall \pi. \; (\forall b \in \bar{b}. \; \pi(b) = b) \implies \pi \cdot \langle a \rangle x = \langle a \rangle x
+\\
+\iff \forall \pi. \; (\forall b \in \bar{b}. \; \pi(b) = b) \implies \langle \pi \cdot a \rangle (\pi \cdot x) = \langle a \rangle x
+\\ \; \\
+\end{array}
+$$
+
+TODO: finish proof
 
 ## Proof 12
 
