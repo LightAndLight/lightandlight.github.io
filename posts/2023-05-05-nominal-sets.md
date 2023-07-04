@@ -2,7 +2,7 @@
 title: Nominal Sets
 author: ielliott95
 permalink: /nominal-sets
-date: 2023-06-30T06:41:00Z
+date: 2023-07-04T06:41:00Z
 excerpt: |
   Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
   theory of nominal sets.
@@ -595,7 +595,7 @@ impl Clone for Binder<T> {
 ```
 
 When reasoning about binder equality, it's often inconvenient to find an atom $b \; \# \; (a, x, a', x')$
-such that $(a \; b) \cdot x = (a' \; b) \cdot$. When that's the case, we prove an
+such that $(a \; b) \cdot x = (a' \; b) \cdot x'$. When that's the case, we prove an
 equivalent property: $\forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'$
 (<a id="proof-13-link" href="nominal-sets-proofs#proof-13">A.13</a>).
 Any specific fresh atom is interchangeable with all fresh atoms that satisfy the same conditions.
@@ -620,11 +620,11 @@ $\text{Nom}$ has a [terminal object](https://en.wikipedia.org/wiki/Terminal_obje
 singleton set (<a id="proof-17-link" href="nominal-sets-proofs#proof-17">A.17</a>).
 
 $\text{Nom}$ has [products](https://en.wikipedia.org/wiki/Product_(category_theory)), which
-are pairs of nominal sets, because introduction and elimination of pairs are equivariant
+are pairs of nominal sets with an element-wise permutation action, because introduction and elimination of pairs is equivariant
 (<a id="proof-18-link" href="nominal-sets-proofs#proof-18">A.18</a>).
 
 $\text{Nom}$ has [coproducts](https://en.wikipedia.org/wiki/Coproduct), which is the normal
-disjoint union on sets, because introduction and elimination of coproducts are equivariant
+disjoint union on sets with an element-wise permutation action, because introduction and elimination of coproducts is equivariant
 (<a id="proof-19-link" href="nominal-sets-proofs#proof-19">A.19</a>).
 
 $\text{Nom}$ has [exponentials](https://en.wikipedia.org/wiki/Exponential_object), in the form of
@@ -645,7 +645,7 @@ $\text{Nom}$-arrows:
 
 $$
 \begin{array}{l}
-[\mathbb{A}](f) : [\mathbb{A}] X \rightarrow_{Nom} [\mathbb{A}] Y
+[\mathbb{A}](f) \; : \; [\mathbb{A}] X \rightarrow_{Nom} [\mathbb{A}] Y
 \\
 [\mathbb{A}](f)(\langle a \rangle x) = \langle a \rangle f(x)
 \end{array}
@@ -658,7 +658,7 @@ pub mod binder {
   impl <T> Binder<T> {
     ...
 
-    /** Correctness condition: `f` should behave the same under permutations: `f(x.permute_by(p)) == f(x).permute_by(p)`. This is called "equivariance". When two functions `f` and `g` are equivariant, we have `binder.map(f).map(g) == binder.map(|x| g(f(x)))`.
+    /** Correctness condition: `f` should not capture any [`Name`]s. When this is the case, we have `binder.map(f).map(g) == binder.map(|x| g(f(x)))`.
     */
     pub fn map<B>(self, f: impl FnOnce(T) -> B) -> Binder<B> { // (7)
       Binder{ name: self.name, body: f(self.body) }
@@ -752,7 +752,7 @@ impl Permutable for Expr {
   fn permute_by(&self, permutation: &Permutation) -> Self {
     match self {
       Expr::Var(name) => Expr::Var(name.permute_by(permutation)),
-      Expr::Lam(body) => Expr::Lam(body.permute_by(permutation)),
+      Expr::Lam(binder) => Expr::Lam(binder.permute_by(permutation)),
       Expr::App(left, right) => Expr::App(
         left.permute_by(permutation),
         right.permute_by(permutation)
@@ -765,7 +765,7 @@ impl Supported for Expr {
   fn support(&self) -> HashSet<Name> {
     match self {
       Expr::Var(name) => HashSet::from([name]),
-      Expr::Lam(body) => body.support(),
+      Expr::Lam(binder) => binder.support(),
       Expr::App(left, right) => {
         let mut support = left.support();
         support.extend(right.support());

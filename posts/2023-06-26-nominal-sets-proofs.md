@@ -2,7 +2,7 @@
 title: "Nominal Sets: Appendix A (Proofs)"
 author: ielliott95
 permalink: /nominal-sets-proofs
-date: 2023-06-30T06:40:00Z
+date: 2023-07-04T06:40:00Z
 excerpt: |
   The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 math: true
@@ -455,18 +455,37 @@ $$
 
 $$
 \begin{array}{l}
-\forall \bar{b}. \; \bar{b} \; \text{supports} \; \langle a \rangle x \implies (\text{support}(x) - \{a\}) \subseteq \bar{b}
+\forall \bar{b}. \; \bar{b} \; \text{supports} \; \langle a \rangle x \implies \text{support}(x) - \{a\} \subseteq \bar{b}
+\\ \; \\
+\bar{b} \; \text{supports} \; \langle a \rangle x \implies \bar{b} \cup \{a\} \; \text{supports} \; x
+\\
+\text{assume } \forall \pi. \; (\forall b \in \bar{b}. \; \pi(b) = b) \implies \pi \cdot \langle a \rangle x = \langle a \rangle x
+\\
+\; \; \; \; \; \; \iff \forall \pi. \; (\forall b \in \bar{b}. \; \pi(b) = b) \implies \langle \pi \cdot a \rangle \pi \cdot x = \langle a \rangle x
+\\
+\text{assume } \forall b \in (\bar{b} \cup \{a\}). \; \pi(b) = b
+\\
+\; \; \; \; \; \; \iff (\forall b \in \bar{b}. \; \pi(b) = b) \land \pi(a) = a
+\\
+\langle \pi \cdot a \rangle \pi \cdot x = \langle a \rangle x \; \; (\text{via assumptions 1 and 2})
+\\
+\iff \langle a \rangle \pi \cdot x = \langle a \rangle x \; \; (\pi(a) = a)
+\\
+\iff \exists b. \; (a \; b) \cdot \pi \cdot x = (a \; b) \cdot x
+\\
+\iff (a \; b) \cdot (a \; b) \cdot \pi \cdot x = (a \; b) \cdot (a \; b) \cdot x
+\\
+\iff \pi \cdot x = x \; \; (\text{swapping involutive})
 \\ \; \\
 \bar{b} \; \text{supports} \; \langle a \rangle x
 \\
-\iff \forall \pi. \; (\forall b \in \bar{b}. \; \pi(b) = b) \implies \pi \cdot \langle a \rangle x = \langle a \rangle x
+\implies \bar{b} \cup \{a\} \; \text{supports} \; x
 \\
-\iff \forall \pi. \; (\forall b \in \bar{b}. \; \pi(b) = b) \implies \langle \pi \cdot a \rangle (\pi \cdot x) = \langle a \rangle x
-\\ \; \\
+\implies \text{support}(x) \subseteq \bar{b} \cup \{a\} \; (\text{support}(x) \text{ minimal})
+\\
+\implies \text{support}(x) - \{a\} \subseteq \bar{b}
 \end{array}
 $$
-
-TODO: finish proof
 
 ## Proof 12
 
@@ -484,7 +503,9 @@ $$
 \\
 \text{case } a \neq b
 \\
-\; \; \; \; a \; \# \; x \iff a \notin \text{support}(x) - \{b\}
+\; \; \; \; a \; \# \; \langle b \rangle x
+\\
+\; \; \; \; \iff a \notin \text{support}(x) - \{b\}
 \\
 \; \; \; \; \implies a \notin \text{support}(x)
 \\
@@ -516,7 +537,9 @@ $$
 \\
 \; \; \; \; = \text{support}(x) - \{b\}
 \\
-\; \; \; \; a \; \# \; x \iff a \notin \text{support}(x)
+\; \; \; \; a \; \# \; x
+\\
+\; \; \; \; \iff a \notin \text{support}(x)
 \\
 \; \; \; \; \implies a \notin \text{support}(x) - \{b\}
 \\
@@ -597,7 +620,7 @@ $$
 \\
 = \pi \cdot f(\pi^{-1} \cdot x)
 \\
-= \pi \cdot \pi^{-1} f(x) (f \text{ equivariant})
+= \pi \cdot \pi^{-1} f(x) \; (f \text{ equivariant})
 \\
 = f(x)
 \end{array}
@@ -753,7 +776,7 @@ $$
 
 ## Proof 20
 
-Finitely supported functions between nominal sets are exponential objects.
+Finitely supported functions between nominal sets are exponential objects in $Nom$.
 <a href="nominal-sets#proof-20-link">↩</a>
 
 Firstly, not all functions are finitely supported, which means that in general $A \rightarrow B$
@@ -787,7 +810,7 @@ $$
 \begin{array}{l}
 \text{eval}(\pi \cdot (f, x))
 \\
-= \text{eval}(\pi \cdot f, \pi \cdot x))
+= \text{eval}(\pi \cdot f, \pi \cdot x)
 \\
 = (\pi \cdot f)(\pi \cdot x)
 \\
