@@ -30,7 +30,6 @@ excerpt: |
   </div>
 
   <div id="toc"><!-- generated --></div>
-
 </div>
 
 ## Background
