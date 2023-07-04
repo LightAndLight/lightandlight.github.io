@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+
+  
+  <link rel="stylesheet" href="/res/math.css">
+  
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Nominal Sets - blog.ielliott.io</title>
+  
+
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/nominal-sets">
+<meta property="og:url" content="https://blog.ielliott.io/nominal-sets">
+<meta property="og:title" content="Nominal Sets">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Nominal Sets">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="Developing a variable binding library for Rust, based on the
+theory of nominal sets.">
+<meta property="og:description" content="Developing a variable binding library for Rust, based on the
+theory of nominal sets.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2023-07-04T06:41+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Nominal Sets",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2023-07-04T06:41+00:00",
+  "dateModified":"2023-07-04T06:41+00:00",
+  "description":"Developing a variable binding library for Rust, based on the
+theory of nominal sets.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/nominal-sets"
+  },
+  "url": "https://blog.ielliott.io/nominal-sets"
+}
+</script>
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+
+  <section>
+    
+    <script id="mathml-polyfill-script" src="/res/mathml-polyfill.js"></script>
+    
+
+    <article>
+  <h1>Nominal Sets</h1>
+  <p class="date"> 4 July, 2023</p>
+  <div class="intro-wrapper">
+<div class="intro">
+<p>For years I’ve used <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
+Bruijn indices</a>, in part because
+of Haskell’s <a href="https://hackage.haskell.org/package/bound"><code>bound</code></a> library, which abstracts (pun
+intended) De Bruijn indexed binders in a simple and type-safe way. Having learned to “think” using de Bruijn indices, I naturally used them when I wrote
+<a href="https://github.com/lightandlight/ipso">Ipso</a>, which is written in Rust. I wished I had <code>bound</code>, so I tried to port it to
+Rust. Unfortunately, <code>bound</code> relies on <a href="https://en.wikipedia.org/wiki/Polymorphic_recursion">polymorphic
+recursion</a>, which Rust
+<a href="https://github.com/rust-lang/rust/issues/4287#issuecomment-11846582">doesn’t really support</a>.</p>
+<p>Writing all that variable binding machinery in Rust was tolerable, but Ipso probably isn’t the last
+programming language that I’ll build with Rust. When it’s time for me to build the next one, I’d
+like to use a variable binding library instead. I think
+<a href="https://docs.rs/moniker/latest/moniker/"><code>moniker</code></a> is the only<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> such library on
+<a href="https://crates.io/">crates.io</a>, and I might yet use it. In the meantime, I’d
+like to explore an alternative way of tackling the problem, inspired by a formalism called “nominal sets”.</p>
+</div>
+<div id="toc" style="float: right;">
+<h3>Contents</h3>
+<ul>
+<li><a href="#why-did-i-write-this">Why did I write this?</a></li>
+<li><a href="#names-and-binders">Names and binders</a></li>
+<li><a href="#nominal-sets">Nominal sets</a>
+<ul>
+<li><a href="#names">Names</a></li>
+<li><a href="#permutations">Permutations</a>
+<ul>
+<li><a href="#permutations-on-functions">Permutations on functions</a></li>
+</ul></li>
+<li><a href="#support">Support</a>
+<ul>
+<li><a href="#minimal-support">Minimal support</a></li>
+<li><a href="#the-support-of-a-function">The support of a function</a></li>
+</ul></li>
+<li><a href="#freshness">Freshness</a></li>
+<li><a href="#name-binding">Name binding</a></li>
+<li><a href="#the-category-of-nominal-sets">The category of nominal sets</a></li>
+<li><a href="#some-adjunctions">Some adjunctions</a></li>
+</ul></li>
+<li><a href="#showing-off">Showing off</a>
+<ul>
+<li><a href="#alpha-equivalence">Alpha equivalence</a></li>
+<li><a href="#capture-avoiding-substitution">Capture-avoiding substitution</a></li>
+</ul></li>
+<li><a href="#final-thoughts">Final thoughts</a></li>
+<li><a href="#appendix-a-proofs">Appendix A: Proofs</a></li>
+</ul>
+</div>
+</div>
+<h2 id="why-did-i-write-this"><a href="#why-did-i-write-this">Why did I write this?</a></h2>
+<p>I have two reasons for writing this article. The first is to improve my understanding of
+nominal sets, and my general mathematical ability.
+Years ago I <a href="https://blog.ielliott.io/writing%3E">wrote about</a> my sense of the importance of writing,
+and that line of reasoning continues to motivate me. More recently, <a href="http://www.paulgraham.com">Paul Graham</a> has written a much
+more eloquent <a href="http://www.paulgraham.com/words.html">essay</a> on the topic.</p>
+<p>The second is to contribute another introduction to nominal sets. I learned about nominal sets from
+primary sources: a book (via my state library) and few papers from the pioneering authors, and slides from tutorials they’d given.
+In total, five or six resources from a couple of authors. When I didn’t understand something I cycled
+between resources, as if trying to triangulate an understanding. I think that more explanations, written by different people, would have increased the chances
+of finding an explanation that clicked for me. While I cover the same introductory topics
+as the primary sources, I hope that I’ll do it differently enough to be valuable to someone.</p>
+<h2 id="names-and-binders"><a href="#names-and-binders">Names and binders</a></h2>
+<p>Here is the core Rust implementation of my nominal-sets-inspired approach:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">mod</span> name <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">#[</span>derive<span class="at">(</span><span class="bu">Debug</span><span class="op">,</span> <span class="bu">PartialEq</span><span class="op">,</span> <span class="bu">Eq</span><span class="op">,</span> <span class="bu">Hash</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Copy</span><span class="at">)]</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span> <span class="kw">struct</span> Name(<span class="dt">usize</span>)<span class="op">;</span> <span class="co">// (1)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="pp">lazy_static!</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static</span> <span class="kw">ref</span> COUNTER<span class="op">:</span> AtomicU64 <span class="op">=</span> <span class="pp">AtomicU64::</span>new(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> fresh() <span class="op">-&gt;</span> Name <span class="op">{</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      Name(COUNTER<span class="op">.</span>fetch_add(<span class="dv">1</span><span class="op">,</span> <span class="pp">std::sync::atomic::Ordering::</span>Relaxed))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">mod</span> binder <span class="op">{</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span> <span class="kw">struct</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;{</span> <span class="co">// (2)</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> Name<span class="op">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    body<span class="op">:</span> T</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">&gt;</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;{</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* (5)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Correctness condition: `f` should only use its argument to construct the `T`.</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">    The name shouldn't be made to outlive `f` in any other way, e.g. by storing</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">    it in a mutable variable.</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">    */</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> bind(f<span class="op">:</span> <span class="kw">impl</span> <span class="bu">FnOnce</span>(Name) <span class="op">-&gt;</span> T) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span> <span class="co">// (3)</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>      <span class="kw">use</span> <span class="kw">super</span><span class="pp">::name::</span>fresh<span class="op">;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> name <span class="op">=</span> fresh()<span class="op">;</span> <span class="co">// (4)</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>      Binder<span class="op">{</span> name<span class="op">,</span> body<span class="op">:</span> f(name) <span class="op">}</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* (6)</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co">    Correctness condition: `f` should not &quot;leak&quot; its `Name` argument. After `f` has</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co">    returned, the name shouldn't be accessible outside the binder.</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">    */</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> unbind<span class="op">&lt;</span>R<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> f<span class="op">:</span> <span class="kw">impl</span> <span class="bu">FnOnce</span>(<span class="op">&amp;</span>Name<span class="op">,</span> <span class="op">&amp;</span>T) <span class="op">-&gt;</span> R) <span class="op">-&gt;</span> R <span class="op">{</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>      f(<span class="op">&amp;</span><span class="kw">self</span><span class="op">.</span>name<span class="op">,</span> <span class="op">&amp;</span><span class="kw">self</span><span class="op">.</span>body)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Names (1) are opaque and can be compared for equality.</p>
+<p>A binder (2) is a pair of a name with some type <code>T</code>, within which the name is considered <em>bound</em>.</p>
+<p><code>bind</code> (3) is the only way to create binders, which is also the only time new names are introduced (4).
+Since the fields of <code>Binder</code> are hidden, every binder binds a unique name.</p>
+<p>Binder introduction (<code>bind</code>) and elimination (<code>unbind</code>) come with correctness conditions (5) (6) that
+prevent bound names from “escaping their scope”. Programs that follow these rules are
+capture-avoiding by construction; any terms that are substituted under a binder will not contain the
+name bound by that binder.</p>
+<p>There’s more to add, such as <code>Clone</code> and <code>Eq</code> implementations for <code>Binder</code>. As I explain nominal
+sets I’ll translate the important concepts to code, so that by the end we’ll have a decent
+variable binding library.</p>
+<h2 id="nominal-sets"><a href="#nominal-sets">Nominal sets</a></h2>
+<p>Nominal sets<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a><sup>,</sup><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a><sup>,</sup><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a><sup>,</sup><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> is a theory of
+names and name binding, intended to help with implementing and verifying programming languages. Its most
+remarkable feature is an account of algebraic datatypes and recursion modulo <a href="https://stackoverflow.com/a/47762545/2884502">alpha
+equivalence</a>. In practise, this gives an elegant way
+to work with abstract syntax trees while being able to ignore any specific choice of names.</p>
+<p>I like nominal sets as a formalism because they are a good example of how category theory can inform library design.</p>
+<h3 id="names"><a href="#names">Names</a></h3>
+<p>Names can be drawn from any <a href="https://mathworld.wolfram.com/CountablyInfinite.html">countably infinite</a> set. In the literature, this set is written as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝔸</mi><annotation encoding="application/x-tex">\mathbb{A}</annotation></semantics></math> (for <strong>A</strong>tom). I’ll keep to this convention while explaining the math.</p>
+<p>The only operation on names is equality comparison, which I’ll write as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mover><mo>=</mo><mo accent="false">?</mo></mover><mi>b</mi></mrow><annotation encoding="application/x-tex">a \stackrel{?}{=} b</annotation></semantics></math>.</p>
+<h3 id="permutations"><a href="#permutations">Permutations</a></h3>
+<p>A theory that deals with alpha equivalence needs a notion of “renaming variables”. Nominal sets uses
+<a href="https://en.wikipedia.org/wiki/Permutation">permutations</a> of names.</p>
+<p>A permutation of names (from here on, just “a permutation”) is a bijection on names. I’ll write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math> for the set of permutations, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math> for any particular permutation.
+Being functions, permutations are used by <em>applying</em> them to names, written <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi(a)</annotation></semantics></math>.
+A permutation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math> is “finite” when a finite set of atoms <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> satisfies <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≠</mo><mi>a</mi></mrow><annotation encoding="application/x-tex">\pi(a) \neq a</annotation></semantics></math>.</p>
+<p>The fundamental permutation is the swapping of two names, written <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(a \; b)</annotation></semantics></math>. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(a \; b)</annotation></semantics></math> is
+the bijection mapping <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math> to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>, and any other name to itself.
+Every finite permutation can be
+decomposed into a sequence of swaps
+(<a id="proof-1-link" href="nominal-sets-proofs#proof-1">A.1</a>).</p>
+<p>In Rust I represent (finite) permutations using a <code>HashMap</code>. Applying takes keys to values, and any names not
+in the <code>HashMap</code> are mapped to themselves. In other words, the <code>HashMap</code> represents a
+permutation <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math> by storing a pair <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x, \pi(x))</annotation></semantics></math> for
+each <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≠</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\pi(x) \neq x</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">mod</span> permutation <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">use</span> <span class="kw">super</span><span class="pp">::name::</span>Name<span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">#[</span>derive<span class="at">(</span><span class="bu">Debug</span><span class="op">,</span> <span class="bu">Clone</span><span class="at">)]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span> <span class="kw">struct</span> Permutation(HashMap<span class="op">&lt;</span>Name<span class="op">,</span> Name<span class="op">&gt;</span>)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> Permutation <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> swap(a<span class="op">:</span> Name<span class="op">,</span> b<span class="op">:</span> Name) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Self</span>(<span class="pp">HashMap::</span>from([(a<span class="op">,</span> b)<span class="op">,</span> (b<span class="op">,</span> a)]))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> apply(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> name<span class="op">:</span> <span class="op">&amp;</span>Name) <span class="op">-&gt;</span> Name <span class="op">{</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">self</span><span class="op">.</span>get(name)<span class="op">.</span>copied()<span class="op">.</span>unwrap_or(<span class="op">*</span>name)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span></code></pre></div>
+<p>Permutations form a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. The identity
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ι</mi><annotation encoding="application/x-tex">\iota</annotation></semantics></math>) is the identity function. Multiplication (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>∘</mo><annotation encoding="application/x-tex">\circ</annotation></semantics></math>) is function composition. Every
+permutation <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math> has an inverse <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>π</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\pi^{-1}</annotation></semantics></math> (because they’re bijections).</p>
+<p>In the code I call the multiplication function <code>after</code> so it’s easier to remember the order of the
+permutations.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> id() <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>      Permutation(<span class="pp">HashMap::</span>new())</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> after(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> other<span class="op">:</span> <span class="op">&amp;</span><span class="dt">Self</span>) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> <span class="kw">mut</span> permutation <span class="op">=</span> other</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>          <span class="op">.</span>iter()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>          <span class="op">.</span>map(<span class="op">|</span>(key<span class="op">,</span> value)<span class="op">|</span> (<span class="op">*</span>key<span class="op">,</span> <span class="kw">self</span><span class="op">.</span>apply(value)))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>          <span class="op">.</span><span class="pp">collect::</span><span class="op">&lt;</span>HashMap<span class="op">&lt;</span>Name<span class="op">,</span> Name<span class="op">&gt;&gt;</span>()<span class="op">;</span> <span class="co">// (1)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      permutation<span class="op">.</span>extend(<span class="kw">self</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>          <span class="op">.</span>iter()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>          <span class="op">.</span>filter(<span class="op">|</span>(key<span class="op">,</span> value)<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> other<span class="op">.</span>contains(key) <span class="op">{</span> </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>              <span class="cn">None</span> </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>              <span class="cn">Some</span>((key<span class="op">,</span> value)) </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>          <span class="op">}</span>))<span class="op">;</span> <span class="co">// (2)</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      Permutation(permutation)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> inverse(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>      Permutation(<span class="kw">self</span><span class="op">.</span>iter()<span class="op">.</span>map(<span class="op">|</span>(key<span class="op">,</span> value)<span class="op">|</span> (<span class="op">*</span>value<span class="op">,</span> <span class="op">*</span>key))<span class="op">.</span>collect())</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p><code>after</code>, acting on <code>HashMap</code>s under the hood, needs a more clever definition than I
+first expected. The final permutation <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>f</mi></msub><mo>∘</mo><msub><mi>π</mi><mi>g</mi></msub></mrow><annotation encoding="application/x-tex">\pi_f \circ \pi_g</annotation></semantics></math> is constructed in two parts. The first
+part (1) computes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>f</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mi>g</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_f(\pi_g(x))</annotation></semantics></math> for all <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>g</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≠</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\pi_g(x) \neq x</annotation></semantics></math>. The second part (2)
+computes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>f</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_f(x)</annotation></semantics></math> for all <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>g</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\pi_g(x) = x</annotation></semantics></math>. For these values, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>f</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mi>g</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>π</mi><mi>f</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_f(\pi_g(x)) = \pi_f(x)</annotation></semantics></math>. The first time I wrote this function, I mistakenly thought the first part would be enough.</p>
+<p>Names are aren’t the only thing that can be affected by a permutation. “Applying” a permutation
+generalises to other sets as the <a href="https://mathworld.wolfram.com/GroupAction.html">action</a> of
+permutations on those sets. Permutations can act on a set <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math> when there exists a function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>X</mi></msub><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mi>Π</mi><mo>×</mo><mi>X</mi><mo>→</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">\alpha_X \; : \; \Pi \times X \rightarrow X</annotation></semantics></math>
+satisfying the following properties:</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>x</mi><mi>.</mi><mspace width="0.278em"></mspace><msub><mi>α</mi><mi>X</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ι</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\forall x. \; \alpha_X(\iota, x) = x</annotation></semantics></math> (identity)</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>x</mi><mi>.</mi><mspace width="0.278em"></mspace><msub><mi>α</mi><mi>X</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mn>1</mn></msub><mo>∘</mo><msub><mi>π</mi><mn>2</mn></msub><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>α</mi><mi>X</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mn>1</mn></msub><mo>,</mo><msub><mi>α</mi><mi>X</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>π</mi><mn>2</mn></msub><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\forall x. \; \alpha_X(\pi_1 \circ \pi_2, x) = \alpha_X(\pi_1, \alpha_X(\pi_2, x))</annotation></semantics></math> (composition)</li>
+</ol>
+<p>Instead of writing <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>X</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha_X(\pi, x)</annotation></semantics></math> for a specific permutation action, I’ll use the notation <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\pi \cdot x</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">/*</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">  Laws:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">  </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">  * `forall x. x.permute_by(Permutation::id()) == x` (identity)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">  * `forall x. x.permute_by(f.after(g)) == x.permute_by(g).permute_by(f)` (composition)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">  </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">  */</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span> <span class="kw">trait</span> Permutable <span class="op">{</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span><span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>Permutations trivially act on names: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><mi>a</mi><mo>=</mo><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi \cdot a = \pi(a)</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> Permutable <span class="cf">for</span> Name <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      permutation<span class="op">.</span>apply(<span class="kw">self</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>Permutations also trivially act on themselves: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>f</mi></msub><mo>⋅</mo><msub><mi>π</mi><mi>g</mi></msub><mo>=</mo><msub><mi>π</mi><mi>f</mi></msub><mo>∘</mo><msub><mi>π</mi><mi>g</mi></msub></mrow><annotation encoding="application/x-tex">\pi_f \cdot \pi_g = \pi_f \circ \pi_g</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> Permutable <span class="cf">for</span> Permutation <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      permutation<span class="op">.</span>after(<span class="kw">self</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>Permutations act on pairs element-wise: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>x</mi><mo>,</mo><mi>π</mi><mo>⋅</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi \cdot (x, y) = (\pi \cdot x, \pi \cdot y)</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">:</span> Permutable<span class="op">,</span> B<span class="op">:</span> Permutable<span class="op">&gt;</span> Permutable <span class="cf">for</span> (A<span class="op">,</span> B) <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">self</span><span class="op">.</span><span class="dv">0</span><span class="op">.</span>permute_by(permutation)<span class="op">,</span> <span class="kw">self</span><span class="op">.</span><span class="dv">1</span><span class="op">.</span>permute_by(permutation))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>And similarly for sums: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><msub><mtext mathvariant="normal">in</mtext><mi>L</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mtext mathvariant="normal">in</mtext><mi>L</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo>∧</mo><mspace width="0.278em"></mspace><mi>π</mi><mo>⋅</mo><msub><mtext mathvariant="normal">in</mtext><mi>R</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mtext mathvariant="normal">in</mtext><mi>R</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi \cdot \text{in}_L(x) = \text{in}_L(\pi \cdot x) \; \land \; \pi \cdot \text{in}_R(y) = \text{in}_R(\pi \cdot y)</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">:</span> Permutable<span class="op">,</span> B<span class="op">:</span> Permutable<span class="op">&gt;</span> Permutable <span class="cf">for</span> <span class="pp">either::</span>Either<span class="op">&lt;</span>A<span class="op">,</span> B<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>      <span class="kw">use</span> <span class="pp">either::</span>Either<span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        Left(a) <span class="op">=&gt;</span> Left(a<span class="op">.</span>permute_by(permutation))<span class="op">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        Right(b) <span class="op">=&gt;</span> Right(b<span class="op">.</span>permute_by(permutation))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>On a more Rust-specific note, heap allocation is <code>Permutable</code> because it’s essentially a
+single-element product:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">&gt;</span> Permutable <span class="cf">for</span> <span class="dt">Box</span><span class="op">&lt;</span>A<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> inner <span class="op">=</span> <span class="kw">self</span><span class="op">.</span>as_ref()<span class="op">.</span>permute_by(permutation)<span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Box</span><span class="pp">::</span>new(inner)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="co">// mod permutation</span></span></code></pre></div>
+<h4 id="permutations-on-functions"><a href="#permutations-on-functions">Permutations on functions</a></h4>
+<p>Permutations can also act on functions: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>π</mi><mo>⋅</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>π</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>⋅</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(\pi \cdot f)(x) = \pi \cdot f(\pi^{-1} \cdot x)</annotation></semantics></math>. For my purposes this is only important in theory, so I won’t
+implement it in Rust. This definition is derived from the requirement that permutations distribute over function application: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi \cdot f(x) = (\pi \cdot f)(\pi \cdot x)</annotation></semantics></math>.</p>
+<h3 id="support"><a href="#support">Support</a></h3>
+<p>A set of names <em>supports</em> a value when the value “depends” on those names. Here’s the formal definition:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>×</mo><mi>X</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">supports</mtext><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.278em"></mspace><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>∈</mo><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="0.278em"></mspace><mi>x</mi><mo>∈</mo><mi>X</mi><mo>,</mo><mspace width="0.278em"></mspace><mo>∀</mo><mi>π</mi><mi>.</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mo>∀</mo><mi>a</mi><mo>∈</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mi>.</mi><mspace width="0.278em"></mspace><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⟹</mo><mi>π</mi><mo>⋅</mo><mi>x</mi><mo>=</mo><mi>x</mi><mspace width="0.278em"></mspace><mo stretchy="false" form="postfix">}</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+\text{supports} \; : \; \mathcal{P}(\mathbb{A}) \times X
+\\
+\text{supports} =
+\{ \;
+(\bar{a}, x) \; | \; 
+\bar{a} \in \mathcal{P}(\mathbb{A}), \;
+x \in X, \;
+\forall \pi. \; (\forall a \in \bar{a}. \; \pi(a) = a) \implies
+\pi \cdot x = x 
+\; \}
+\end{array}
+</annotation></semantics></math></p>
+<p>In English: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>x</mi></mrow><annotation encoding="application/x-tex">\bar{a} \; \text{supports} \; x</annotation></semantics></math> when all permutations that keep the elements of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>a</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{a}</annotation></semantics></math> the same
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>a</mi><mo>∈</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mi>.</mi><mspace width="0.278em"></mspace><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\forall a \in \bar{a}. \; \pi(a) = a)</annotation></semantics></math> also keep <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+the same (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><mi>x</mi><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\pi \cdot x = x</annotation></semantics></math>).</p>
+<p>For example, every name must support itself: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo stretchy="false" form="postfix">}</mo><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>a</mi></mrow><annotation encoding="application/x-tex">\{a\} \; \text{supports} \; a</annotation></semantics></math>
+(<a id="proof-2-link" href="nominal-sets-proofs#proof-2">A.2</a>).
+More importantly, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∃</mo><mi>b</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>b</mi><mo>≠</mo><mi>a</mi><mspace width="0.278em"></mspace><mo>∧</mo><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">{</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>a</mi></mrow><annotation encoding="application/x-tex">\exists b. \; b \neq a \; \land \; \{b\} \; \text{supports} \; a</annotation></semantics></math> is false
+(<a id="proof-3-link" href="nominal-sets-proofs#proof-3">A.3</a>).</p>
+<p>Pairs are supported element-wise:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⇔</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>x</mi><mo>∧</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>y</mi></mrow><annotation encoding="application/x-tex">
+\bar{a}  \; \text{supports} \; (x, y) \iff \bar{a} \; \text{supports} \; x
+\land \bar{a} \; \text{supports} \; y
+</annotation></semantics></math></p>
+<p>And sums variant-wise:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><msub><mtext mathvariant="normal">in</mtext><mi>L</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⇔</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>x</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><msub><mtext mathvariant="normal">in</mtext><mi>R</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⇔</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>y</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+\bar{a} \; \text{supports} \; \text{in}_L(x) \iff \bar{a} \; \text{supports} \; x
+\\
+\bar{a} \;
+\text{supports} \; \text{in}_R(y) \iff \bar{a} \; \text{supports} \; y
+\end{array}
+</annotation></semantics></math></p>
+<p>Functions have a permutation action, and therefore the notion of support also applies to them.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>f</mi><mo>⇔</mo></mtd><mtd columnalign="left" style="text-align: left"><mo>∀</mo><mi>π</mi><mi>.</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mo>∀</mo><mi>a</mi><mo>∈</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mi>.</mi><mspace width="0.278em"></mspace><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⟹</mo><mi>π</mi><mo>⋅</mo><mi>f</mi><mo>=</mo><mi>f</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"></mtd><mtd columnalign="left" style="text-align: left"><mo>∀</mo><mi>π</mi><mi>.</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mo>∀</mo><mi>a</mi><mo>∈</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mi>.</mi><mspace width="0.278em"></mspace><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⟹</mo><mo>∀</mo><mi>x</mi><mi>.</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"></mtd><mtd columnalign="left" style="text-align: left"><mo>∀</mo><mi>π</mi><mi>.</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mo>∀</mo><mi>a</mi><mo>∈</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mi>.</mi><mspace width="0.278em"></mspace><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⟹</mo><mo>∀</mo><mi>x</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>π</mi><mo>⋅</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>π</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>⋅</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{ll}
+\bar{a} \; \text{supports} \; f \iff &amp; \forall \pi. \; (\forall a \in \bar{a}. \; \pi(a) = a)
+\implies \pi \cdot f = f
+\\
+&amp; \forall \pi. \; (\forall a \in \bar{a}. \; \pi(a) = a) 
+\implies \forall x. \; (\pi \cdot f)(x) = f(x)
+\\
+&amp; \forall \pi. \; (\forall a \in \bar{a}. \; \pi(a) = a) 
+\implies \forall x. \; \pi \cdot f(\pi^{-1} \cdot x) = f(x)
+\end{array}
+</annotation></semantics></math></p>
+<h4 id="minimal-support"><a href="#minimal-support">Minimal support</a></h4>
+<p>The definition of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">supports</mtext><annotation encoding="application/x-tex">\text{supports}</annotation></semantics></math> is a bit “loose”, because it allows names that don’t occur in a value
+to support said value. For example, for names <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>a</mi></mrow><annotation encoding="application/x-tex">\{a,b\} \; \text{supports} \; a</annotation></semantics></math>
+(<a id="proof-4-link" href="nominal-sets-proofs#proof-4">A.4</a>).</p>
+<p>The notion of <em>minimal</em> support tightens this up. The minimal support of a value consists of only
+the names the value <em>actually</em> depends on. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>a</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{a}</annotation></semantics></math> is the minimal support of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> when it is a subset of all other sets that support <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mtext mathvariant="normal">supports</mtext><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>×</mo><mi>X</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mtext mathvariant="normal">supports</mtext><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.278em"></mspace><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>∈</mo><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="0.278em"></mspace><mi>x</mi><mo>∈</mo><mi>X</mi><mo>,</mo><mspace width="0.278em"></mspace><mover><mi>a</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>x</mi><mo>,</mo><mo>∀</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mi>.</mi><mspace width="0.278em"></mspace><mover><mi>x</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mtext mathvariant="normal">supports</mtext><mspace width="0.278em"></mspace><mi>x</mi><mo>⟹</mo><mover><mi>a</mi><mo accent="true">‾</mo></mover><mo>⊆</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mspace width="0.278em"></mspace><mo stretchy="false" form="postfix">}</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+\text{supports}_{min} \; : \; \mathcal{P}(\mathbb{A}) \times X
+\\
+\text{supports}_{min} =
+\{ \;
+(\bar{a}, x) \; | \; \bar{a} \in \mathcal{P}(\mathbb{A}), \; x \in X, \;
+\bar{a} \; \text{supports} \; x, \forall \bar{x}. \; \bar{x} \; \text{supports} \; x \implies
+\bar{a} \subseteq \bar{x} 
+\; \}
+\end{array}
+</annotation></semantics></math></p>
+<p>I can say <em>the</em> minimal support, because it’s unique for every value
+(<a id="proof-5-link" href="nominal-sets-proofs#proof-5">A.5</a>). From now on I’ll just refer to “the minimal support” as “the support”, and use a “minimal
+support” function instead of the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">supports</mtext><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">\text{supports}_{min}</annotation></semantics></math> relation:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">support</mtext><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mi>X</mi><mo>→</mo><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> such that </mtext><mspace width="0.333em"></mspace></mrow><mo>∀</mo><mi>x</mi><mi>.</mi><mspace width="0.278em"></mspace><mtext mathvariant="normal">support</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><msub><mtext mathvariant="normal">supports</mtext><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mspace width="0.278em"></mspace><mi>x</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+\text{support} \; : \; X \rightarrow \mathcal{P}(\mathbb{A}) \text{ such that } \forall x. \; \text{support}(x) \; \text{supports}_{min} \; x
+\end{array}
+</annotation></semantics></math></p>
+<p>Putting it all into code:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">mod</span> support <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">use</span> <span class="kw">super</span><span class="pp">::name::</span>Name<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span> <span class="kw">trait</span> Supported<span class="op">:</span> Permutable <span class="op">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">/// Computes the minimal support of a value.</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> support(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> HashSet<span class="op">&lt;</span>Name<span class="op">&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> Supported <span class="cf">for</span> Name <span class="op">{</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> support(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> HashSet<span class="op">&lt;</span>Name<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      <span class="pp">HashSet::</span>from([<span class="op">*</span><span class="kw">self</span>])</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">:</span> Supported<span class="op">,</span> B<span class="op">:</span> Supported<span class="op">&gt;</span> Supported <span class="cf">for</span> (A<span class="op">,</span> B) <span class="op">{</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> support(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> HashSet<span class="op">&lt;</span>Name<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      <span class="kw">self</span><span class="op">.</span><span class="dv">0</span><span class="op">.</span>support()<span class="op">.</span><span class="kw">union</span>(<span class="kw">self</span><span class="op">.</span><span class="dv">1</span><span class="op">.</span>support())<span class="op">.</span>collect()</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">:</span> Supported<span class="op">,</span> B<span class="op">:</span> Supported<span class="op">&gt;</span> Supported <span class="cf">for</span> <span class="pp">either::</span>Either<span class="op">&lt;</span>A<span class="op">,</span> B<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> support(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> HashSet<span class="op">&lt;</span>Name<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>      <span class="kw">use</span> <span class="pp">either::</span>Either<span class="op">;</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        Left(a) <span class="op">=&gt;</span> a<span class="op">.</span>support()<span class="op">,</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        Right(b) <span class="op">=&gt;</span> b<span class="op">.</span>support()</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">&gt;</span> Supported <span class="cf">for</span> <span class="dt">Box</span><span class="op">&lt;</span>A<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    support(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> HashSet<span class="op">&lt;</span>Name<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>      <span class="kw">self</span><span class="op">.</span>as_ref()<span class="op">.</span>support()</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h4 id="the-support-of-a-function"><a href="#the-support-of-a-function">The support of a function</a></h4>
+<p>I think of the support of a function as the set of names that have been “captured” by the function.
+The identity function returns its argument and does nothing else, so it’s supported by the empty set
+(<a id="proof-6-link" href="nominal-sets-proofs#proof-6">A.6</a>).
+A function that compares its two name arguments and nothing else
+(like <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">cmp</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mover><mo>=</mo><mo accent="false">?</mo></mover><mi>b</mi></mrow><annotation encoding="application/x-tex">\text{cmp}(a, b) = a \stackrel{?}{=} b</annotation></semantics></math>)
+is also supported by the empty set
+(<a id="proof-7-link" href="nominal-sets-proofs#proof-7">A.7</a>).
+A function that references names other than its arguments has those names in its support. For
+example, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math> must be in the support of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">iffy</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><mover><mo>=</mo><mo accent="false">?</mo></mover><mi>x</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> then </mtext><mspace width="0.333em"></mspace></mrow><mi>b</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> else </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">\text{iffy}(x) = \text{if } a \stackrel{?}{=} x \text{ then } b \text{ else } x</annotation></semantics></math>
+(<a id="proof-8-link" href="nominal-sets-proofs#proof-8">A.8</a>).</p>
+<h3 id="freshness"><a href="#freshness">Freshness</a></h3>
+<p>A name <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> is fresh for a value <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> (written <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>x</mi></mrow><annotation encoding="application/x-tex">a \; \# \; x</annotation></semantics></math>) when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>∉</mo><msub><mtext mathvariant="normal">support</mtext><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a \notin \text{support}_{min}(x)</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">mod</span> support <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span> <span class="kw">fn</span> fresh_for<span class="op">&lt;</span>T<span class="op">:</span> Supported<span class="op">&gt;</span>(name<span class="op">:</span> <span class="op">&amp;</span>Name<span class="op">,</span> value<span class="op">:</span> <span class="op">&amp;</span>T) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>value<span class="op">.</span>support()<span class="op">.</span>contains(name)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Since atoms are drawn from a countably infinite set, we take as an axiom that for any set of atoms there exists an atom that is fresh for them:
+<span id="axiom-choose-a-fresh-name">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo>∈</mo><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi><mspace width="0.278em"></mspace><mo>∃</mo><mi>a</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mover><mi>x</mi><mo accent="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\forall \bar{x} \in \mathcal{P}(\mathbb{A}). \; \exists a. \; a \; \# \; \bar{x}</annotation></semantics></math>
+</span>.
+This is known as the “choose-a-fresh-name” principle, and it’s what motivates the global number generator I use for
+<code>Name</code>s.</p>
+<p>Some useful properties involving freshness:</p>
+<ul>
+<li><p>Swapping fresh names does nothing: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>x</mi><mo>∧</mo><mi>b</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>x</mi><mo>⟹</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>x</mi><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">a \; \# \; x \land b \; \# \; x \implies (a \; b) \cdot x = x</annotation></semantics></math>
+(<a id="proof-9-link" href="nominal-sets-proofs#proof-9">A.9</a>).</p></li>
+<li><p>Freshness “distributes” across functions: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>f</mi><mo>∧</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>x</mi><mo>⟹</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a \; \# \; f \land a \; \# \; x \implies a \; \# \; f(x)</annotation></semantics></math>
+(<a id="proof-10-link" href="nominal-sets-proofs#proof-10">A.10</a>).</p></li>
+</ul>
+<h3 id="name-binding"><a href="#name-binding">Name binding</a></h3>
+<p>Name binding (written <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">[\mathbb{A}]X</annotation></semantics></math>) is the <a href="https://en.wikipedia.org/wiki/Equivalence_class">quotient</a><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> of name-value pairs
+by a sort of “generalised alpha equivalence”. Elements of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">[\mathbb{A}]X</annotation></semantics></math> are written as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\langle a \rangle x</annotation></semantics></math>.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo>×</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><msub><mo>∼</mo><mi>α</mi></msub></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="0.278em"></mspace></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mo>∼</mo><mi>α</mi></msub><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo>×</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔸</mi><mo>×</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mo>∼</mo><mi>α</mi></msub><mspace width="0.278em"></mspace><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mi>′</mi><mo>,</mo><mi>x</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.278em"></mspace><mi>a</mi><mo>,</mo><mi>a</mi><mi>′</mi><mo>∈</mo><mi>𝔸</mi><mo>,</mo><mspace width="0.278em"></mspace><mi>x</mi><mo>,</mo><mi>x</mi><mi>′</mi><mo>∈</mo><mi>X</mi><mo>,</mo><mspace width="0.278em"></mspace><mo>∃</mo><mi>b</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>b</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>x</mi><mo>,</mo><mi>a</mi><mi>′</mi><mo>,</mo><mi>x</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo>∧</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>x</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mi>′</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>x</mi><mi>′</mi><mspace width="0.278em"></mspace><mo stretchy="false" form="postfix">}</mo></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+[\mathbb{A}]X = (\mathbb{A} \times X) / \sim_\alpha
+\\ \; \\
+\sim_\alpha \; : \; (\mathbb{A} \times X) \times (\mathbb{A} \times X)
+\\
+\sim_\alpha \; = \{ \; 
+((a, x), (a', x')) \; | \;
+a, a' \in \mathbb{A}, \;
+x, x' \in X, \;
+\exists b. \; 
+b \; \# \; (a, x, a', x')
+\; \land \;
+(a \; b) \cdot x = (a' \; b) \cdot x'
+\; \}
+\end{array}
+</annotation></semantics></math></p>
+<p>Two name binders are considered equal when renaming their bound name to a completely
+fresh name makes their bodies equal.</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">[\mathbb{A}]X</annotation></semantics></math> is the <code>Binder</code> type that I defined at the beginning. Now we have tools to
+define equality on <code>Binder</code>s:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> <span class="bu">PartialEq</span><span class="op">&gt;</span> <span class="bu">PartialEq</span> <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> eq(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> other<span class="op">:</span> <span class="op">&amp;</span><span class="dt">Self</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">use</span> <span class="kw">super</span><span class="pp">::name::</span>fresh<span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> b <span class="op">=</span> fresh()<span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">self</span><span class="op">.</span>body<span class="op">.</span>permute_by(<span class="pp">Permutation::</span>swap(<span class="kw">self</span><span class="op">.</span>name<span class="op">,</span> b)) <span class="op">==</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        other<span class="op">.</span>body<span class="op">.</span>permute_by(<span class="pp">Permutation::</span>swap(other<span class="op">.</span>name<span class="op">,</span> b))</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> <span class="bu">Eq</span><span class="op">&gt;</span> <span class="bu">Eq</span> <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{}</span></span></code></pre></div>
+<p>Since every binder binds a unique name and binders are immutable, there is a fast path for equality: two binders that
+bind the same name are actually the same binder.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> <span class="bu">PartialEq</span><span class="op">&gt;</span> <span class="bu">PartialEq</span> <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> eq(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> other<span class="op">:</span> <span class="op">&amp;</span><span class="dt">Self</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">use</span> <span class="kw">super</span><span class="pp">::name::</span>fresh<span class="op">;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">self</span><span class="op">.</span>name <span class="op">==</span> other<span class="op">.</span>name <span class="op">{</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">true</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> b <span class="op">=</span> fresh()<span class="op">;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>      <span class="kw">self</span><span class="op">.</span>body<span class="op">.</span>permute_by(<span class="pp">Permutation::</span>swap(<span class="kw">self</span><span class="op">.</span>name<span class="op">,</span> b)) <span class="op">==</span> </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>          other<span class="op">.</span>body<span class="op">.</span>permute_by(<span class="pp">Permutation::</span>swap(other<span class="op">.</span>name<span class="op">,</span> b))</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> <span class="bu">Eq</span><span class="op">&gt;</span> <span class="bu">Eq</span> <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{}</span></span></code></pre></div>
+<p>Name binding has a permutation action and a finite support.</p>
+<p>Permutation action: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>x</mi><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>π</mi><mo>⋅</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi \cdot \langle a \rangle x = \langle \pi \cdot a \rangle (\pi \cdot x)</annotation></semantics></math></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> Permutable<span class="op">&gt;</span> Permutable <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    Binder<span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      name<span class="op">:</span> name<span class="op">.</span>permute_by(permutation)<span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      body<span class="op">:</span> body<span class="op">.</span>permute_by(permutation)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>The support of a name binder excludes its bound name: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">support</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo>=</mo><mtext mathvariant="normal">support</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\text{support} (\langle a \rangle x) \; = \text{support}(x) - \{ a \}</annotation></semantics></math> (<a id="proof-11-link" href="nominal-sets-proofs#proof-11">A.11</a>).
+Freshness is the negation of this: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>x</mi><mspace width="0.278em"></mspace><mo>⇔</mo><mspace width="0.278em"></mspace><mi>b</mi><mo>=</mo><mi>a</mi><mspace width="0.278em"></mspace><mo>∨</mo><mspace width="0.278em"></mspace><mi>b</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>x</mi></mrow><annotation encoding="application/x-tex">b \; \# \; \langle a \rangle x \; \iff \; b = a \; \lor \; b \; \# \; x</annotation></semantics></math> (<a id="proof-12-link" href="nominal-sets-proofs#proof-12">A.12</a>).</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> Supported<span class="op">&gt;</span> Supported <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> support(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> HashSet<span class="op">&lt;</span>Name<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="kw">mut</span> support <span class="op">=</span> <span class="kw">self</span><span class="op">.</span>body<span class="op">.</span>support()<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    support<span class="op">.</span>remove(<span class="op">&amp;</span><span class="kw">self</span><span class="op">.</span>name)<span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    support</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>We can now define <code>Clone</code> for binders. It respects the property that every <code>Binder</code> binds a unique name.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="bu">Clone</span> <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> clone(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">self</span><span class="op">.</span>unbind(<span class="op">|</span>name<span class="op">,</span> body<span class="op">|</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Binder::</span>new(<span class="op">|</span>new_name<span class="op">|</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        body<span class="op">.</span>permute_by(<span class="pp">Permutation::</span>swap(name<span class="op">,</span> new_name))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>When reasoning about binder equality, it’s often inconvenient to find an atom <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>x</mi><mo>,</mo><mi>a</mi><mi>′</mi><mo>,</mo><mi>x</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">b \; \# \; (a, x, a', x')</annotation></semantics></math>
+such that <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>x</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mi>′</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>x</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">(a \; b) \cdot x = (a' \; b) \cdot x'</annotation></semantics></math>. When that’s the case, we prove an
+equivalent property: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>b</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>b</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>x</mi><mo>,</mo><mi>a</mi><mi>′</mi><mo>,</mo><mi>x</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⟹</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>x</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mi>′</mi><mspace width="0.278em"></mspace><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>x</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">\forall b. \; b \; \# \; (a, x, a', x') \implies (a \; b) \cdot x = (a' \; b) \cdot x'</annotation></semantics></math>
+(<a id="proof-13-link" href="nominal-sets-proofs#proof-13">A.13</a>).
+Any specific fresh atom is interchangeable with all fresh atoms that satisfy the same conditions.</p>
+<h3 id="the-category-of-nominal-sets"><a href="#the-category-of-nominal-sets">The category of nominal sets</a></h3>
+<p>Any set <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math> with a permutation action <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math> is called a <em>nominal set</em> when for each
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x \in X</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> has a finite, minimal support.</p>
+<p>Nominal sets are the objects of a category (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math>) whose arrows are functions that preserve permutation
+actions: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>π</mi><mo>,</mo><mi>x</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo>⋅</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>π</mi><mo>⋅</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\forall \pi, x. \; f(\pi \cdot x) = \pi \cdot f(x)</annotation></semantics></math>. These are called
+<a href="https://en.wikipedia.org/wiki/Equivariant_map">equivariant</a> functions. One important fact about equivariant functions
+is that they’re supported by the empty set (<a id="proof-14-link" href="nominal-sets-proofs#proof-14">A.14</a>).</p>
+<p>The identity arrows are just the identity function on each nominal set. The identity function is
+equivariant (<a id="proof-15-link" href="nominal-sets-proofs#proof-15">A.15</a>). Composition of arrows is the composition
+of equivariant functions, which preserves equivariance
+(<a id="proof-16-link" href="nominal-sets-proofs#proof-16">A.16</a>). I’ll use <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><annotation encoding="application/x-tex">\rightarrow_{Nom}</annotation></semantics></math> for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> arrows,
+e.g. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>Y</mi></mrow><annotation encoding="application/x-tex">X \rightarrow_{Nom} Y</annotation></semantics></math>.</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> has a <a href="https://en.wikipedia.org/wiki/Terminal_object">terminal object</a>, which is the
+singleton set (<a id="proof-17-link" href="nominal-sets-proofs#proof-17">A.17</a>).</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> has <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>, which
+are pairs of nominal sets with an element-wise permutation action, because introduction and elimination of pairs is equivariant
+(<a id="proof-18-link" href="nominal-sets-proofs#proof-18">A.18</a>).</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> has <a href="https://en.wikipedia.org/wiki/Coproduct">coproducts</a>, which is the normal
+disjoint union on sets with an element-wise permutation action, because introduction and elimination of coproducts is equivariant
+(<a id="proof-19-link" href="nominal-sets-proofs#proof-19">A.19</a>).</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> has <a href="https://en.wikipedia.org/wiki/Exponential_object">exponentials</a>, in the form of
+finitely supported functions between nominal sets (<a id="proof-20-link" href="nominal-sets-proofs#proof-20">A.20</a>).</p>
+<p>These facts have two important consequences for programmers:</p>
+<ol type="1">
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> is a <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category">cartesian closed category</a>, which means it contains the lambda calculus. You can create a “nominal programming language” that has first class names<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> can express <a href="https://en.wikipedia.org/wiki/Initial_algebra">initial algebra semantics</a>, which means your “nominal programming language” can have “nominal algebraic datatypes”.</p></li>
+</ol>
+<p>In a sense <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> is fundamentally compatible with programming, and I think that’s why nominal sets are such a good inspiration for a library.</p>
+<h3 id="some-adjunctions"><a href="#some-adjunctions">Some adjunctions</a></h3>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">[\mathbb{A}]({-})</annotation></semantics></math> is an endofunctor on <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math> with the following action on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Nom</mtext><annotation encoding="application/x-tex">\text{Nom}</annotation></semantics></math>-arrows:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>Y</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+[\mathbb{A}](f) \; : \; [\mathbb{A}] X \rightarrow_{Nom} [\mathbb{A}] Y
+\\
+[\mathbb{A}](f)(\langle a \rangle x) = \langle a \rangle f(x)
+\end{array}
+</annotation></semantics></math></p>
+<p>This means <code>Binder</code> has a <code>map</code> method:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">mod</span> binder <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">&gt;</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">/** Correctness condition: `f` should not capture any [`Name`]s. When this is the case, we have `binder.map(f).map(g) == binder.map(|x| g(f(x)))`.</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">    */</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">fn</span> map<span class="op">&lt;</span>B<span class="op">&gt;</span>(<span class="kw">self</span><span class="op">,</span> f<span class="op">:</span> <span class="kw">impl</span> <span class="bu">FnOnce</span>(T) <span class="op">-&gt;</span> B) <span class="op">-&gt;</span> Binder<span class="op">&lt;</span>B<span class="op">&gt;</span> <span class="op">{</span> <span class="co">// (7)</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      Binder<span class="op">{</span> name<span class="op">:</span> <span class="kw">self</span><span class="op">.</span>name<span class="op">,</span> body<span class="op">:</span> f(<span class="kw">self</span><span class="op">.</span>body) <span class="op">}</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">[\mathbb{A}]({-})</annotation></semantics></math> has left and right <a href="https://en.wikipedia.org/wiki/Adjoint_functors">adjoints</a> that induce a nice API for working with <code>Binder</code>s.</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">[\mathbb{A}]({-})</annotation></semantics></math> is right adjoint to the functor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow></mrow><mo>−</mo><mo>*</mo><mspace width="0.278em"></mspace><mi>𝔸</mi></mrow><annotation encoding="application/x-tex">{}- * \; \mathbb{A}</annotation></semantics></math> arising from the following
+nominal set: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>*</mo><mi>𝔸</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.278em"></mspace><mi>x</mi><mo>∈</mo><mi>X</mi><mo>,</mo><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>x</mi><mspace width="0.278em"></mspace><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">X * \mathbb{A} = \{ \; (x, a) \; | \; x \in X, a \; \# \; x \;\}</annotation></semantics></math> (<a id="proof-22-link" href="nominal-sets-proofs#proof-22">A.22</a>).</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>X</mi><mo>*</mo><mi>𝔸</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>Y</mi></mrow><mrow><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>Y</mi></mrow></mfrac><annotation encoding="application/x-tex">
+\frac{
+X * \mathbb{A} \rightarrow_{Nom} Y
+}{
+X \rightarrow_{Nom} [\mathbb{A}] Y
+}
+</annotation></semantics></math></p>
+<p><br></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">bind</mtext><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>*</mo><mi>𝔸</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>Y</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">bind</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mspace width="0.278em"></mspace><mspace width="0.278em"></mspace><mtext mathvariant="normal">for some</mtext><mspace width="0.278em"></mspace><mi>a</mi><mi>#</mi><mi>x</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="0.278em"></mspace></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msup><mtext mathvariant="normal">bind</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mi>X</mi><mo>*</mo><mi>𝔸</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>Y</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msup><mtext mathvariant="normal">bind</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mi>𝑜</mi><mi>𝑚</mi><mi>𝑖</mi><mi>𝑡</mi><mi>𝑡</mi><mi>𝑒</mi><mi>𝑑</mi></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+\text{bind} \; : \; (X * \mathbb{A} \rightarrow_{Nom} Y) \rightarrow
+X \rightarrow_{Nom} [\mathbb{A}] Y
+\\
+\text{bind}(f)(x) = \langle a \rangle f(x, a) \;\;\; \text{for some} \; a \# x
+\\ \; \\
+\text{bind}^{-1} \; : \; (X \rightarrow_{Nom} [\mathbb{A}] Y) \rightarrow
+X * \mathbb{A} \rightarrow_{Nom} Y
+\\
+\text{bind}^{-1}(f)(x) = \mathit{omitted}
+\end{array}
+</annotation></semantics></math></p>
+<p>The “rightward” direction of the adjunction (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">bind</mtext><annotation encoding="application/x-tex">\text{bind}</annotation></semantics></math>) describes a way to create binders. It says that you can create a binder using a name that has never been seen before. This corresponds to the <code>bind</code> function from <a href="#names-and-binders">Names and Binders</a>.</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">[\mathbb{A}]({-})</annotation></semantics></math> is left adjoint to this functor:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mspace width="0.278em"></mspace><mi>f</mi><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.278em"></mspace><mi>f</mi><mo>∈</mo><msup><mi>Y</mi><mi>𝔸</mi></msup><mo>,</mo><mspace width="0.278em"></mspace><mo>∀</mo><mi>a</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>a</mi><mspace width="0.278em"></mspace><mi>#</mi><mspace width="0.278em"></mspace><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.278em"></mspace><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">R(Y) = \{ \; f \; | \; f \in Y^{\mathbb{A}}, \; \forall a. \; a \; \# \; f(a) \; \}</annotation></semantics></math> (<a id="proof-23-link" href="nominal-sets-proofs#proof-23">A.23</a>).</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>Y</mi></mrow><mrow><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><annotation encoding="application/x-tex">
+\frac{
+[\mathbb{A}] X \rightarrow_{Nom} Y
+}{
+X \rightarrow_{Nom} R(Y)
+}
+</annotation></semantics></math></p>
+<p><br></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><msup><mtext mathvariant="normal">unbind</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msup><mtext mathvariant="normal">unbind</mtext><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>=</mo><mrow><mi>𝑜</mi><mi>𝑚</mi><mi>𝑖</mi><mi>𝑡</mi><mi>𝑡</mi><mi>𝑒</mi><mi>𝑑</mi></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="0.278em"></mspace></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">unbind</mtext><mspace width="0.278em"></mspace><mo>:</mo><mspace width="0.278em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>𝔸</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>X</mi><msub><mo>→</mo><mrow><mi>N</mi><mi>o</mi><mi>m</mi></mrow></msub><mi>Y</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">unbind</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">⟨</mo><mi>a</mi><mo stretchy="false" form="postfix">⟩</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+\text{unbind}^{-1} \; : \; ([\mathbb{A}] X \rightarrow_{Nom} Y) \rightarrow X \rightarrow_{Nom} R(Y)
+\\
+\text{unbind}^{-1} = \mathit{omitted}
+\\ \; \\
+\text{unbind} \; : \; (X \rightarrow_{Nom} R(Y)) \rightarrow [\mathbb{A}] X \rightarrow_{Nom} Y
+\\
+\text{unbind}(f)(\langle a \rangle x) = f(a)(x)
+\end{array}
+</annotation></semantics></math></p>
+<p>The “leftward” direction of this adjunction (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">unbind</mtext><annotation encoding="application/x-tex">\text{unbind}</annotation></semantics></math>) describes how to consume binders.
+You can consume a binder, accessing both its body and bound name, using a function that doesn’t
+“leak” the name. This corresponds to <code>unbind</code> in <a href="#names-and-binders">Names and Binders</a>.</p>
+<h2 id="showing-off"><a href="#showing-off">Showing off</a></h2>
+<p>Having gone through the theoretical justifications for the design of the <code>Binder</code> type, let’s examine
+some of its benefits in practise.</p>
+<h3 id="alpha-equivalence"><a href="#alpha-equivalence">Alpha equivalence</a></h3>
+<p>Given implementations of <code>Permutable</code> and <code>Supported</code>, an abstract syntax tree can derive an <code>Eq</code>
+instance that implements alpha equivalence:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>deriving<span class="at">(</span><span class="bu">PartialEq</span><span class="op">,</span> <span class="bu">Eq</span><span class="op">,</span> <span class="bu">Clone</span><span class="at">)]</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> Expr <span class="op">{</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  Var(Name)<span class="op">,</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  Lam(Binder<span class="op">&lt;</span><span class="dt">Box</span><span class="op">&lt;</span>Expr<span class="op">&gt;&gt;</span>)<span class="op">,</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  App(<span class="dt">Box</span><span class="op">&lt;</span>Expr<span class="op">&gt;,</span> <span class="dt">Box</span><span class="op">&lt;</span>Expr<span class="op">&gt;</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Permutable <span class="cf">for</span> Expr <span class="op">{</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> permute_by(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> permutation<span class="op">:</span> <span class="op">&amp;</span>Permutation) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>Var(name) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Var(name<span class="op">.</span>permute_by(permutation))<span class="op">,</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>Lam(binder) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Lam(binder<span class="op">.</span>permute_by(permutation))<span class="op">,</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>App(left<span class="op">,</span> right) <span class="op">=&gt;</span> <span class="pp">Expr::</span>App(</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        left<span class="op">.</span>permute_by(permutation)<span class="op">,</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        right<span class="op">.</span>permute_by(permutation)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Supported <span class="cf">for</span> Expr <span class="op">{</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> support(<span class="op">&amp;</span><span class="kw">self</span>) <span class="op">-&gt;</span> HashSet<span class="op">&lt;</span>Name<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>Var(name) <span class="op">=&gt;</span> <span class="pp">HashSet::</span>from([name])<span class="op">,</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>Lam(binder) <span class="op">=&gt;</span> binder<span class="op">.</span>support()<span class="op">,</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>App(left<span class="op">,</span> right) <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="kw">mut</span> support <span class="op">=</span> left<span class="op">.</span>support()<span class="op">;</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        support<span class="op">.</span>extend(right<span class="op">.</span>support())<span class="op">;</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>        support</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Which means the following are true:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">// (\x -&gt; x) =_{alpha} (\y -&gt; y)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="pp">assert_eq!</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>bind(<span class="op">|</span>x<span class="op">|</span> <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Var(x))))<span class="op">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>bind(<span class="op">|</span>y<span class="op">|</span> <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Var(y))))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">// (\x y -&gt; x) =_{alpha} (\y x -&gt; y)</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="pp">assert_eq!</span>(</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>bind(<span class="op">|</span>x<span class="op">|</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>Bind(<span class="op">|</span>y<span class="op">|</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Var(x))</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    ))))</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  )<span class="op">,</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>bind(<span class="op">|</span>y<span class="op">|</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>Bind(<span class="op">|</span>x<span class="op">|</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Var(y))</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    ))))</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  )<span class="op">,</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">// (\x y -&gt; x) !=_{alpha} (\x y -&gt; y)</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="pp">assert_neq!</span>(</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>bind(<span class="op">|</span>x<span class="op">|</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>Bind(<span class="op">|</span>y<span class="op">|</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Var(x))</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    ))))</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  )<span class="op">,</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>  <span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>bind(<span class="op">|</span>x<span class="op">|</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Lam(<span class="pp">Binder::</span>Bind(<span class="op">|</span>y<span class="op">|</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Expr::</span>Var(y))</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    ))))</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>  )<span class="op">,</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<h3 id="capture-avoiding-substitution"><a href="#capture-avoiding-substitution">Capture-avoiding substitution</a></h3>
+<p>Substituting a value for a name is defined by the <code>Subst</code> trait:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">mod</span> subst <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">pub</span> <span class="kw">trait</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;:</span> Permutable <span class="op">{</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> subst(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> name<span class="op">:</span> <span class="op">&amp;</span>Name<span class="op">,</span> value<span class="op">:</span> <span class="op">&amp;</span>V) <span class="op">-&gt;</span> <span class="dt">Self</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>It has all the usual implementations:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">:</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;,</span> B<span class="op">:</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;&gt;</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;</span> <span class="cf">for</span> (A<span class="op">,</span> B) <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> subst(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> name<span class="op">:</span> <span class="op">&amp;</span>Name<span class="op">,</span> value<span class="op">:</span> <span class="op">&amp;</span>V) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">self</span><span class="op">.</span><span class="dv">0</span><span class="op">.</span>subst(name<span class="op">,</span> value)<span class="op">,</span> <span class="kw">self</span><span class="op">.</span><span class="dv">1</span><span class="op">.</span>subst(name<span class="op">,</span> value))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>A<span class="op">:</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;,</span> B<span class="op">:</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;&gt;</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;</span> <span class="cf">for</span> <span class="pp">either::</span>Either<span class="op">&lt;</span>A<span class="op">,</span> B<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> subst(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> name<span class="op">:</span> <span class="op">&amp;</span>Name<span class="op">,</span> value<span class="op">:</span> <span class="op">&amp;</span>V) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>      <span class="kw">use</span> <span class="pp">either::</span>Either<span class="op">;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        Left(a) <span class="op">=&gt;</span> Left(a<span class="op">.</span>subst(name<span class="op">,</span> value))<span class="op">,</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        Right(b) <span class="op">=&gt;</span> Right(b<span class="op">.</span>subst(name<span class="op">,</span> value))</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> </span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;&gt;</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;</span> <span class="cf">for</span> <span class="dt">Box</span><span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> subst(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> name<span class="op">:</span> <span class="op">&amp;</span>Name<span class="op">,</span> value<span class="op">:</span> <span class="op">&amp;</span>V) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Box</span><span class="pp">::</span>new(<span class="kw">self</span><span class="op">.</span>as_ref()<span class="op">.</span>subst(name<span class="op">,</span> value))</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div>
+<p>And the <code>Binder</code> implementation clones the binder before substituting into the body, which
+guarantees capture-avoidance by binding a name that hasn’t occurred in <code>name</code> or <code>value</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">use</span> <span class="kw">super</span><span class="pp">::binder::</span>Binder<span class="op">;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">impl</span> <span class="op">&lt;</span>T<span class="op">:</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;&gt;</span> Subst<span class="op">&lt;</span>V<span class="op">&gt;</span> <span class="cf">for</span> Binder<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> subst(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> name<span class="op">:</span> <span class="op">&amp;</span>Name<span class="op">,</span> value<span class="op">:</span> <span class="op">&amp;</span>V) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>      <span class="kw">self</span><span class="op">.</span>clone()<span class="op">.</span>map(<span class="op">|</span>body<span class="op">|</span> body<span class="op">.</span>subst(name<span class="op">,</span> value))</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="co">// mod subst</span></span></code></pre></div>
+<p>Now capture-avoiding substitution can be defined for <code>Expr</code>:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> Subst<span class="op">&lt;</span>Expr<span class="op">&gt;</span> <span class="cf">for</span> Expr <span class="op">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> subst(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> name<span class="op">:</span> <span class="op">&amp;</span>Name<span class="op">,</span> value<span class="op">:</span> <span class="op">&amp;</span>Expr) <span class="op">-&gt;</span> <span class="dt">Self</span> <span class="op">{</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>Var(var) <span class="op">=&gt;</span> <span class="cf">if</span> var <span class="op">==</span> name <span class="op">{</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        value<span class="op">.</span>clone()</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Expr::</span>Var(var) </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">},</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>Lam(body) <span class="op">=&gt;</span> <span class="pp">Expr::</span>Lam(body<span class="op">.</span>subst(name<span class="op">,</span> value))<span class="op">,</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>      <span class="pp">Expr::</span>App(left<span class="op">,</span> right) <span class="op">=&gt;</span> <span class="pp">Expr::</span>App(</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        left<span class="op">.</span>subst(name<span class="op">,</span> value)<span class="op">,</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        right<span class="op">.</span>subst(name<span class="op">,</span> value)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="final-thoughts"><a href="#final-thoughts">Final thoughts</a></h2>
+<p>While the library I’ve sketched so far is <em>okay</em>, it’s not something I’d publish. Here are some outstanding issues, concerns, and questions:</p>
+<ul>
+<li><p>I don’t like the lack of support for mutability. Functions like <code>permute_by</code> and
+<code>subst</code> end up rebuilding the value they’re acting on. This is a waste of time when I have exclusive
+access to the value; I should be able to mutate the value in place and skip “reconstructing” the result.</p></li>
+<li><p>The implementation of <code>PartialEq</code> for <code>Binder</code> is wasteful:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> eq(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> other<span class="op">:</span> <span class="op">&amp;</span><span class="dt">Self</span>) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">use</span> <span class="kw">super</span><span class="pp">::name::</span>fresh<span class="op">;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> b <span class="op">=</span> fresh()<span class="op">;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">self</span><span class="op">.</span>permute_by(<span class="pp">Permutation::</span>swap(<span class="kw">self</span><span class="op">.</span>name<span class="op">,</span> b)) <span class="op">==</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>      other<span class="op">.</span>permute_by(<span class="pp">Permutation::</span>swap(other<span class="op">.</span>name<span class="op">,</span> b))</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>The function (immutably) permutes each argument, which amounts to cloning them. I should be able to
+compare binders without cloning! What’s more, the structure is essentially walked from root to tip
+once for each binder it contains. Comparison should be done a <em>single</em> downward pass.</p></li>
+<li><p><code>Permutable</code>, <code>Supported</code>, and <code>Subst</code> for user-defined types are boilerplate. They should be automatically derived, or based on a single user-defined function that locates names in the user’s datatypes.</p></li>
+<li><p>Should <code>Eq</code> actually implement alpha equivalence, or should I have a separate trait? I’m not sure how to implement <code>Eq</code> efficiently given its signature, and my intuition suggests <code>Eq</code> should be strict structural equality rather than including any quotienting.</p></li>
+<li><p>Should the user be able to choose different <code>fresh</code> functions? This doesn’t really matter if <code>Eq</code> implements alpha equivalence, but if <code>Eq</code> is structural equivalence then it might be more convenient to use a different “name generator” for testing.</p></li>
+</ul>
+<p>You can follow my explorations at <a href="https://github.com/LightAndLight/binders.rs" class="uri">https://github.com/LightAndLight/binders.rs</a>.</p>
+<h2 id="appendix-a-proofs"><a href="#appendix-a-proofs">Appendix A: Proofs</a></h2>
+<p>See <a href="./nominal-sets-proofs">Nominal Sets: Appendix A (Proofs)</a>.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Let me know if (when?) I’m wrong about this!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Pitts, A. M. (2013). Nominal sets: Names and symmetry in computer science.
+Cambridge University Press.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Pitts, A. M. (2003). Nominal logic, a first order theory of names and binding.
+Information and computation, 186(2), 165-193.</p>
+<p><a href="https://doi.org/10.1016/S0890-5401(03)00138-X" class="uri">https://doi.org/10.1016/S0890-5401(03)00138-X</a><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Pitts, A. M. (2006). Alpha-structural recursion and
+induction. Journal of the ACM (JACM), 53(3), 459-506.</p>
+<p><a href="https://doi.org/10.1145/1147954.1147961" class="uri">https://doi.org/10.1145/1147954.1147961</a><a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Pitts, A. (2016). Nominal techniques. ACM SIGLOG News, 3(1), 57-72.</p>
+<p><a href="https://doi.org/10.1145/2893582.2893594" class="uri">https://doi.org/10.1145/2893582.2893594</a><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>I found <a href="https://www.hedonisticlearning.com/posts/quotient-types-for-programmers.html">“Quotient Types for
+Programmers”</a> very
+helpful for understanding quotients.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Cheney, J. (2009). A simple nominal type theory. Electronic Notes
+in Theoretical Computer Science, 228, 37-52.</p>
+<p><a href="https://doi.org/10.1016/j.entcs.2008.12.115" class="uri">https://doi.org/10.1016/j.entcs.2008.12.115</a><a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+  <footer>
+    <p>
+      
+      <a href="/nominal-sets-proofs">Nominal Sets: Appendix A (Proofs) - Previous</a>
+      
+      |
+      
+      <span>Newest</span>
+      
+
+      <br><br>
+
+      tags:
+
+<a href="/tags/programming">programming</a>
+
+<a href="/tags/mathematics">mathematics</a>
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+
+  <script>feather.replace()</script>
+</body>
+
+</html>

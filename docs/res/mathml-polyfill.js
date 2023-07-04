@@ -83,7 +83,7 @@ if (Math.abs(box.height - 23) > 1 || Math.abs(box.width - 77) > 1) {
     script.insertAdjacentHTML(
       "afterend",
       "<div id='" + warningId + "' style='display: flex; flex-direction: column; align-items: center; border: 2px solid orange; box-shadow: 0 0 1em gold; padding: 10px; margin: 0; top: 0; width: 95%; background: #fcf6d4;'>" +
-      "<style scoped='scoped'>div { font-family: sans; } button { background: #ffd; }</style>" +
+      "<style scoped='scoped'>button { background: #ffd; }</style>" +
       "<p>This page uses <a href='https://developer.mozilla.org/en-US/docs/Web/MathML'>MathML</a>, which your browser doesn't fully support.</p>" +
 
       "<div>" +
