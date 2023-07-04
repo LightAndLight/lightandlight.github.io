@@ -1,0 +1,3 @@
+#! /usr/bin/env sh
+
+nix develop -c cabal run site -- watch
