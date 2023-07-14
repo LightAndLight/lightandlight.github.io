@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedRecordDot #-}
@@ -23,7 +24,7 @@ import System.FilePath (dropExtension, takeBaseName, takeExtension, (<.>), (</>)
 import Text.Pandoc (Block, Inline (..), Pandoc (..), nullAttr, readHtml, runPure)
 import qualified Text.Pandoc as Pandoc
 import Text.Pandoc.Options
-import Text.Pandoc.Walk (query, walk)
+import Text.Pandoc.Walk (Walkable, query, walk)
 import Text.Pandoc.Writers (writePlain)
 import WaiAppStatic.Types (File (..), fromPiece, unsafeToPiece)
 
@@ -504,7 +505,7 @@ getExcerpt identifier postPandocItem = do
                   path <- getResourceFilePath
                   fail $ "failed to extract excerpt from " <> path
               )
-              (\block -> pure $ Pandoc Pandoc.nullMeta [block])
+              (\block -> pure $ Pandoc Pandoc.nullMeta [removeFootnotes block])
               . getFirst
               . query
                 ( \block -> case block of
@@ -514,6 +515,9 @@ getExcerpt identifier postPandocItem = do
           )
           postPandocItem
       pure $ writePandocWith pandocWriterOptions excerptPandocItem
+  where
+    removeFootnotes :: Walkable [Inline] b => b -> b
+    removeFootnotes = walk @[Inline] (filter (\case; Note{} -> False; _ -> True))
 
 getAllTags :: Pattern -> Rules [String]
 getAllTags =
