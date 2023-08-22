@@ -55,13 +55,33 @@ As type theory extensions go, qualified types are much less arbitrary and implem
 
 Rust monomorphises polymorphic functions, opting for lower runtime cost at the expense of compile time and binary size.
 Is this a relevant divergence from Haskell and Cyclone?
-Or can the "runtime representation via qualified types" approach also work for a language with uniform representation of polymorphism?  
+Or can the "runtime representation via qualified types" approach also work for a language with uniform representation of type variables?  
 I see no reason for doubt.
 A polymorphic function like `id : forall a. a -> a` is similar to the Rust function `id<A>(x: Box<A>) -> Box<A>`, which explicitly takes and returns a heap pointer.
 Boxed types in our hypothetical language would have a `Sized` instance describing them as having pointer representation.
 
-Another potentially relevant difference is that Haskell has higher-kinded types and Rust has no kind system.
+Another potentially relevant difference is that Haskell has higher-kinded polymorphism.
 This isn't an issue; see my [previous work](https://blog.ielliott.io/sized-hkts) on extending `Sized` constraints to higher kinds.
+
+Tracking the runtime representation of type variables via qualified types suggests another way of compiling polymorphic functions.
+Single compilation for qualified types is normally implemented by dictionary passing.
+What if we treat the `Sized` dictionaries no differently to any other constraint, passing them as an extra arguments to polymorphic functions?
+Now `id : forall a. a -> a` is actually a 2-argument function.
+It is expanded to `id : forall a. Sized a => a -> a`.
+The first argument is a pointer to a dictionary containing type information about `a`.
+The second argument is a pointer to an `a` living on the stack.
+The implementation of `id` uses the type information in the dictionary to copy / move / drop the `a` argument.
+This is what Swift does (<https://www.youtube.com/watch?v=ctS8FzqcRug>, <https://download.swift.org/docs/assets/generics.pdf>).
+
+I like the way this approach sits in between "box everything" and "monomorphise everything".
+Type variables still have a uniform representation (as pointers), but don't require heap allocation.
+Instead, these values are passed / returned via the stack in the same way as large stack-allocated structs.
+What's more, the dictionary-passing approach lets us opt-in to monomorphisation in an elegant way.
+Similar to [GHC's type class specialisation](https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/pragmas.html#specialize-pragma) and [call-pattern specialisation](https://downloads.haskell.org/ghc/latest/docs/users_guide/using-optimisation.html#ghc-flag--fspec-constr),
+we can ask the compiler to generate a monomorphic version of a polymorphic function that has been called with known types.
+For example `id 1` is `id` called at the type `a = Integer` (`id @Integer 1`).
+If this call is hot, we can ask the compiler to generate `id_Integer : Integer -> Integer`, and replace calls to `id @Integer` with `id_Integer`.
+`id_Integer` takes one argument instead of two, has fewer indirections due to the lack of a type information dictionary, and has an integer-specific calling convention, such as passing and returning the integer in registers.
 
 [^levity]: Eisenberg, R. A., & Peyton Jones, S. (2017). Levity polymorphism. ACM SIGPLAN Notices, 52(6), 525-539.
 [^safe-c]: Grossman, D. J. (2003). Safe programming at the C level of abstraction. Cornell University.
