@@ -222,7 +222,7 @@ Let me enumerate the ways this could go wrong:
 3. A process inserts a file into a `Files` repository
 
    Now a `lookup k f` that once returned `Nothing` returns `Just v` for some `v`
-  
+   
 4. A process removes/renames ones of the `Files` directories
 
    All subsequent operations on that value fail
@@ -231,8 +231,39 @@ Let me enumerate the ways this could go wrong:
 
    Now we have nowhere to store the temporary files
   
-* In spite of all that, this interface and implementation seems reasonable
+6. The directory named by `TMPDIR` doesn't exist
+
+   [`createTempDirectory`](https://hackage.haskell.org/package/temporary-1.3/docs/System-IO-Temp.html#v:createTempDirectory)
+   requires that the parent directory exists.
+  
+* In spite of all that, this interface and implementation seems to have a sort of reasonable-ness
+
 * The functions are mutually consistent w.r.t the denotation
   e.g. there's no edge case where calling `lookup` a certain way makes
   `insert` or `delete` behave in surprising ways (deviate from the denotation)
+
 * (assuming IO actions involved do precisely what they say they do) 
+
+* The types and functions don't infringe on the denotations of other parts of Haskell.
+
+  `Integer` still means integers, `(+) :: Integer -> Integer -> Integer` still means integer addition,
+  for example.
+  
+  (Up to file system meddling / `TMPDIR` tweaking)
+  
+* It's hard to prove that these implementations are well-behaved, because the Haskell's directory manipulation
+  functions are in IO so they have no (relevant?) denotation. Same goes for `IORefs`.
+  
+  But I suspect that if we could model the file system as some exclusive state (`StateT (Map FilePath ByteString) m`)
+  and give semantics to file system operations this way
+  (e.g. `listDirectory :: Monad m => FilePath -> StateT (Map FilePath ByteString) m [FilePath]`).
+  Then model IORefs and their functions similarly (e.g. `newIORef :: Monad m => a -> StateT (DMap Ref Identity) m (Ref a)`).
+  Then we might be able to prove correctness for
+  `newtype Files m = Files (StateT (Map FilePath ByteString) (StateT (DMap Ref Identity) m) FilePath)`
+  and
+  `unsafeMkFiles :: Monad m => (FilePath -> StateT (Map FilePath ByteString) (StateT (DMap Ref Identity) m) ()) -> StateT (Map FilePath ByteString) (StateT (DMap Ref Identity) m) (Files m)`
+  and
+  `lookup :: Monad m => FilePath -> Files m -> StateT (Map FilePath ByteString) (StateT (DMap Ref Identity) m) ByteString`
+  and
+  `meaning :: Monad m => Files m -> StateT (Map FilePath ByteString) (StateT (DMap Ref Identity) m) (FilePath -> Maybe ByteString)`.
+  Correctness being, for example, `fmap (lookup k) (meaning files) = lookup k files`
