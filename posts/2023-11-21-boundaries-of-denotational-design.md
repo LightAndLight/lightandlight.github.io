@@ -11,20 +11,43 @@ tags:
 ---
 
 * Most examples of denotational design are about importing math into computers
+
 * That's not quite right, but it feels like the solutions still live in "math space"
   * Affine functions - https://www.youtube.com/playlist?list=PLX913KKLwrAbHhbBOd-JhHmAlr5H8Djbf
   * Partial maps, tries - http://conal.net/papers/type-class-morphisms/type-class-morphisms-long.pdf
   * Linear transformations - http://conal.net/blog/posts/reimagining-matrices
+
 * I've had the impression that denotational design only applies to "pure functions"
   * ... or something. I don't even know. Just a feeling that you can't write "effectful"
     libraries.
-  * This ends up in confusion
+  * This leaves me confused
+
+* Conal [writes](http://conal.net/blog/posts/is-haskell-a-purely-functional-language#comment-620)
+
+  > I’ve noticed that some folks want programming models to serve the machine, by capturing
+  > what the machine can do. I’m more interested in machines as lenses for ideas,
+  > i.e., the role of the machine for me is to display ideas for me to observe.
+    
+  It's easy for me to conclude from this that denotative programming is only for ideas
+  that "ultimately" precede machines, like, ideas that people would have had before
+  computers existed.
+
+* I feel some of this in title of the talk
+  ["Denotational Design: from meanings to programs"](https://www.youtube.com/watch?v=bmKYiUOEo2A)
+  ([slides](http://conal.net/talks/denotational-design-lambdajam-2015.pdf)).
+  
+  The vibe I get from "from meanings to programs" is that the meanings/abstractions
+  have to occur to me before any of the programs do. That denotational design doesn't work
+  if I want the computer to do something specific; it only works when I want to express
+  a fundamentally non-computer (mathematical) idea on the computer.
+  
 * As a programmer and computer user, I encounter problems involving file systems,
   network I/O, database migrations, version control systems, and so on.
   * Ideas that aren't mathematical in origin, in the same way that integers or functions are
   * These ideas and constructs are contingent on the way we currently build and use
     computing systems
   * They shouldn't be exempt from denotational design!
+
 * Feels like there's a [draw the rest of the owl](https://www.deviantart.com/rayfan9876/art/How-to-draw-an-owl-177608203)
   problem here
   * On my mind thanks to the awesome [Statistical Rethinking](https://www.youtube.com/watch?v=cclUd_HoRlo&list=PLDcUM9US4XdMROZ57-OIRtIK0aOynbgZN&index=2)
@@ -35,6 +58,7 @@ tags:
   * I want to try to draw the rest of the owl and see where we end up
     * While challenging this weird internal voice that says denotational design
       can't apply to "real software"
+
 * I'm inspired by Conal's ["Can functional programming be liberated from the von Neumann style?"](http://conal.net/blog/posts/can-functional-programming-be-liberated-from-the-von-neumann-paradigm)
   post
   * > [..] let’s explore how to move I/O entirely out of our programming model into the
@@ -104,3 +128,111 @@ Am I making a "type error" in my reasoning?
 I have an interesting implementation that I'd argue is denotationally sound.
 
 Content warning: `unsafePerformIO`.
+
+```haskell
+-- | @[[ Files ]] = PartialMap FilePath ByteString@
+newtype Files = Files (IO FilePath)
+
+unsafeMkFiles :: (FilePath -> IO ()) -> Files
+unsafeMkFiles setup =
+  let
+    -- `actionRef` is a "thunk", which will modify the filesystem when forced.
+    --
+    -- When forced it creates a temporary directory and runs a caller-supplied
+    -- setup function, intended to configure the directory (i.e. populate it with
+    -- the correct files).
+    --
+    -- After the directory is set up, the thunk is overwritten so that subsequent
+    -- forces don't repeat the setup.
+    --
+    -- This call-by-need "evaluation strategy" isn't part of the denotation and isn't
+    -- required to satisfy the denotation; it's an just a implementation feature that
+    -- I thought would be cool / interesting.
+    !actionRef = unsafePerformIO . newIORef $ do
+      tmp <- getCanonicalTemporaryDirectory
+      path <- createTempDirectory tmp "Files"
+      setup path
+      writeIORef actionRef (pure path)
+      pure path
+  in
+    Files (join $ readIORef actionRef)
+
+-- | @[[ empty ]] = empty@
+empty :: Files
+empty =
+  unsafeMkFiles (const $ pure ())
+
+-- | @[[ lookup k f ]] = lookup k [[ f ]]@
+lookup :: FilePath -> Files -> Maybe ByteString
+lookup k (Files f) =
+  unsafePerformIO $ do
+    path <- f
+    exists <- doesFileExist (path </> k)
+    if exists
+      then Just <$> readFile (path </> k)
+      else pure Nothing
+
+-- | @[[ insert k v f ]] = insert k v [[ f ]]@
+insert :: FilePath -> ByteString -> Files -> Files
+insert k v (Files f) =
+  unsafeMkFiles (\destPath -> do
+    srcPath <- f
+    srcFiles <- listDirectory srcPath
+    traverse_
+      (\name -> copyFile (srcPath </> name) (destPath </> name))
+      srcFiles
+    writeFile k v
+  )
+
+-- | @[[ delete k f ]] = delete k [[ f ]]@
+delete :: FilePath -> Files -> Files
+delete k (Files f) =
+  unsafeMkFiles (\destPath -> do
+    srcPath <- f
+    srcFiles <- listDirectory srcPath
+    traverse_ 
+      (\name -> copyFile (srcPath </> name) (destPath </> name))
+      (filter (/= k) srcFiles)
+  )
+
+{- | @force path f@ creates a file in directory @path@ for each element of
+the partial map denoted by @f@.
+
+In other words, it creates a file named @path </> k@ with contents @v@
+for each @k@ that has @[[ f ]] k = Just v@.
+-}
+force :: FilePath -> Files -> IO ()
+force destPath (Files f) = do
+  srcPath <- f
+  srcFiles <- listDirectory srcPath
+  traverse_
+    (\name -> copyFile (srcPath </> name) (destPath </> name))
+    srcFiles
+```
+
+Let me enumerate the ways this could go wrong:
+
+1. A process deletes a file from one of my `Files` directories while my program is running
+
+   This means that for some `f`, `lookup k f` will return `Just v` at one time and
+   `Nothing` at another.
+  
+2. A process modifies a file in `Files`.
+
+3. A process inserts a file into a `Files` repository
+
+   Now a `lookup k f` that once returned `Nothing` returns `Just v` for some `v`
+  
+4. A process removes/renames ones of the `Files` directories
+
+   All subsequent operations on that value fail
+  
+5. `TMPDIR` is unset
+
+   Now we have nowhere to store the temporary files
+  
+* In spite of all that, this interface and implementation seems reasonable
+* The functions are mutually consistent w.r.t the denotation
+  e.g. there's no edge case where calling `lookup` a certain way makes
+  `insert` or `delete` behave in surprising ways (deviate from the denotation)
+* (assuming IO actions involved do precisely what they say they do) 
