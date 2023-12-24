@@ -1,7 +1,7 @@
 ---
 title: 2022 Project Review
 permalink: /2022-project-review
-date: 2022-12-27 14:25:00 +1000
+date: 2022-12-27T14:25:00+1000
 tags:
     - programming
 excerpt: <p>Reflections this year's hobby projects.</p>
