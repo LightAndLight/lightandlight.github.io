@@ -1,7 +1,7 @@
 ---
 title: 2023 Project Review
 permalink: /2023-project-review
-date: 2023-12-24T10:30:00+1000
+date: 2023-12-25T07:25:00+1000
 tags:
     - programming
     - music
@@ -22,6 +22,7 @@ Ipso is a functional scripting language that I created so that I can write glue 
 In February I started using Ipso for some "real" scripts, so I wrote a [VSCode extension](https://github.com/LightAndLight/ipso/tree/main/vscode-ipso)
 and added a bunch of features and fixes based on what I experienced.
 In May I added [many new builtins](https://github.com/LightAndLight/ipso/blob/main/CHANGELOG.md#06).
+Writing the VSCode extension was exciting; simple things like syntax highlighting and keyword autocompletion give the programming language a new level of "tangibility".
 
 ## Ipso scripts
 
@@ -98,6 +99,122 @@ They also validated the purpose of Ipso; I enjoyed writing these scripts more th
 *March - May*
 
 <https://github.com/LightAndLight/laurel>
+
+Laurel is a query language experiment.
+I'm perennially dissatisfied with SQL and continue to search for something better.
+Laurel is an exploration inspired by [The third manifesto](https://dl.acm.org/doi/10.1145/202660.202667),
+[Relational algebra by way of adjunctions](https://dl.acm.org/doi/10.1145/3236781),
+and my experience with typed functional programming.
+
+One part of the experiment is to have a single query language with multiple backends.
+I implemented a REPL that can "connect" to two different backends: Postgres, and CSV files.
+Here's a demo of the CSV backend:
+
+```
+$ laurel repl
+Welcome to the Laurel REPL. Type :quit to exit.
+> :connect "csv" ["laurel-core/test/data/example.csv"]
+connected
+
+> :tables
+table example {
+  merchant : String,
+  transaction type : String,
+  amount : String,
+  category : String
+}
+
+> :type tables
+{ example : Relation { merchant : String, transaction type : String, amount : String, category : String } }
+
+> tables.example
+╭───────────────────┬───────────────────────────┬─────────────────┬───────────────────╮
+│ merchant : String │ transaction type : String │ amount : String │ category : String │
+├───────────────────┼───────────────────────────┼─────────────────┼───────────────────┤
+│ Google            │ debit                     │ 10.00           │ tech              │
+│ NAB               │ credit                    │ 5.00            │ finance           │
+│ Spotify           │ debit                     │ 12.00           │ entertainment     │
+│ Some Cafe         │ debit                     │ 22.00           │ eating out        │
+│ Hotpot Restaurant │ debit                     │ 50.00           │ eating out        │
+│ Woolworths        │ debit                     │ 38.00           │ groceries         │
+│ NAB               │ credit                    │ 5.00            │ finance           │
+╰───────────────────┴───────────────────────────┴─────────────────┴───────────────────╯
+
+> :type (for row in tables.example yield row.merchant)
+Relation String
+
+> for row in tables.example yield row.merchant
+╭───────────────────╮
+│ _ : String        │
+├───────────────────┤
+│ Google            │
+│ NAB               │
+│ Spotify           │
+│ Some Cafe         │
+│ Hotpot Restaurant │
+│ Woolworths        │
+│ NAB               │
+╰───────────────────╯
+
+> :type (tables.example group by (\row -> row.`transaction type`))
+Map String (Relation { merchant : String, transaction type : String, amount : String, category : String })
+
+> tables.example group by (\row -> row.`transaction type`)
+╭──────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ key : String │ value : Relation { merchant : String, transaction type : String, amount : String, category : String } │
+├──────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ credit       │ ╭───────────────────┬───────────────────────────┬─────────────────┬───────────────────╮               │
+│              │ │ merchant : String │ transaction type : String │ amount : String │ category : String │               │
+│              │ ├───────────────────┼───────────────────────────┼─────────────────┼───────────────────┤               │
+│              │ │ NAB               │ credit                    │ 5.00            │ finance           │               │
+│              │ │ NAB               │ credit                    │ 5.00            │ finance           │               │
+│              │ ╰───────────────────┴───────────────────────────┴─────────────────┴───────────────────╯               │
+│ debit        │ ╭───────────────────┬───────────────────────────┬─────────────────┬───────────────────╮               │
+│              │ │ merchant : String │ transaction type : String │ amount : String │ category : String │               │
+│              │ ├───────────────────┼───────────────────────────┼─────────────────┼───────────────────┤               │
+│              │ │ Woolworths        │ debit                     │ 38.00           │ groceries         │               │
+│              │ │ Hotpot Restaurant │ debit                     │ 50.00           │ eating out        │               │
+│              │ │ Some Cafe         │ debit                     │ 22.00           │ eating out        │               │
+│              │ │ Spotify           │ debit                     │ 12.00           │ entertainment     │               │
+│              │ │ Google            │ debit                     │ 10.00           │ tech              │               │
+│              │ ╰───────────────────┴───────────────────────────┴─────────────────┴───────────────────╯               │
+╰──────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+I can also connect to to a Postgres database and import (a subset of) its schema:
+
+```
+> :connect "postgres" { host = "localhost", database = "test" }
+connected
+
+> :tables
+table person {
+  id : Int [PrimaryKey],
+  name : String
+}
+
+table blah {
+  x : Optional Int [Default(Some(0))]
+}
+
+> tables.person
+╭──────────┬───────────────╮
+│ id : Int │ name : String │
+├──────────┼───────────────┤
+│ 262145   │ alice         │
+│ 262146   │ bob           │
+│ 262147   │ charlie       │
+╰──────────┴───────────────╯
+```
+
+This means there's potential for multi-datasource queries.
+
+I really enjoyed implementing the tabular pretty printer. The tables look really cool!
+Building the bridge between Laurel types and a Postgres schema felt like magic when I got it working.
+
+I don't know what will happen to the typed functional version of Laurel.
+I recently discovered [Datalog](https://en.wikipedia.org/wiki/Datalog), which seems a bit more elegant than the functional approach.
+Next year I'll probably investigate Datalog some more.
 
 ## Blog site generator improvements
 
