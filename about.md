@@ -6,6 +6,24 @@ description: A little bit about me.
 
 <h1 class="centered">About Me</h1>
 
-My name's Isaac. I used to work at [PaidRight](https://www.paidright.io/), where I helped design and implement systems that provide pay compliance insights to employers. Before that, I was part of the [QFPL team](https://qfpl.io/) at [CSIRO's Data61](https://data61.csiro.au/).
+<div id="toc" style="float: right;">
+<h3>Links</h3>
+<ul>
+<li><a href="/cv">CV</a>
+<li><a href="/talks">Talks</a>
+<li><a href="https://github.com/LightAndLight">GitHub</a>
+<li><a href="https://soundcloud.com/LightAndLight">SoundCloud</a>
+</ul>
+</div>
 
-I'm particularly interested in programming language theory, functional programming, and formal verification.
+Hi! I'm Isaac.
+
+Programming is one of my biggest passions, and I'm fortunate to be able to do
+it for a living.
+See my [GitHub profile](https://github.com/LightAndLight) for an overview of my interests and projects.
+Music is another big passion of mine;
+I played drums[^1] exclusively for ~13 years, and these days I enjoy [making music](https://soundcloud.com/LightAndLight).
+Rock climbing is my favourite sport and I regularly go bouldering indoors.
+I also have latent interests in visual art and writing, but I unfortunately my days only last 24 hours.
+
+[^1]: Here are some covers I performed in 2017 while taking lessons with [Troy Wright](https://wrightdrums.com/): [Dystopia by TesseractT](https://www.youtube.com/watch?v=P9cGfX4w_Bc), [Para by Rendezvous Point](https://www.youtube.com/watch?v=xSjIKimktBM)

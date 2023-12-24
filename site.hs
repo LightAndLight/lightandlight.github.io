@@ -145,7 +145,7 @@ main = do
             (bodyField "body" <> constField "metadata" metadata.itemBody)
           >>= prettifyUrls
 
-    match (fromList ["about.md", "resources.md", "404.md"]) $ do
+    match (fromList ["about.md", "resources.md", "cv.md", "talks.md", "404.md"]) $ do
       route $ setExtension "html"
       compile $ do
         metadata <-
