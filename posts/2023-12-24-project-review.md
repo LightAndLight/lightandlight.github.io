@@ -1,7 +1,7 @@
 ---
 title: 2023 Project Review
 permalink: /2023-project-review
-date: 2023-12-26T09:00:00+1000
+date: 2023-12-26T17:00:00+1000
 tags:
     - programming
     - music
@@ -350,7 +350,7 @@ Exercise 4: hiding occluded objects
 <img alt="A 3D scene rendered using physically based techniques at 60FPS." width="100%" src="https://github.com/LightAndLight/3d-graphics-fundamentals/raw/main/screenshot.png">
 
 Computer graphics has always been intimidating and difficult for me, but I keep making progress.
-Last year I [implemented a ray tracing renderer](http://blog.ielliott.io/2022-project-review#ray-tracing-in-one-weekend)
+Last year I [implemented an offline ray tracing renderer](http://blog.ielliott.io/2022-project-review#ray-tracing-in-one-weekend)
 and a [GPU-based mandelbrot fractal renderer](http://blog.ielliott.io/2022-project-review#wgpu-mandelbrot).
 This year, my big graphics project was realtime physically-based 3D rendering.
 
@@ -391,6 +391,20 @@ I think this shows that I at least have potential.
 *August - September*
 
 <https://github.com/LightAndLight/metis>
+
+`metis` was supposed to be an implementation of some type systems / compilation research I'm doing,
+but it ended up being a playground for implementing a low-level intermediate representation that compiles to assembly.
+I implemented register allocation and branching and basic blocks with arguments, and by the time I got to calling conventions I realised how far off track I'd gone.
+It was fun while it lasted, but right now I value testing the research idea more than I value learning how to reimplement LLVM.
+
+The research idea builds on [Statically Sized Higher-kinded Polymorphism (2020)](https://blog.ielliott.io/sized-hkts).
+In that project, I demonstrated higher-kinded polymorphism in a language with Rust-like monomorphisation.
+Monomorphising polymorphic functions generates a multiplcative amount of code:
+A function with one type argument has a monomorphisation for every type,
+and a function with two type arguments has a monomorphisation for (every type) squared.
+Higher-kinded polymorphism compounds the issue.
+
+I've got [a branch](https://github.com/LightAndLight/metis/tree/use-llvm) where I've replaced all that stuff with LLVM so that I can focus on the core ideas.
 
 ## Parametric polymorphism in cartesian closed categories
 
