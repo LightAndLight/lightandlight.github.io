@@ -441,19 +441,55 @@ I've got [a branch](https://github.com/LightAndLight/metis/tree/use-llvm) where 
 
 <https://github.com/LightAndLight/ccc-polymorphism>
 
+I'm still fascinated by the [Curry-Howard-Lambek correspondence](https://ncatlab.org/nlab/show/relation+between+type+theory+and+category+theory):
+that the simply-typed lambda calculus (STLC) can be seen as a syntax for [cartesian closed categories](https://ncatlab.org/nlab/show/cartesian+closed+category),
+and dually that cartesian closed categories are a categorical semantics for STLC.
+[Conal Elliott](http://conal.net)'s [Compiling to Categories (2017)](http://conal.net/papers/compiling-to-categories/) and [Calculating Compilers Categorically (2018) (draft)](http://conal.net/papers/calculating-compilers-categorically/)
+continue to stoke my imagination.
+
+I found myself wondering how to extend all of this to cover parametric polymorphism.
+What is the simpliest categorical semantics for [System F](https://en.wikipedia.org/wiki/System_F),
+and how do I exploit it to build better compilers?
+
+The existing literature is currently too advanced for me, so I toggled between reading it and then "just trying to figure things out myself" in Agda or on paper.
+One cool thing that came up pretty early is the role of [adjoint functors](https://ncatlab.org/nlab/show/adjoint+functor) in
+[modeling universal and existential quantification](https://ncatlab.org/nlab/show/quantification#LawvereQuantifier).
+
+So far all my progress has been conceptual. It's a slow burn.
+
 ## Talk: Rust and functional programming
 
 *September*
 
 <https://github.com/LightAndLight/rust-and-fp>
 
-TODO: add to talks
+<https://blog.ielliott.io/talks/rust-and-fp.pdf>
+
+A presentation I did for the [Brisbane Functional Programming Group](https://bfpg.org)'s September meetup.
+As an avid Haskeller, I've contributed to discussions where attempts to define "functional programming"
+were used as gatekeeping and as a fundamental driver of [contempt culture](https://blog.aurynn.com/2015/12/16-contempt-culture).
+In this talk I attempt to move our discussion of "functional programming" away from all of that,
+while also introducing Rust.
+
+The slides have speaker notes attached, if you're interested in roughly what I said during the talk.
 
 ## Music: "Intro Theme"
 
 *October - November*
 
 <iframe style="margin-bottom: 1rem" title="Intro Theme by Isaac Elliott" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1662315852&color=%23379392&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+
+"Intro Theme" (because I couldn't think of a better name) is a cinematic style piece.
+I had less artistic / creative constraints than in ["Neon Rain"](#music-neon-rain), but still aimed to bypass my inner critic.
+This time around I was mainly focused on composing something that didn't feel repetitive.
+Good composers have a way of making music sound "alive": ever-changing, yet cohesive.
+One tactic I used to approach this ideal was to avoid sonic repetition.
+My theory is that hearing a bar or two repeated identically within a short time frame
+(which is super easy to do in digital audio production by copying and pasting sections)
+is antithetical to this quality of "life" I'm aiming for.
+Instead of playing an arpeggio on a static synth patch, I added a lot of automation to the patch so that each repetition sounds subtly different.
+I also tried to add "flourishes", which is what I call short thematic sounds that add novelty and character to a piece. 
+
 
 ## Single program web apps
 
