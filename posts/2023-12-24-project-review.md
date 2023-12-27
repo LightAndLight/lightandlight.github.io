@@ -1,7 +1,7 @@
 ---
 title: 2023 Project Review
 permalink: /2023-project-review
-date: 2023-12-26T17:00:00+1000
+date: 2023-12-27T09:00:00+1000
 tags:
     - programming
     - music
@@ -399,12 +399,41 @@ It was fun while it lasted, but right now I value testing the research idea more
 
 The research idea builds on [Statically Sized Higher-kinded Polymorphism (2020)](https://blog.ielliott.io/sized-hkts).
 In that project, I demonstrated higher-kinded polymorphism in a language with Rust-like monomorphisation.
-Monomorphising polymorphic functions generates a multiplcative amount of code:
-A function with one type argument has a monomorphisation for every type,
+Monomorphising polymorphic functions generates a multiplicative amount of code:
+a function with one type argument has a monomorphisation for every type,
 and a function with two type arguments has a monomorphisation for (every type) squared.
 Higher-kinded polymorphism compounds the issue.
 
-I've got [a branch](https://github.com/LightAndLight/metis/tree/use-llvm) where I've replaced all that stuff with LLVM so that I can focus on the core ideas.
+This treatment of polymorphism lies at one end of a continuum.
+At the other end we have single compilation, where code for a function is generated once regardless of how many type parameters it takes.
+A singly-compiled polymorphic function needs to work with *any* input type.
+Languages like Haskell achieve this by ensuring that polymorphic arguments are boxed.
+Every polymorphic function is compiled once, taking and returning pointers for values with polymorphic type.
+In these languages, any value may be passed to a polymorphic function, so every value must be boxed.
+This significantly increases the amount of computation spent on managing heap allocations,
+and decreases cache coherency.
+A polymorphic function on
+[Vector](https://hackage.haskell.org/package/vector-0.13.1.0/docs/Data-Vector.html#t:Vector)s like [foldl'](https://hackage.haskell.org/package/vector-0.13.1.0/docs/Data-Vector.html#v:foldl-39-)
+operates on an array of pointers to values, rather than an array of values.
+And an [IORef](https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-IORef.html#t:IORef) (the standard mutable reference)
+is a pointer to a pointer to a pointer to a value[^1], instead of just a pointer to a value.
+
+I want to explore a technique that makes polymorphic-values-are-pointers less infectious,
+i.e. that doesn't require every value to be boxed just in case it's passed to a polymorphic function.
+In short, the technique is this:
+for each type variable of kind `Type`, pass a [vtable](https://en.wikipedia.org/wiki/Virtual_method_table) containing a copy constructor,
+move constructor, size information, etc.
+For each type variable of kind `Type -> Type`, pass a "vtable constructor", which is a function from vtable to vtable.
+A singly-compiled polymorphic function uses a type variable's vtable to operate on values of the corresponding polymorphic type.
+We can selectively monomorphise using [specialisation](https://mpickering.github.io/posts/2017-03-20-inlining-and-specialisation.html#what-is-specialisation).
+
+It's a surprisingly uncommon approach.
+Swift is the only language I've heard of [that does this](https://www.youtube.com/watch?v=ctS8FzqcRug&t=197s) (for type variables of kind `Type`),
+and I don't know any languages that do it for higher-kinded types.
+It's completely feasible, and there are a lot of details that are best worked out by writing the compiler.
+Also it will require benchmarking to check whether it's practical.
+
+I've got [a branch](https://github.com/LightAndLight/metis/tree/use-llvm) where I've replaced all my IR stuff with LLVM so that I can focus on the research ideas.
 
 ## Parametric polymorphism in cartesian closed categories
 
@@ -437,3 +466,6 @@ TODO: add to talks
 *November - present*
 
 <https://github.com/LightAndLight/incremental-file-processing>
+
+[^1]: `IORef` is a boxed (pointer number 1) [MutVar#](https://hackage.haskell.org/package/base-4.16.3.0/docs/GHC-Exts.html#t:MutVar-35-),
+    which is a pointer (pointer number 2) to a boxed (pointer number 3) value.
