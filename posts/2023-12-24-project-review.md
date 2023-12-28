@@ -1,7 +1,7 @@
 ---
 title: 2023 Project Review
 permalink: /2023-project-review
-date: 2023-12-27T09:00:00+1000
+date: 2023-12-28T16:45:00+1000
 tags:
     - programming
     - music
@@ -490,18 +490,108 @@ is antithetical to this quality of "life" I'm aiming for.
 Instead of playing an arpeggio on a static synth patch, I added a lot of automation to the patch so that each repetition sounds subtly different.
 I also tried to add "flourishes", which is what I call short thematic sounds that add novelty and character to a piece. 
 
+## Incremental file processing, denotationally
 
-## Single program web apps
+*November - December*
+
+<https://github.com/LightAndLight/incremental-file-processing>
+
+Suppose I've got some data that I want to tidy up and use to plot a chart.
+I have a CSV file of the raw data, so I write a program that parses the CSV,
+extracts the columns I'm interested in, then decodes the contents of each row.
+I'm left with a value of type `List (Double, Double)`, which I'll feed to the plotting function.
+I run the program and look at the chart.
+I realise the Y-axis has the wrong label, so I change the arguments to the plotting function and re-run the program.
+This repeats all of the data preparation, even though the raw CSV and the data processing functions haven't changed.
+It would be nice if my program could save the prepared data right before I plot it,
+and reuse the saved data if it hasn't changed between program runs.
+
+This is an [incremental computation](https://en.wikipedia.org/wiki/Incremental_computing) problem.
+Typically the solutions talk about graphs, caches, change bits, hashing, and so on.
+Lately I've been thinking really hard about denotational design, so I wanted to know how I should *think* about my incremental file processing problem.
+In other words, what is its denotation?
+
+The answer I've settled on is strings (or bytes more generally), file references, and functions between strings.
+The core interface currently looks like this:
+
+```haskell
+data File
+
+from :: Filepath -> File
+
+string :: String -> File
+
+mapFile :: Expr (String -> String) -> File -> File
+```
+
+And here's what it *means*:
+
+$$
+\begin{array}{l}
+\llbracket \texttt{Expr } a \rrbracket_{\text{value}} = a
+\\
+\llbracket \texttt{File} \rrbracket_{\text{contents}} = (\texttt{Filepath} \rightarrow \texttt{String}) \rightarrow \texttt{String}
+\\
+\;
+\\
+\llbracket \texttt{from}(\text{path}) \rrbracket_{\text{contents}} = \lambda \text{env}. \; \text{env}(\text{path})
+\\
+\llbracket \texttt{string}(\text{s}) \rrbracket_{\text{contents}} = \lambda \text{env}. \; \text{s}
+\\
+\llbracket \texttt{mapFile}(\text{f}, \text{file}) \rrbracket_{\text{contents}} = \lambda \text{env}. \; \llbracket \text{f} \rrbracket_{\text{value}} (\llbracket \text{file} \rrbracket_{\text{contents}})
+\end{array}
+$$
+
+My claim for this library is you can use the above as a mental model regardless of the implementation.
+With this meaning as the guide post, I created implementations that interact with the file system and do incremental (re)computation across program runs.
+The most sophisticated implementation is surprisingly Nix-like.
+
+I think my approach is on the right track because I've been able to implement many different versions of increasing performance without (apparently) compromising the meaning of the interface.
+The next step is to formalise all of this in Agda and prove that I haven't compromised the interface.
+
+## "Single program" web apps
 
 *December*
 
-<https://github.com/LightAndLight/misc>
+<https://github.com/LightAndLight/misc/tree/main/20231129-single-program-web-apps>
 
-## Denotational design experiment: incremental file processing
+This project is an attempt at writing web applications as a single program, instead of two (a frontend and a backend).
+The programmer doesn't write HTTP requests or API endpoints.
+Whether or not the web application is instantiated as "client-side JavaScript communicating with a HTTP server over a network" is immaterial.
+The same program should also be able to run standalone using [WebKitGTK](https://webkitgtk.org/) and its native DOM API with no JavaScript or networking.
 
-*November - present*
+Here's an example program that runs `putStrLn "The button was clicked!"` when a button is clicked.
 
-<https://github.com/LightAndLight/incremental-file-processing>
+```haskell
+app :: App
+app =
+  page
+    ("example" <> "click")
+    ( Html
+        [ Node "head" [] [Node "title" [] [Text "Example - click"]]
+        , Node
+            "body"
+            []
+            [ Node "p" [] [Text "When you click the button, an IO action is run on the server."]
+            , Node "button" [] [Text "Click me!"] `OnEvent` (Click, putStrLn "The button was clicked!")
+            ]
+        ]
+    )
+```
+
+When instantiated as a web application it becomes a HTTP server that:
+
+* On receiving a certain request, runs `putStrLn "The button was clicked!"` and responds
+* Serves a page at `/example/click` that
+  * Contains HTML and JavaScript that
+    * Sends the proper request to the server when the button is clicked
+    
+More complex examples can
+[pass values from UI to IO actions](https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L64),
+[embed IO results in the UI](https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L85),
+and [fork threads that can trigger events that the UI responds to](https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L196).
+
+Interactivity is defined using [functional-reactive programming](https://en.wikipedia.org/wiki/Functional_reactive_programming).
 
 [^1]: `IORef` is a boxed (pointer number 1) [MutVar#](https://hackage.haskell.org/package/base-4.16.3.0/docs/GHC-Exts.html#t:MutVar-35-),
     which is a pointer (pointer number 2) to a boxed (pointer number 3) value.
