@@ -6,6 +6,10 @@ description: Presentations I've given.
 
 # Talks
 
+* September 2023 &mdash; Rust and functional programming ([source](https://github.com/LightAndLight/rust-and-fp), [slides](/talks/rust-and-fp.pdf))
+  
+  [BFPG](https://bfpg.org) presentation.
+
 * April 2019 &mdash; Lambda Calculus ([source](https://github.com/LightAndLight/lc-lecture), [slides](/talks/lambda-calculus.pdf))
 
   Guest lecture for [COMP2048](https://my.uq.edu.au/programs-courses/course.html?course_code=COMP2048) at University of Queensland.
