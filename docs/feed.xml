@@ -10,15 +10,540 @@
         <email>isaace71295@gmail.com</email>
         
     </author>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <entry>
+    <title>2023 Project Review</title>
+    <link href="https://blog.ielliott.io/2023-project-review" />
+    
+    <id>https://blog.ielliott.io/2023-project-review</id>
+    
+    <published>2024-01-17T09:40:00Z</published>
+    <updated>2024-01-17T10:15+00:00</updated>
+    <summary type="html"><![CDATA[<p>Reflections on 2023's hobby projects.</p>]]></summary>
+    
+    <content type="html" xml:base="https://blog.ielliott.io/2023-project-review">
+      <![CDATA[<div id="toc" style="float: right; max-width: 15em; white-space: normal;">
+<h3>Contents</h3>
+<ul>
+<li><a href="#ipso">Ipso</a></li>
+<li><a href="#ipso-scripts">Ipso scripts</a></li>
+<li><a href="#laurel">Laurel</a></li>
+<li><a href="#blog-site-generator-improvements">Blog site generator improvements</a></li>
+<li><a href="#music-neon-rain">Music: “Neon Rain”</a></li>
+<li><a href="#music-resurrect">Music: “Resurrect”</a></li>
+<li><a href="#nominal-sets">Nominal Sets</a></li>
+<li><a href="#hover-pill">Hover Pill</a></li>
+<li><a href="#2d-visibility-tests">2D visibility tests</a></li>
+<li><a href="#3d-graphics-fundamentals">3D graphics fundamentals</a></li>
+<li><a href="#low-level-ir-compiler">Low-level IR compiler</a></li>
+<li><a href="#parametric-polymorphism-in-cartesian-closed-categories">Parametric polymorphism in cartesian closed categories</a></li>
+<li><a href="#talk-rust-and-functional-programming">Talk: Rust and functional programming</a></li>
+<li><a href="#music-intro-theme">Music: “Intro Theme”</a></li>
+<li><a href="#incremental-file-processing-denotationally">Incremental file processing, denotationally</a></li>
+<li><a href="#single-program-web-apps">“Single program” web apps</a></li>
+</ul>
+</div>
+<h2 id="ipso"><a href="#ipso">Ipso</a></h2>
+<p><em>Ongoing</em></p>
+<p><a href="https://ipso.dev" class="uri">https://ipso.dev</a></p>
+<p><a href="https://github.com/LightAndLight/ipso" class="uri">https://github.com/LightAndLight/ipso</a></p>
+<p>Ipso is a functional scripting language that I created so that I can write glue code and small scripts in a way that I enjoy.
+In February I started using Ipso for some “real” scripts, so I wrote a <a href="https://github.com/LightAndLight/ipso/tree/main/vscode-ipso">VSCode extension</a>
+and added a bunch of features and fixes based on what I experienced.
+In May I added <a href="https://github.com/LightAndLight/ipso/blob/main/CHANGELOG.md#06">many new builtins</a>.
+Writing the VSCode extension was exciting; simple things like syntax highlighting and keyword autocompletion give the programming language a new level of “tangibility”.</p>
+<h2 id="ipso-scripts"><a href="#ipso-scripts">Ipso scripts</a></h2>
+<p><em>February - March</em></p>
+<p><a href="https://github.com/LightAndLight/git-explorer"><code>git-explorer</code></a> is a prototype for a Git URI scheme I came up with.
+Sometimes I take notes alongside my code and commit them to Git repository,
+I want to create hyperlinks to lines of code in a file at specific commit,
+in the same way that I can permalink to code on GitHub or Gitlab.
+It would be cool to serve a code-aware wiki from a project’s Git repo, similar to the way
+<a href="https://www2.fossil-scm.org/home/doc/trunk/www/index.wiki">Fossil</a>
+can serve code, docs, and more from a repository.
+The first step in all of this is a format for hyperlinks to Git objects.
+I’ll demonstrate by example, using <code>git-explorer</code> inside its own repository:</p>
+<pre><code>$ ls -a
+.  ..  flake.lock  flake.nix  .git  gitex  .gitignore
+
+$ git log HEAD~1..HEAD
+commit 7f0489dab4397232cf3425fbed87b7c3636394b0 (HEAD -&gt; main, origin/main)
+Author: Isaac Elliott &lt;isaace71295@gmail.com&gt;
+Date:   Wed May 31 11:52:11 2023 +1000
+
+    use newer version of Ipso
+    
+$ gitex type git:object:7f0489dab4397232cf3425fbed87b7c3636394b0
+commit
+
+$ gitex show git:commit:7f0489dab4397232cf3425fbed87b7c3636394b0
+tree 83f65fc9e11e9c8174a0822364ba411e1dbf6937
+parent f880dc26e94129ebd7d688eacd9203cac0cb9964
+author Isaac Elliott &lt;isaace71295@gmail.com&gt; 1685497931 +1000
+committer Isaac Elliott &lt;isaace71295@gmail.com&gt; 1685497931 +1000
+
+use newer version of Ipso
+
+$ gitex type git:commit:7f0489dab4397232cf3425fbed87b7c3636394b0/tree
+tree
+
+$ gitex show git:commit:7f0489dab4397232cf3425fbed87b7c3636394b0/tree
+100644 blob ea8c4bf7f35f6f77f75d92ad8ce8349f6e81ddba	.gitignore
+100644 blob 6319f0e690d6037d6e70165c3aedbbf1a049b8b9	flake.lock
+100644 blob f179ab98301cd132148e87f136566f2496e256ca	flake.nix
+100755 blob ab5bac9c63cc9c8e5ca6da67ae7d8e5e58f9e68f	gitex
+
+$ gitex show git:commit:7f0489dab4397232cf3425fbed87b7c3636394b0/tree/flake.nix | head -n 5
+{
+  inputs = {
+    flake-utils.url = &quot;github:numtide/flake-utils&quot;;
+    nix-filter.url = &quot;github:numtide/nix-filter&quot;;
+    ipso.url = &quot;github:LightAndLight/ipso?commit=e7bf506bd8f85f00c7b00b795b587f79b5bb5d9d&quot;;
+        
+$ gitex uri flake.nix
+git:blob:f179ab98301cd132148e87f136566f2496e256ca
+git:commit:7f0489dab4397232cf3425fbed87b7c3636394b0/tree/flake.nix</code></pre>
+<p><a href="https://github.com/LightAndLight/timespent"><code>timespent</code></a> helps me record what I’ve done during a work day.
+When I start my work day, I <code>cd</code> to the directory that contains my time logs.
+I call <code>timespent</code>, and my <code>EDITOR</code> (<a href="https://helix-editor.com/">Helix</a>, these days) opens today’s time log file.
+If the file hasn’t been created yet, it’s initialised from a template.
+Today’s time log file is located at <code>./YYYY-mm-dd-week/YYYY-mm-dd.txt</code>, where the directory has the date of this week’s Monday.
+I record what I’ve done, save and exit, and the file is automatically committed.
+If I run <code>timespent</code> again, change what I’ve recorded, then save and exit, the changes are rebased onto the commit for today’s log.</p>
+<p>Each of these scripts is on the order of 100s of lines of Ipso code.
+Writing them was super helpful for finding Ipso’s pain points.
+They also validated the purpose of Ipso; I enjoyed writing these scripts more than I would have if I used Bash, Python, or Haskell.</p>
+<h2 id="laurel"><a href="#laurel">Laurel</a></h2>
+<p><em>March - May</em></p>
+<p><a href="https://github.com/LightAndLight/laurel" class="uri">https://github.com/LightAndLight/laurel</a></p>
+<p>Laurel is a query language experiment.
+I’m perennially dissatisfied with SQL and continue to search for something better.
+Laurel is an exploration inspired by <a href="https://dl.acm.org/doi/10.1145/202660.202667">The third manifesto</a>,
+<a href="https://dl.acm.org/doi/10.1145/3236781">Relational algebra by way of adjunctions</a>,
+and my experience with typed functional programming.</p>
+<p>One part of the experiment is to have a single query language with multiple backends.
+I implemented a REPL that can “connect” to two different backends: Postgres, and CSV files.
+Here’s a demo of the CSV backend:</p>
+<pre><code style="white-space: unset;">$ laurel repl
+Welcome to the Laurel REPL. Type :quit to exit.
+> :connect "csv" ["laurel-core/test/data/example.csv"]
+connected
+
+> :tables
+table example {
+  merchant : String,
+  transaction type : String,
+  amount : String,
+  category : String
+}
+
+> :type tables
+{ example : Relation { merchant : String, transaction type : String, amount : String, category : String } }
+
+> tables.example
+╭───────────────────┬───────────────────────────┬─────────────────┬───────────────────╮
+│ merchant : String │ transaction type : String │ amount : String │ category : String │
+├───────────────────┼───────────────────────────┼─────────────────┼───────────────────┤
+│ Google            │ debit                     │ 10.00           │ tech              │
+│ NAB               │ credit                    │ 5.00            │ finance           │
+│ Spotify           │ debit                     │ 12.00           │ entertainment     │
+│ Some Cafe         │ debit                     │ 22.00           │ eating out        │
+│ Hotpot Restaurant │ debit                     │ 50.00           │ eating out        │
+│ Woolworths        │ debit                     │ 38.00           │ groceries         │
+│ NAB               │ credit                    │ 5.00            │ finance           │
+╰───────────────────┴───────────────────────────┴─────────────────┴───────────────────╯
+
+> :type (for row in tables.example yield row.merchant)
+Relation String
+
+> for row in tables.example yield row.merchant
+╭───────────────────╮
+│ _ : String        │
+├───────────────────┤
+│ Google            │
+│ NAB               │
+│ Spotify           │
+│ Some Cafe         │
+│ Hotpot Restaurant │
+│ Woolworths        │
+│ NAB               │
+╰───────────────────╯
+
+> :type (tables.example group by (\row -> row.`transaction type`))
+Map String (Relation { merchant : String, transaction type : String, amount : String, category : String })
+
+> tables.example group by (\row -> row.`transaction type`)
+╭──────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ key : String │ value : Relation { merchant : String, transaction type : String, amount : String, category : String } │
+├──────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ credit       │ ╭───────────────────┬───────────────────────────┬─────────────────┬───────────────────╮               │
+│              │ │ merchant : String │ transaction type : String │ amount : String │ category : String │               │
+│              │ ├───────────────────┼───────────────────────────┼─────────────────┼───────────────────┤               │
+│              │ │ NAB               │ credit                    │ 5.00            │ finance           │               │
+│              │ │ NAB               │ credit                    │ 5.00            │ finance           │               │
+│              │ ╰───────────────────┴───────────────────────────┴─────────────────┴───────────────────╯               │
+│ debit        │ ╭───────────────────┬───────────────────────────┬─────────────────┬───────────────────╮               │
+│              │ │ merchant : String │ transaction type : String │ amount : String │ category : String │               │
+│              │ ├───────────────────┼───────────────────────────┼─────────────────┼───────────────────┤               │
+│              │ │ Woolworths        │ debit                     │ 38.00           │ groceries         │               │
+│              │ │ Hotpot Restaurant │ debit                     │ 50.00           │ eating out        │               │
+│              │ │ Some Cafe         │ debit                     │ 22.00           │ eating out        │               │
+│              │ │ Spotify           │ debit                     │ 12.00           │ entertainment     │               │
+│              │ │ Google            │ debit                     │ 10.00           │ tech              │               │
+│              │ ╰───────────────────┴───────────────────────────┴─────────────────┴───────────────────╯               │
+╰──────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+</code></pre>
+<p>I can also connect to to a Postgres database and import (a subset of) its schema:</p>
+<pre><code>&gt; :connect &quot;postgres&quot; { host = &quot;localhost&quot;, database = &quot;test&quot; }
+connected
+
+&gt; :tables
+table person {
+  id : Int [PrimaryKey],
+  name : String
+}
+
+table blah {
+  x : Optional Int [Default(Some(0))]
+}
+
+&gt; tables.person
+╭──────────┬───────────────╮
+│ id : Int │ name : String │
+├──────────┼───────────────┤
+│ 262145   │ alice         │
+│ 262146   │ bob           │
+│ 262147   │ charlie       │
+╰──────────┴───────────────╯</code></pre>
+<p>This means there’s potential for multi-datasource queries.</p>
+<p>I really enjoyed implementing the tabular pretty printer. The tables look really cool!
+And building the bridge between Laurel types and Postgres schemas felt like magic when I got it working.</p>
+<p>I don’t know what will happen to the typed functional version of Laurel.
+I recently discovered <a href="https://en.wikipedia.org/wiki/Datalog">Datalog</a>, which seems a bit more elegant than the functional approach.
+Next year I’ll probably investigate Datalog some more.</p>
+<h2 id="blog-site-generator-improvements"><a href="#blog-site-generator-improvements">Blog site generator improvements</a></h2>
+<p><em>May</em></p>
+<p><a href="https://blog.ielliott.io/jekyll-to-hakyll" class="uri">https://blog.ielliott.io/jekyll-to-hakyll</a></p>
+<p><a href="https://github.com/LightAndLight/lightandlight.github.io/blob/main/site.hs" class="uri">https://github.com/LightAndLight/lightandlight.github.io/blob/main/site.hs</a></p>
+<p>I migrated this blog from Jekyll to Hakyll, and added a few upgrades.
+Table of contents generation, heading anchors, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mtext mathvariant="normal">MathML support </mtext><mspace width="0.333em"></mspace></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo>∀</mo><mi>a</mi><mi>.</mi><mspace width="0.278em"></mspace><mi>a</mi><mo>→</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{MathML support } (\forall a. \; a \rightarrow a)</annotation></semantics></math> are the most significant features I added.</p>
+<p>Moving my static site generator into Haskell gave me a greater feeling of agency over my site.
+I started using Jekyll because it was the easiest path to get something set up on GitHub pages.
+My default perspective was that I had to rely on the package authors to satisfy my needs.
+Now that it’s in Haskell it’s something I feel like I own, and it’s easier to realise that if there isn’t a package that does what I
+want then I can make it exist.</p>
+<h2 id="music-neon-rain"><a href="#music-neon-rain">Music: “Neon Rain”</a></h2>
+<p><em>May - June</em></p>
+<iframe style="margin-bottom: 1rem" title="Neon Rain by Isaac Elliott" width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1532726281&amp;color=%23379392&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true">
+</iframe>
+<p>I’ve been getting into ambient / soundtrack music over the past few years.
+I kept playing around with synths, but couldn’t figure out how to write a piece from start to finish.
+My background is in rock and metal, which have a <em>lot</em> of constraints that I’m familiar with (forms, instrumentation, etc.).
+“Neon Rain” was born from my commitment to <em>just make something</em>.
+I decided on a theme—melancholy, cyberpunk—and found some pictures on <a href="https://www.artstation.com">ArtStation</a>
+that I found compelling.
+Then I sat down and made music.
+I tried to design sounds by following my sense of taste, guided by the images I’d chosen.
+This required me to bypass my inner critic, who has a (n admittedly pretty whacky) desire to “be original”.
+I welcomed any idea that would make the music more effective instead of dismissing most ideas because they seemed cliché.
+The end result is my first full ambient / soundtrack -style piece.
+I made <em>something</em>, and that feels like a breakthrough.</p>
+<h2 id="music-resurrect"><a href="#music-resurrect">Music: “Resurrect”</a></h2>
+<p><em>May - June</em></p>
+<iframe style="margin-bottom: 1rem" title="Resurrect by Isaac Elliott" width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1536670189&amp;color=%23379392&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true">
+</iframe>
+<p>I’ve saved almost every <a href="https://www.reaper.fm">Reaper</a> project that I’ve created since I started producing music in 2018.
+I went back through my archives and found a project that was basically a complete song.
+I thought it was cool, so I decided to mix it for release.
+Even though I haven’t done very much music production in the past 1-2 years, I was able to create what is overall my best mix so far.
+I think the main reason for this was that I successfully used a professional song (<a href="https://www.youtube.com/watch?v=bNlUJgP3Lwk">Slow Violence by Caligula’s Horse</a>) as a reference mix.
+<a href="https://www.youtube.com/@DanWorrall">Dan Worrall</a> talked about <a href="https://www.youtube.com/watch?v=kGW8SDFikeg">reference mixes as a “palate cleanser for the ears”</a>,
+and this really stuck with me.</p>
+<h2 id="nominal-sets"><a href="#nominal-sets">Nominal Sets</a></h2>
+<p><em>May - July</em></p>
+<p><a href="https://github.com/LightAndLight/binders.rs" class="uri">https://github.com/LightAndLight/binders.rs</a></p>
+<p><a href="https://blog.ielliott.io/nominal-sets" class="uri">https://blog.ielliott.io/nominal-sets</a></p>
+<p><a href="https://blog.ielliott.io/nominal-sets-proofs" class="uri">https://blog.ielliott.io/nominal-sets-proofs</a></p>
+<p>Nominal Sets is a theory of <a href="https://en.wikipedia.org/wiki/Name_binding">name binding</a>.
+I started writing a Rust library based on the idea, and realised that I needed to understand the theory better if I wanted judge how well my library served its purpose.
+To this end, I wrote an introduction to Nominal Sets.
+As a mathematical exercise I proved many theorems by hand, which I included in a separate appendix.
+I feel like I leveled up my mathematical literacy.</p>
+<p>One important tool I discovered was <a href="https://www.slq.qld.gov.au/">my state library’s online catalogue</a>.
+I felt like I had reach the limit of what I could glean from the ~3 introductory Nominal Sets papers,
+and I needed to read <a href="https://www.cambridge.org/core/books/nominal-sets/80F2B0C1B78A1DC309072CCEDAA88422">the book on Nominal Sets</a>
+to make progress.
+I didn’t want to buy it, though, because it seemed too niche for my small bookshelf.
+Fortunately, the Queensland state library has a full digital copy that I can read for free.
+As expected, the book had what I needed to get past my mental blocks.</p>
+<p>This is my biggest mathematical project and my biggest writing project to date.
+The proofs took ~4 weeks to finish.
+In the end, I concluded that the Rust library is basically okay from a mathematical point of view.
+It still needs some UX and performance improvements, though.</p>
+<h2 id="hover-pill"><a href="#hover-pill">Hover Pill</a></h2>
+<p><em>June</em></p>
+<p><a href="https://github.com/LightAndLight/hover-pill" class="uri">https://github.com/LightAndLight/hover-pill</a></p>
+<div style="margin-bottom: 1rem; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+<img alt="Hover Pill resting on a platform in the open sky." width="30%" src="https://github.com/LightAndLight/hover-pill/raw/main/screenshots/level.png"><img alt="The Hover Pill level editor." width="30%" src="https://github.com/LightAndLight/hover-pill/raw/main/screenshots/level-editor.png"><img alt="Hover Pill flying through an opening in a wall." width="30%" src="https://github.com/LightAndLight/hover-pill/raw/main/screenshots/other-level.png">
+</div>
+<p>Hover Pill is a puzzle game I created in 2022 to learn the <a href="https://bevyengine.org/">Bevy game engine</a>.
+You fly a capsule-shaped object through obstacles to reach a goal.
+This year I added a level editor, which completes the project.</p>
+<p>You can play the web version <a href="https://blog.ielliott.io/hover-pill">here</a>.</p>
+<h2 id="2d-visibility-tests"><a href="#2d-visibility-tests">2D visibility tests</a></h2>
+<p><em>July</em></p>
+<p><a href="https://github.com/LightAndLight/2d-visibility" class="uri">https://github.com/LightAndLight/2d-visibility</a></p>
+<p>I started thinking about how to make games with good agent simulations.
+Visibility seems like an important primitive; there are a lot of actions that an agent should only take if they can “see” an object.
+These are some experiments in calculating which objects are visible from a particular point.</p>
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+<div style="width: 48%; display: flex; flex-direction: column; align-items: center;">
+<video width="100%" src="https://github.com/LightAndLight/2d-visibility/raw/main/videos/exercise_2.webm" controls="controls">
+</video>
+<p>Exercise 1: simple line of sight</p>
+</div>
+<div style="width: 48%; display: flex; flex-direction: column; align-items: center;">
+<video width="100%" src="https://github.com/LightAndLight/2d-visibility/raw/main/videos/exercise_2.webm" controls="controls">
+</video>
+<p>Exercise 2: hiding occluded objects</p>
+</div>
+</div>
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+<div style="width: 48%; display: flex; flex-direction: column; align-items: center;">
+<video width="100%" src="https://github.com/LightAndLight/2d-visibility/raw/main/videos/exercise_3.webm" controls="controls">
+</video>
+<p>Exercise 3: visual feedback for occluded areas</p>
+</div>
+<div style="width: 48%; display: flex; flex-direction: column; align-items: center;">
+<video width="100%" src="https://github.com/LightAndLight/2d-visibility/raw/main/videos/exercise_4.webm" controls="controls">
+</video>
+<p>Exercise 4: hiding occluded objects</p>
+</div>
+</div>
+<h2 id="3d-graphics-fundamentals"><a href="#3d-graphics-fundamentals">3D graphics fundamentals</a></h2>
+<p><em>July - August</em></p>
+<p><a href="https://github.com/LightAndLight/3d-graphics-fundamentals" class="uri">https://github.com/LightAndLight/3d-graphics-fundamentals</a></p>
+<p><img alt="A 3D scene rendered using physically based techniques at 60FPS." width="100%" src="https://github.com/LightAndLight/3d-graphics-fundamentals/raw/main/screenshot.png"></p>
+<p>Computer graphics has always been intimidating and difficult for me, but I keep making progress.
+Last year I <a href="http://blog.ielliott.io/2022-project-review#ray-tracing-in-one-weekend">implemented an offline ray tracing renderer</a>
+and a <a href="http://blog.ielliott.io/2022-project-review#wgpu-mandelbrot">GPU-based mandelbrot fractal renderer</a>.
+This year, my big graphics project was realtime physically-based 3D rendering.</p>
+<p>There aren’t any tutorials or courses for something like this.
+Instead, there are examples of specific techniques spread across books, papers, blog posts, and talks, and it was up to me to piece them together.
+Using only a <a href="https://docs.rs/wgpu/latest/wgpu/">GPU library</a> and <a href="https://docs.rs/cgmath/latest/cgmath/">linear algebra library</a>, I implemented:</p>
+<ul>
+<li>Physically-based shading</li>
+<li>High dynamic range rendering with automatic exposure and tone mapping</li>
+<li>Directional and point lights</li>
+<li>Shadow mapping (fitted to view frustum for directional lights, omnidirectional for point lights)</li>
+<li>HDRI skybox</li>
+</ul>
+<p>I also integrated <a href="https://github.com/emilk/egui">the egui immediate mode GUI</a> so that I could add realtime debugging controls.</p>
+<p>Like many good things, this project was <em>really</em> hard.
+There were many times when I felt like there was no way to make progress because I didn’t know enough.
+Whenever this happened, I eventually <em>did</em> make progress by breaking the problem into smaller pieces and trying to understand each piece from first principles.</p>
+<p>One place I got stuck in dealing with automatic exposure.
+Physically-based rendering means using physically plausible values for quantities like “the amount of light visible at a pixel”,
+but screens generally take an 8-bit value for each pixel colour.
+You have to figure out how to map your physical pixel illuminations to the range of 0 to 255.
+A simple mapping like “divide every value by the max value in the scene” looks wrong, because of the <a href="https://en.wikipedia.org/wiki/Dynamic_range#Photography">dynamic range</a> of the scene.
+The darkest area and the lightest area can differ by many orders of magnitude.
+<a href="https://en.wikipedia.org/wiki/Tone_mapping">Tone mapping</a> came up a lot in discussions of HDR rendering, so I thought it was the answer.
+But it’s not; <a href="https://en.wikipedia.org/wiki/Exposure_(photography)">exposure</a> is what I was looking for.
+In particular, I wanted automatic exposure so that scenes with different brightnesses all looked good.
+I couldn’t find anything that really spelled out the implementation of autoexposure in a HDR renderer,
+so I had to develop a physically-based intuition of what my camera was supposed to do.
+Only then did the math make enough sense for me to be able to implement something.</p>
+<p>Part of the reason I did this project was to see if I have what it takes to do computer graphics professionally.
+I think this shows that I at least have potential.</p>
+<h2 id="low-level-ir-compiler"><a href="#low-level-ir-compiler">Low-level IR compiler</a></h2>
+<p><em>August - September</em></p>
+<p><a href="https://github.com/LightAndLight/metis" class="uri">https://github.com/LightAndLight/metis</a></p>
+<p><code>metis</code> was supposed to be an implementation of some type systems / compilation research I’m doing,
+but it ended up being a playground for implementing a low-level intermediate representation that compiles to assembly.
+I implemented register allocation and branching and basic blocks with arguments, and by the time I got to calling conventions I realised how far off track I’d gone.
+It was fun while it lasted, but right now I value testing the research idea more than I value learning how to reimplement LLVM.</p>
+<p>The research idea builds on <a href="https://blog.ielliott.io/sized-hkts">Statically Sized Higher-kinded Polymorphism (2020)</a>.
+In that project, I demonstrated higher-kinded polymorphism in a language with Rust-like monomorphisation.
+Monomorphising polymorphic functions generates a multiplicative amount of code:
+a function with one type argument has a monomorphisation for every type,
+and a function with two type arguments has a monomorphisation for (every type) squared.
+Higher-kinded polymorphism compounds the issue.</p>
+<p>This treatment of polymorphism lies at one end of a continuum.
+At the other end we have single compilation, where code for a function is generated once regardless of how many type parameters it takes.
+A singly-compiled polymorphic function needs to work with <em>any</em> input type.
+Languages like Haskell achieve this by ensuring that polymorphic arguments are boxed.
+Every polymorphic function is compiled once, taking and returning pointers for values with polymorphic type.
+In these languages, any value may be passed to a polymorphic function, so every value must be boxed.
+This significantly increases the amount of computation spent on managing heap allocations,
+and decreases cache coherency.
+A polymorphic function on
+<a href="https://hackage.haskell.org/package/vector-0.13.1.0/docs/Data-Vector.html#t:Vector">Vector</a>s like <a href="https://hackage.haskell.org/package/vector-0.13.1.0/docs/Data-Vector.html#v:foldl-39-">foldl’</a>
+operates on an array of pointers to values, rather than an array of values.
+And an <a href="https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-IORef.html#t:IORef">IORef</a> (the standard mutable reference)
+is a pointer to a pointer to a pointer to a value<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, instead of just a pointer to a value.</p>
+<p>I want to explore a technique that makes polymorphic-values-are-pointers less infectious,
+i.e. that doesn’t require every value to be boxed just in case it’s passed to a polymorphic function.
+In short, the technique is this:
+for each type variable of kind <code>Type</code>, pass a <a href="https://en.wikipedia.org/wiki/Virtual_method_table">vtable</a> containing a copy constructor,
+move constructor, size information, etc.
+For each type variable of kind <code>Type -&gt; Type</code>, pass a “vtable constructor”, which is a function from vtable to vtable.
+A singly-compiled polymorphic function uses a type variable’s vtable to operate on values of the corresponding polymorphic type.
+We can selectively monomorphise using <a href="https://mpickering.github.io/posts/2017-03-20-inlining-and-specialisation.html#what-is-specialisation">specialisation</a>.</p>
+<p>It’s a surprisingly uncommon approach.
+Swift is the only language I’ve heard of <a href="https://www.youtube.com/watch?v=ctS8FzqcRug&amp;t=197s">that does this</a> (for type variables of kind <code>Type</code>),
+and I don’t know any languages that do it for higher-kinded types.
+It’s completely feasible, and there are a lot of details that are best worked out by writing the compiler.
+Also it will require benchmarking to check whether it’s practical.</p>
+<p>I’ve got <a href="https://github.com/LightAndLight/metis/tree/use-llvm">a branch</a> where I’ve replaced all my IR stuff with LLVM so that I can focus on the research ideas.</p>
+<h2 id="parametric-polymorphism-in-cartesian-closed-categories"><a href="#parametric-polymorphism-in-cartesian-closed-categories">Parametric polymorphism in cartesian closed categories</a></h2>
+<p><em>September</em></p>
+<p><a href="https://github.com/LightAndLight/ccc-polymorphism" class="uri">https://github.com/LightAndLight/ccc-polymorphism</a></p>
+<p>I’m still fascinated by the <a href="https://ncatlab.org/nlab/show/relation+between+type+theory+and+category+theory">Curry-Howard-Lambek correspondence</a>:
+that the simply-typed lambda calculus (STLC) can be seen as a syntax for <a href="https://ncatlab.org/nlab/show/cartesian+closed+category">cartesian closed categories</a>,
+and dually that cartesian closed categories are a categorical semantics for STLC.
+<a href="http://conal.net">Conal Elliott</a>’s <a href="http://conal.net/papers/compiling-to-categories/">Compiling to Categories (2017)</a> and <a href="http://conal.net/papers/calculating-compilers-categorically/">Calculating Compilers Categorically (2018) (draft)</a>
+continue to stoke my imagination.</p>
+<p>I found myself wondering how to extend all of this to cover parametric polymorphism.
+What is the simpliest categorical semantics for <a href="https://en.wikipedia.org/wiki/System_F">System F</a>,
+and how do I exploit it to build better compilers?</p>
+<p>The existing literature is currently too advanced for me, so I toggled between reading it and then “just trying to figure things out myself” in Agda or on paper.
+One cool thing that came up pretty early is the role of <a href="https://ncatlab.org/nlab/show/adjoint+functor">adjoint functors</a> in
+<a href="https://ncatlab.org/nlab/show/quantification#LawvereQuantifier">modeling universal and existential quantification</a>.</p>
+<p>So far all my progress has been conceptual. It’s a slow burn.</p>
+<h2 id="talk-rust-and-functional-programming"><a href="#talk-rust-and-functional-programming">Talk: Rust and functional programming</a></h2>
+<p><em>September</em></p>
+<p><a href="https://github.com/LightAndLight/rust-and-fp" class="uri">https://github.com/LightAndLight/rust-and-fp</a></p>
+<p><a href="https://blog.ielliott.io/talks/rust-and-fp.pdf" class="uri">https://blog.ielliott.io/talks/rust-and-fp.pdf</a></p>
+<p>A presentation I did for the <a href="https://bfpg.org">Brisbane Functional Programming Group</a>’s September meetup.
+As an avid Haskeller, I’ve contributed to discussions where attempts to define “functional programming”
+were used as gatekeeping and as a fundamental driver of <a href="https://blog.aurynn.com/2015/12/16-contempt-culture">contempt culture</a>.
+In this talk I attempt to move our discussion of “functional programming” away from all of that,
+while also introducing Rust.</p>
+<p>The slides have speaker notes attached, if you’re interested in roughly what I said during the talk.</p>
+<h2 id="music-intro-theme"><a href="#music-intro-theme">Music: “Intro Theme”</a></h2>
+<p><em>October - November</em></p>
+<iframe style="margin-bottom: 1rem" title="Intro Theme by Isaac Elliott" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1662315852&amp;color=%23379392&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true">
+</iframe>
+<p>“Intro Theme” (because I couldn’t think of a better name) is a cinematic style piece.
+I had less artistic / creative constraints than in <a href="#music-neon-rain">“Neon Rain”</a>, but still aimed to bypass my inner critic.
+This time around I was mainly focused on composing something that didn’t feel repetitive.
+Good composers have a way of making music sound “alive”: ever-changing, yet cohesive.
+One tactic I used to approach this ideal was to avoid sonic repetition.
+My theory is that hearing a bar or two repeated identically within a short time frame
+(which is super easy to do in digital audio production by copying and pasting sections)
+is antithetical to this quality of “life” I’m aiming for.
+Instead of playing an arpeggio on a static synth patch, I added a lot of automation to the patch so that each repetition sounds subtly different.
+I also tried to add “flourishes”, which is what I call short thematic sounds that add novelty and character to a piece.</p>
+<h2 id="incremental-file-processing-denotationally"><a href="#incremental-file-processing-denotationally">Incremental file processing, denotationally</a></h2>
+<p><em>November - December</em></p>
+<p><a href="https://github.com/LightAndLight/incremental-file-processing" class="uri">https://github.com/LightAndLight/incremental-file-processing</a></p>
+<p>Suppose I’ve got some data that I want to tidy up and use to plot a chart.
+I have a CSV file of the raw data, so I write a program that parses the CSV,
+extracts the columns I’m interested in, then decodes the contents of each row.
+I’m left with a value of type <code>List (Double, Double)</code>, which I’ll feed to the plotting function.
+I run the program and look at the chart.
+I realise the Y-axis has the wrong label, so I change the arguments to the plotting function and re-run the program.
+This repeats all of the data preparation, even though the raw CSV and the data processing functions haven’t changed.
+It would be nice if my program could save the prepared data right before I plot it,
+and reuse the saved data if it hasn’t changed between program runs.</p>
+<p>This is an <a href="https://en.wikipedia.org/wiki/Incremental_computing">incremental computation</a> problem.
+Typically the solutions talk about graphs, caches, change bits, hashing, and so on.
+Lately I’ve been thinking really hard about denotational design, so I wanted to know how I should <em>think</em> about my incremental file processing problem.
+In other words, what is its denotation?</p>
+<p>The answer I’ve settled on is strings (or bytes more generally), file references, and functions between strings.
+The core interface currently looks like this:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">File</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ot">from ::</span> <span class="dt">Filepath</span> <span class="ot">-&gt;</span> <span class="dt">File</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ot">string ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">File</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ot">mapFile ::</span> <span class="dt">Expr</span> (<span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> <span class="dt">File</span> <span class="ot">-&gt;</span> <span class="dt">File</span></span></code></pre></div>
+<p>And here’s what it <em>means</em>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="left" style="text-align: left"><mo stretchy="false" form="prefix">⟦</mo><mrow><mtext mathvariant="monospace">𝙴𝚡𝚙𝚛 </mtext><mspace width="0.333em"></mspace></mrow><mi>a</mi><msub><mo stretchy="false" form="postfix">⟧</mo><mtext mathvariant="normal">value</mtext></msub><mo>=</mo><mi>a</mi></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mo stretchy="false" form="prefix">⟦</mo><mtext mathvariant="monospace">𝙵𝚒𝚕𝚎</mtext><msub><mo stretchy="false" form="postfix">⟧</mo><mtext mathvariant="normal">contents</mtext></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝙵𝚒𝚕𝚎𝚙𝚊𝚝𝚑</mtext><mo>→</mo><mtext mathvariant="monospace">𝚂𝚝𝚛𝚒𝚗𝚐</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mtext mathvariant="monospace">𝚂𝚝𝚛𝚒𝚗𝚐</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mspace width="0.278em"></mspace></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mo stretchy="false" form="prefix">⟦</mo><mtext mathvariant="monospace">𝚏𝚛𝚘𝚖</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">path</mtext><mo stretchy="true" form="postfix">)</mo></mrow><msub><mo stretchy="false" form="postfix">⟧</mo><mtext mathvariant="normal">contents</mtext></msub><mo>=</mo><mi>λ</mi><mtext mathvariant="normal">env</mtext><mi>.</mi><mspace width="0.278em"></mspace><mtext mathvariant="normal">env</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">path</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mo stretchy="false" form="prefix">⟦</mo><mtext mathvariant="monospace">𝚜𝚝𝚛𝚒𝚗𝚐</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">s</mtext><mo stretchy="true" form="postfix">)</mo></mrow><msub><mo stretchy="false" form="postfix">⟧</mo><mtext mathvariant="normal">contents</mtext></msub><mo>=</mo><mi>λ</mi><mtext mathvariant="normal">env</mtext><mi>.</mi><mspace width="0.278em"></mspace><mtext mathvariant="normal">s</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mo stretchy="false" form="prefix">⟦</mo><mtext mathvariant="monospace">𝚖𝚊𝚙𝙵𝚒𝚕𝚎</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">f</mtext><mo>,</mo><mtext mathvariant="normal">file</mtext><mo stretchy="true" form="postfix">)</mo></mrow><msub><mo stretchy="false" form="postfix">⟧</mo><mtext mathvariant="normal">contents</mtext></msub><mo>=</mo><mi>λ</mi><mtext mathvariant="normal">env</mtext><mi>.</mi><mspace width="0.278em"></mspace><mo stretchy="false" form="prefix">⟦</mo><mtext mathvariant="normal">f</mtext><msub><mo stretchy="false" form="postfix">⟧</mo><mtext mathvariant="normal">value</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">⟦</mo><mtext mathvariant="normal">file</mtext><msub><mo stretchy="false" form="postfix">⟧</mo><mtext mathvariant="normal">contents</mtext></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{array}{l}
+\llbracket \texttt{Expr } a \rrbracket_{\text{value}} = a
+\\
+\llbracket \texttt{File} \rrbracket_{\text{contents}} = (\texttt{Filepath} \rightarrow \texttt{String}) \rightarrow \texttt{String}
+\\
+\;
+\\
+\llbracket \texttt{from}(\text{path}) \rrbracket_{\text{contents}} = \lambda \text{env}. \; \text{env}(\text{path})
+\\
+\llbracket \texttt{string}(\text{s}) \rrbracket_{\text{contents}} = \lambda \text{env}. \; \text{s}
+\\
+\llbracket \texttt{mapFile}(\text{f}, \text{file}) \rrbracket_{\text{contents}} = \lambda \text{env}. \; \llbracket \text{f} \rrbracket_{\text{value}} (\llbracket \text{file} \rrbracket_{\text{contents}})
+\end{array}
+</annotation></semantics></math></p>
+<p>My claim for this library is you can use the above as a mental model regardless of the implementation.
+With this meaning as the guide post, I created implementations that interact with the file system and do incremental (re)computation across program runs.
+The most sophisticated implementation is surprisingly Nix-like.</p>
+<p>I think my approach is on the right track because I’ve been able to implement many different versions of increasing performance without (apparently) compromising the meaning of the interface.
+The next step is to formalise all of this in Agda and prove that I haven’t compromised the interface.</p>
+<h2 id="single-program-web-apps"><a href="#single-program-web-apps">“Single program” web apps</a></h2>
+<p><em>December</em></p>
+<p><a href="https://github.com/LightAndLight/misc/tree/main/20231129-single-program-web-apps" class="uri">https://github.com/LightAndLight/misc/tree/main/20231129-single-program-web-apps</a></p>
+<p>This project is an attempt at writing web applications as a single program, instead of two (a frontend and a backend).
+The programmer doesn’t write HTTP requests or API endpoints.
+Whether or not the web application is instantiated as “client-side JavaScript communicating with a HTTP server over a network” is immaterial.
+The same program should also be able to run standalone using <a href="https://webkitgtk.org/">WebKitGTK</a> and its native DOM API with no JavaScript or networking.
+I’ve since learned that this is called <a href="https://en.wikipedia.org/wiki/Multitier_programming">“multi-tier programming”</a>,
+of which <a href="https://web.archive.org/web/20220523022545/https://haste-lang.org/">Haste</a> and <a href="https://ocsigen.org">Ocsigen</a> are two notable examples.</p>
+<p>Here’s an example program that runs <code>putStrLn "The button was clicked!"</code> when a button is clicked.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">app ::</span> <span class="dt">App</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>app <span class="ot">=</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  page</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;example&quot;</span> <span class="op">&lt;&gt;</span> <span class="st">&quot;click&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    ( <span class="dt">Html</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        [ <span class="dt">Node</span> <span class="st">&quot;head&quot;</span> [] [<span class="dt">Node</span> <span class="st">&quot;title&quot;</span> [] [<span class="dt">Text</span> <span class="st">&quot;Example - click&quot;</span>]]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        , <span class="dt">Node</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;body&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            []</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            [ <span class="dt">Node</span> <span class="st">&quot;p&quot;</span> [] [<span class="dt">Text</span> <span class="st">&quot;When you click the button, an IO action is run on the server.&quot;</span>]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            , <span class="dt">Node</span> <span class="st">&quot;button&quot;</span> [] [<span class="dt">Text</span> <span class="st">&quot;Click me!&quot;</span>] <span class="ot">`OnEvent`</span> (<span class="dt">Click</span>, <span class="fu">putStrLn</span> <span class="st">&quot;The button was clicked!&quot;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div>
+<p>When instantiated as a web application it becomes a HTTP server that:</p>
+<ul>
+<li>On receiving a certain request, runs <code>putStrLn "The button was clicked!"</code> and responds</li>
+<li>Serves a page at <code>/example/click</code> that
+<ul>
+<li>Contains HTML and JavaScript that
+<ul>
+<li>Sends the proper request to the server when the button is clicked</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>More complex examples can
+<a href="https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L64">pass values from UI to IO actions</a>,
+<a href="https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L85">embed IO results in the UI</a>,
+and <a href="https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L196">fork threads that can trigger events that the UI responds to</a>.
+Interactivity is defined using <a href="https://en.wikipedia.org/wiki/Functional_reactive_programming">functional-reactive programming</a>.</p>
+<p>I wrote a <a href="https://github.com/LightAndLight/misc/tree/main/20231129-single-program-web-apps/compiler-plugin">GHC compiler plugin</a> for the first time as part of this project.
+For the code to really feel like a single program, I needed a way to compile regular Haskell functions to JavaScript.
+Inspired by <a href="https://github.com/compiling-to-categories/concat">concat</a>, I wrote a hacky GHC core plugin that reifies a Haskell expression of type <code>a</code> into a syntax tree of type <code>Expr a</code>.
+When the program runs, it has access to both the native value and its corresponding syntax tree, so it can choose between evaluating natively or compiling to JavaScript.
+It works for simple examples but won’t scale.
+For proper code reuse this “quote” operator needs access to all the source code used to define the term being quoted, which isn’t readily available in a core plugin.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p><code>IORef</code> is a boxed (pointer number 1) <a href="https://hackage.haskell.org/package/base-4.16.3.0/docs/GHC-Exts.html#t:MutVar-35-">MutVar#</a>,
+which is a pointer (pointer number 2) to a boxed (pointer number 3) value.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>]]>
+    </content>
+    
+</entry><entry>
     <title>Diablo 1 in 2023</title>
     <link href="https://blog.ielliott.io/diablo-1-in-2023" />
     
     <id>https://blog.ielliott.io/diablo-1-in-2023</id>
     
     <published>2023-07-14T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[My experience playing the original Diablo for the first time.]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/diablo-1-in-2023">
@@ -124,7 +649,7 @@ If services like <a href="https://www.gog.com">Good Old Games</a> didn’t exist
     <id>https://blog.ielliott.io/nominal-sets</id>
     
     <published>2023-07-04T06:41:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
 theory of nominal sets.
 ]]></summary>
@@ -900,7 +1425,7 @@ in Theoretical Computer Science, 228, 37-52.</p>
     <id>https://blog.ielliott.io/nominal-sets-proofs</id>
     
     <published>2023-07-04T06:40:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 ]]></summary>
     
@@ -1889,7 +2414,7 @@ a \; \# \; f \; (f \text{ equivariant -- A.14}) \land a \; \# \; \langle a \rang
     <id>https://blog.ielliott.io/gear-acquisition-syndrome</id>
     
     <published>2023-05-28T06:36:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
 like drawing and music production: the sense of excitement and “motivation” after I’ve acquired
 some new art-related material. It’s very easy to spend hours doodling with a new marker, writing
@@ -2002,7 +2527,7 @@ and we watched a few funny videos about gym-goers with too much fitness gear, ho
     <id>https://blog.ielliott.io/jekyll-to-hakyll</id>
     
     <published>2023-05-04T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
 <a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
 tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
@@ -2133,7 +2658,7 @@ development for me.</p>
     <id>https://blog.ielliott.io/favourites</id>
     
     <published>2023-01-10T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
 conversation</a>,
@@ -2170,8 +2695,8 @@ interesting, in the hope that others might use it to find something new.</p>]]>
     
     <id>https://blog.ielliott.io/project-review</id>
     
-    <published>2022-12-22T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <published>2022-12-27T04:25:00Z</published>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Reflections this year's hobby projects.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/2022-project-review">
@@ -2446,7 +2971,7 @@ language</a> with automated helpers.</p>
     <id>https://blog.ielliott.io/rip-dreamincode</id>
     
     <published>2022-07-06T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
 down</a>
@@ -2489,7 +3014,7 @@ positive, constructive experience.</p>
     <id>https://blog.ielliott.io/webgl-slower-than-canvas</id>
     
     <published>2021-05-20T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
@@ -2539,7 +3064,7 @@ duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms
     <id>https://blog.ielliott.io/rust-defun-example</id>
     
     <published>2021-02-06T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>]]></summary>
@@ -2701,7 +3226,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/docker-cleanup-commands</id>
     
     <published>2020-11-07T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/docker-cleanup-commands">
@@ -2728,7 +3253,7 @@ Rust programs, preferably by function, then please let me know.</p>
     <id>https://blog.ielliott.io/sized-hkts</id>
     
     <published>2020-07-07T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
   sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
@@ -2985,7 +3510,7 @@ Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <e
     <id>https://blog.ielliott.io/lambdas-are-codatatypes</id>
     
     <published>2019-07-01T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>]]></summary>
     
@@ -3135,7 +3660,7 @@ copattern matching corresponds to abstraction. This is awesome!</p>]]>
     <id>https://blog.ielliott.io/agda-nixos</id>
     
     <published>2019-05-17T23:49:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>]]></summary>
@@ -3210,7 +3735,7 @@ Checking Test (/home/isaac/Test.agda).
     <id>https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys</id>
     
     <published>2019-05-05T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
 confronted by a white guy who felt ‘called out’ by some of her anecdotes. Apparently, she
@@ -3309,7 +3834,7 @@ don’t know how exactly this sort of thing happens — maybe I’ll explore tha
     <id>https://blog.ielliott.io/learning-a-craft</id>
     
     <published>2019-02-11T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
 was way too hard, so I decided I wanted to create browser-based static HTML
@@ -3420,7 +3945,7 @@ But that’s beside the point, isn’t it?</em></p>]]>
     <id>https://blog.ielliott.io/writing</id>
     
     <published>2018-12-29T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I think writing can help us think better.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/writing">
@@ -3490,7 +4015,7 @@ as an end in itself requires us to better understand those ideas.</p>]]>
     <id>https://blog.ielliott.io/on-programming-language-design</id>
     
     <published>2018-11-21T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
 programming languages that have been ‘invented’ with those that have been
@@ -3563,7 +4088,7 @@ coherent structure of computation.</p>]]>
     <id>https://blog.ielliott.io/topsy-turvy-reverse-state</id>
     
     <published>2018-06-13T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
 <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
@@ -3724,7 +4249,7 @@ and <code>instantiate</code> as library functions.</p>]]>
     <id>https://blog.ielliott.io/comonad-transformers-in-the-wild</id>
     
     <published>2018-02-25T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>A certain algorithmic puzzle website has a problem that goes like this…</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/comonad-transformers-in-the-wild">
@@ -3875,7 +4400,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/continuations-from-the-ground-up</id>
     
     <published>2017-06-06T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/continuations-from-the-ground-up">
@@ -4174,7 +4699,7 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     <id>https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations</id>
     
     <published>2017-03-24T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
@@ -4221,7 +4746,7 @@ the entries somewhere to be safe)</del></p></li>
     <id>https://blog.ielliott.io/introduction-to-unification</id>
     
     <published>2017-01-07T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
@@ -4363,7 +4888,7 @@ is amazing and goes into much more depth.</p>]]>
     <id>https://blog.ielliott.io/why-LINQ-is-broken</id>
     
     <published>2016-10-24T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
@@ -4506,7 +5031,7 @@ counter to productivity.</p>]]>
     <id>https://blog.ielliott.io/search-and-replace-in-multiple-files</id>
     
     <published>2015-07-25T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
 finished most of the project when I realised that the main page of the
@@ -4545,7 +5070,7 @@ use the <code>-i</code> flag to make the alterations inside the source file.</p>
     <id>https://blog.ielliott.io/the-programming-thought-process-fizzbuzz</id>
     
     <published>2015-03-04T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
@@ -4724,7 +5249,7 @@ improvement.</p>
     <id>https://blog.ielliott.io/a-practical-introduction-to-monad-transformers</id>
     
     <published>2015-02-01T00:00:00Z</published>
-    <updated>2023-12-24T00:28+00:00</updated>
+    <updated>2024-01-17T10:15+00:00</updated>
     <summary type="html"><![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>]]></summary>
