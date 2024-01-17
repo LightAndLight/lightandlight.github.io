@@ -1,7 +1,7 @@
 ---
 title: 2023 Project Review
 permalink: /2023-project-review
-date: 2023-12-28T16:45:00+1000
+date: 2024-01-17T19:40:00+1000
 tags:
     - programming
     - music
@@ -559,6 +559,8 @@ This project is an attempt at writing web applications as a single program, inst
 The programmer doesn't write HTTP requests or API endpoints.
 Whether or not the web application is instantiated as "client-side JavaScript communicating with a HTTP server over a network" is immaterial.
 The same program should also be able to run standalone using [WebKitGTK](https://webkitgtk.org/) and its native DOM API with no JavaScript or networking.
+I've since learned that this is called ["multi-tier programming"](https://en.wikipedia.org/wiki/Multitier_programming),
+of which [Haste](https://web.archive.org/web/20220523022545/https://haste-lang.org/) and [Ocsigen](https://ocsigen.org) are two notable examples.
 
 Here's an example program that runs `putStrLn "The button was clicked!"` when a button is clicked.
 
@@ -590,8 +592,14 @@ More complex examples can
 [pass values from UI to IO actions](https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L64),
 [embed IO results in the UI](https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L85),
 and [fork threads that can trigger events that the UI responds to](https://github.com/LightAndLight/misc/blob/main/20231129-single-program-web-apps/app/Main.hs#L196).
-
 Interactivity is defined using [functional-reactive programming](https://en.wikipedia.org/wiki/Functional_reactive_programming).
+
+I wrote a [GHC compiler plugin](https://github.com/LightAndLight/misc/tree/main/20231129-single-program-web-apps/compiler-plugin) for the first time as part of this project.
+For the code to really feel like a single program, I needed a way to compile regular Haskell functions to JavaScript.
+Inspired by [concat](https://github.com/compiling-to-categories/concat), I wrote a hacky GHC core plugin that reifies a Haskell expression of type `a` into a syntax tree of type `Expr a`.
+When the program runs, it has access to both the native value and its corresponding syntax tree, so it can choose between evaluating natively or compiling to JavaScript.
+It works for simple examples but won't scale.
+For proper code reuse this "quote" operator needs access to all the source code used to define the term being quoted, which isn't readily available in a core plugin.
 
 [^1]: `IORef` is a boxed (pointer number 1) [MutVar#](https://hackage.haskell.org/package/base-4.16.3.0/docs/GHC-Exts.html#t:MutVar-35-),
     which is a pointer (pointer number 2) to a boxed (pointer number 3) value.
