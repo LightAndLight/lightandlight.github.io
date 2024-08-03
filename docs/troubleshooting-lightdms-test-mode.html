@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+
+  
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Troubleshooting LightDM's test mode - blog.ielliott.io</title>
+  
+
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/troubleshooting-lightdms-test-mode">
+<meta property="og:url" content="https://blog.ielliott.io/troubleshooting-lightdms-test-mode">
+<meta property="og:title" content="Troubleshooting LightDM's test mode">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Troubleshooting LightDM's test mode">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="Recently I've been tweaking the appearance of my desktop environment,
+which consists of XMonad and Taffybar,
+with LightDM as the display manager,
+all tied together using NixOS and home-manager.">
+<meta property="og:description" content="Recently I've been tweaking the appearance of my desktop environment,
+which consists of XMonad and Taffybar,
+with LightDM as the display manager,
+all tied together using NixOS and home-manager.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2024-08-03T00:00+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Troubleshooting LightDM's test mode",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2024-08-03T00:00+00:00",
+  "dateModified":"2024-08-03T00:00+00:00",
+  "description":"Recently I've been tweaking the appearance of my desktop environment,
+which consists of XMonad and Taffybar,
+with LightDM as the display manager,
+all tied together using NixOS and home-manager.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/troubleshooting-lightdms-test-mode"
+  },
+  "url": "https://blog.ielliott.io/troubleshooting-lightdms-test-mode"
+}
+</script>
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+
+  <section>
+    
+
+    <article>
+  <h1>Troubleshooting LightDM's test mode</h1>
+  <p class="date"> 3 August, 2024</p>
+  <div id="toc" style="float: right;">
+<h3>Contents</h3>
+<ul>
+<li><a href="#summary">Summary</a>
+<ul>
+<li><a href="#symptoms">Symptoms</a></li>
+<li><a href="#solution">Solution</a></li>
+</ul></li>
+<li><a href="#details">Details</a></li>
+</ul>
+</div>
+<p>Recently I’ve been tweaking the appearance of <a href="https://github.com/LightAndLight/personal-configs">my desktop environment</a>,
+which consists of <a href="https://xmonad.org/">XMonad</a> and <a href="https://github.com/taffybar/taffybar">Taffybar</a>,
+with <a href="https://github.com/canonical/lightdm">LightDM</a> as the display manager,
+all tied together using <a href="https://nixos.org/">NixOS</a> and <a href="https://github.com/nix-community/home-manager">home-manager</a>.</p>
+<p>Taffybar was very easy to customise because it uses a single CSS file.
+XMonad was also not too bad, but needs a custom <a href="https://wiki.archlinux.org/title/Xorg#Composite">X compositor</a> to get really nice results (I’m using <a href="https://github.com/yshui/picom">picom</a>).
+LightDM is the last thing on my list.</p>
+<p>If I’m going to be tweaking my <a href="https://wiki.archlinux.org/title/LightDM#Greeter">greeter</a>’s appearance,
+I don’t want to repeatedly log in and out to test it.
+I’d like to preview the changes in a window while I’ve got my editor open in another.</p>
+<p><a href="https://wiki.archlinux.org/title/LightDM#Testing">LightDM on ArchWiki</a> says to run <code>lightdm --test-mode</code>, but this didn’t work for me.</p>
+<h2 id="summary"><a href="#summary">Summary</a></h2>
+<h3 id="symptoms"><a href="#symptoms">Symptoms</a></h3>
+<ul>
+<li><p><code>lightdm --test-mode --debug</code> failed</p>
+<ul>
+<li>Greeter logs (<code>.cache/lightdm/log/seat0-greeter.log</code>) show <code>Failed to open PAM session: Authentication failure</code></li>
+</ul></li>
+<li><p><code>sudo -u lightdm --test-mode --debug</code> reports <code>Failed to get D-Bus connection</code></p>
+<ul>
+<li><p>X logs (<code>/var/lib/lightdm/.cache/lightdm/log/x-1.log</code>) contain</p>
+<pre><code>Authorization required, but no authorization protocol specified
+
+
+Xephyr cannot open host display. Is DISPLAY set?</code></pre></li>
+</ul></li>
+</ul>
+<h3 id="solution"><a href="#solution">Solution</a></h3>
+<p>Run <code>xhost +SI:localuser:lightdm</code> to allow the <code>lightdm</code> user to connect to the X user,
+then run <code>sudo -u lightdm --test-mode</code>.</p>
+<h2 id="details"><a href="#details">Details</a></h2>
+<p>When I ran <code>lightdm --test-mode</code> a small black window briefly appeared and then the program exited with status 1.
+I added the <code>--debug</code> flag, and saw that a subprocess had failed:</p>
+<pre><code>$ lightdm --test-mode --debug
+...
+[+0.07s] DEBUG: Session pid=29039: Started with service 'lightdm-greeter', username '{my username}'
+[+0.08s] DEBUG: Session pid=29039: Authentication complete with return value 0: Success
+[+0.08s] DEBUG: Seat seat0: Session authenticated, running command
+[+0.08s] DEBUG: Session pid=29039: Not setting XDG_VTNR
+[+0.08s] DEBUG: Session pid=29039: Running command /nix/store/ikwkdnyzd8xflr3j7cabmy6vr3srvp3j-lightdm-gtk-greeter-2.0.8/bin/lightdm-gtk-greeter
+[+0.08s] DEBUG: Creating shared data directory /var/lib/lightdm-data/{my username}
+[+0.08s] WARNING: Could not create user data directory /var/lib/lightdm-data/{my username}: Error creating directory /var/lib/lightdm-data/{my username}: Permission denied
+[+0.08s] DEBUG: Session pid=29039: Logging to /home/{my username}/.cache/lightdm/log/seat0-greeter.log
+[+0.08s] DEBUG: Greeter closed communication channel
+[+0.08s] DEBUG: Session pid=29039: Exited with return value 1
+...</code></pre>
+<p>The output also told me where the subprocess stored its logs, so I checked there:</p>
+<pre><code>$ cat /home/{my username}/.cache/lightdm/log/seat0-greeter.log
+Failed to open PAM session: Authentication failure</code></pre>
+<p>A <a href="https://en.wikipedia.org/wiki/Linux_PAM">PAM</a> error.</p>
+<p><code>man pam</code> says that PAM errors are often logged to <code>syslog</code>, so I checked the <a href="https://wiki.archlinux.org/title/Systemd/Journal">systemd journal</a>:</p>
+<pre><code>$ journalctl --user -b -r -g pam -n 10
+Aug 03 11:22:44 {my hostname} lightdm[29039]: pam_systemd(lightdm-greeter:session): Failed to create session: Access denied
+Aug 03 11:22:44 {my hostname} lightdm[29039]: pam_succeed_if(lightdm-greeter:session): requirement &quot;user = lightdm&quot; not met by user &quot;{my username}&quot;
+...</code></pre>
+<p>It seems that LightDM doesn’t like being run as a normal user, and would rather be run as the <code>lightdm</code> user.
+I found that the LightDM README actually has <a href="https://github.com/canonical/lightdm?tab=readme-ov-file#display-setup-script">a note</a> about using <code>sudo -u lightdm</code> for <code>--test-mode</code>,
+so I tried it:</p>
+<pre><code>$ sudo -u lightdm lightdm --test-mode --debug
+[+0.00s] DEBUG: Logging to /var/lib/lightdm/.cache/lightdm/log/lightdm.log
+[+0.00s] DEBUG: Starting Light Display Manager 1.32.0, UID=78 PID=30100
+...
+[+0.00s] DEBUG: Loading configuration from /etc/lightdm/lightdm.conf
+[+0.00s] DEBUG: Running in user mode
+[+0.00s] DEBUG: Using Xephyr for X servers
+...
+[+0.00s] DEBUG: Using D-Bus name org.freedesktop.DisplayManager
+...
+[+0.00s] DEBUG: Seat seat0: Starting
+[+0.00s] DEBUG: Seat seat0: Creating greeter session
+[+0.00s] DEBUG: Loading users from org.freedesktop.Accounts
+[+0.00s] DEBUG: Seat seat0: Creating display server of type x
+[+0.00s] DEBUG: Seat seat0: Starting local X display
+[+0.01s] DEBUG: XServer 1: Logging to /var/lib/lightdm/.cache/lightdm/log/x-1.log
+[+0.01s] DEBUG: XServer 1: Writing X server authority to /var/lib/lightdm/.cache/lightdm/run/root/:1
+[+0.01s] DEBUG: XServer 1: Launching X Server
+[+0.01s] DEBUG: Launching process 30107: /run/current-system/sw/bin/Xephyr :1 -seat seat0 -auth /var/lib/lightdm/.cache/lightdm/run/root/:1 -nolisten tcp
+[+0.01s] DEBUG: XServer 1: Waiting for ready signal from X server :1
+Failed to get D-Bus connection</code></pre>
+<p>That didn’t work either.
+I checked the X server logs that were generated:</p>
+<pre><code>$ sudo cat /var/lib/lightdm/.cache/lightdm/log/x-1.log
+Authorization required, but no authorization protocol specified
+
+
+Xephyr cannot open host display. Is DISPLAY set?</code></pre>
+<p>I didn’t undertand what this meant. Is <code>DISPLAY</code> set?</p>
+<pre><code>$ sudo -u lightdm env | rg DISPLAY
+DISPLAY=:0</code></pre>
+<p>It is. I was stumped.</p>
+<p>After lots of searching and browsing,
+a <a href="https://kagi.com">Kagi search</a> for <code>lightdm --test-mode</code> turned up <a href="https://forums.raspberrypi.com/viewtopic.php?t=220324">Problems with lightdm test mode - Raspberry Pi Forums</a>,
+which lead to <a href="https://ubuntuhandbook.org/index.php/2014/05/capture-your-lightdm-login-screen-in-ubuntu-14-04/">Capture Your LightDM Login Screen in Ubuntu Unity | UbuntuHandbook</a>,
+which uses a variation of <code>sudo -u lightdm lightdm --test-mode</code>
+after calling <code>xhost +SI:localuser:lightdm</code>.</p>
+<p><code>man xhost</code> says:</p>
+<blockquote>
+<p>The xhost program is used to add and delete host names or user names to the list allowed to make connections to the X server.
+In the case of hosts, this provides a rudimentary form of privacy control and security.
+It is only sufficient for a workstation (single user) environment, although it does limit the worst abuses.
+Environments which require more sophisticated measures should implement the user-based mechanism or use the hooks in the protocol for passing other authentication data to the server.</p>
+</blockquote>
+<p>That seemed promising.</p>
+<pre><code>$ xhost +SI:localuser:lightdm
+localuser:lightdm being added to access control list</code></pre>
+<p>Running LightDM again worked!</p>
+<pre><code>$ sudo -u lightdm lightdm --test-mode --debug
+...
+[+0.09s] DEBUG: Session pid=40112: Started with service 'lightdm-greeter', username 'lightdm'
+[+0.09s] DEBUG: Session pid=40112: Authentication complete with return value 0: Success
+[+0.09s] DEBUG: Seat seat0: Session authenticated, running command
+[+0.09s] DEBUG: Session pid=40112: Not setting XDG_VTNR
+[+0.09s] DEBUG: Session pid=40112: Running command /nix/store/ikwkdnyzd8xflr3j7cabmy6vr3srvp3j-lightdm-gtk-greeter-2.0.8/bin/lightdm-gtk-greeter
+[+0.09s] DEBUG: Creating shared data directory /var/lib/lightdm-data/lightdm
+[+0.09s] DEBUG: Session pid=40112: Logging to /var/lib/lightdm/.cache/lightdm/log/seat0-greeter.log
+[+0.16s] DEBUG: Greeter connected version=1.32.0 api=1 resettable=false
+[+0.35s] DEBUG: Greeter start authentication
+[+0.35s] DEBUG: Session: Not setting XDG_VTNR
+[+0.35s] DEBUG: Session pid=40144: Started with service 'lightdm', username '(null)'
+[+0.35s] DEBUG: Session pid=40144: Got 1 message(s) from PAM
+[+0.35s] DEBUG: Prompt greeter with 1 message(s)</code></pre>
+<p>My greeter appeared in a small window.
+I don’t know what the fundamental problem was; I know basically nothing about this area of Linux.
+I’ll probably learn more about it one day.
+For now I’m content with having fixed my issue.</p>
+  <footer>
+    <p>
+      
+      <a href="/2023-project-review">2023 Project Review - Previous</a>
+      
+      |
+      
+      <span>Newest</span>
+      
+
+      <br><br>
+
+      tags:
+
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+
+  <script>feather.replace()</script>
+</body>
+
+</html>
