@@ -6,6 +6,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 
+import Control.Applicative (empty)
 import Control.Monad ((<=<))
 import Data.List (isInfixOf, isPrefixOf, nub)
 import Data.Maybe (mapMaybe)
@@ -368,6 +369,12 @@ postInfoCtx =
       "tags"
       (field "name" (pure . (.itemBody)))
       (\post -> traverse makeItem . (.itemBody) =<< loadSnapshot @[String] post.itemIdentifier "tags")
+    <> field "has_tags" (\post -> do
+         item <-loadSnapshot @[String] post.itemIdentifier "tags"
+         if null item.itemBody
+         then empty
+         else pure ""
+       )
     <> metadataField
 
 mkPostCtx :: Identifier -> [(Identifier, PostInfo)] -> Context String

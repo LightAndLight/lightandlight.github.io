@@ -15,10 +15,12 @@
       $else$
       <span>Newest</span>
       $endif$
+      $if(has_tags)$
 
       <br><br>
 
       $partial("templates/tags-list.html")$
+      $endif$
     </p>
   </footer>
 </article>
