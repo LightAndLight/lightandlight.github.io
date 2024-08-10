@@ -79,6 +79,27 @@
 
 <article>
     <header>
+        <h1><a href="/per-project-nix-substituters">Per-project Nix substituters</a></h1>
+        <p class="date">10 August, 2024</p>
+    </header>
+
+    <p>A lot of Nix projects end up with their own binary cache (also known as a “substituter”).
+Nix can be quite slow when it’s configured to use many project-specific substituters,
+because it queries them all when checking if it needs to build a derivation. In a specific
+project, most of the other substituters Nix knows about are irrelevant, and querying them
+is wasted effort. My solution is to only enable <a href="https://cache.nixos.org" class="uri">https://cache.nixos.org</a> globally, and
+to selectively enable other substituters while I’m working on a project that needs them.
+Here’s how I do it.</p>
+
+    <footer style="text-align: center;">
+        <p>...
+            
+        </p>
+    </footer>
+</article>
+
+<article>
+    <header>
         <h1><a href="/troubleshooting-lightdms-test-mode">Troubleshooting LightDM's test mode</a></h1>
         <p class="date"> 3 August, 2024</p>
     </header>

@@ -20,6 +20,13 @@
     </url>
   
     <url>
+        <loc>https://blog.ielliott.io/per-project-nix-substituters</loc>
+        
+          <lastmod>2024-08-10T00:00+00:00</lastmod>
+        
+    </url>
+  
+    <url>
         <loc>https://blog.ielliott.io/troubleshooting-lightdms-test-mode</loc>
         
           <lastmod>2024-08-03T00:00+00:00</lastmod>
