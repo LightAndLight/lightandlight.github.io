@@ -12,8 +12,6 @@ import Data.List (isInfixOf, isPrefixOf, nub)
 import Data.Maybe (mapMaybe)
 import Data.Monoid (First (..))
 import qualified Data.Text as Text
-import Data.Time.Clock (UTCTime, getCurrentTime)
-import Data.Time.Format (defaultTimeLocale, formatTime)
 
 -- use the "With" variants of these functions instead
 
@@ -91,8 +89,6 @@ separateBy predicate items =
 
 main :: IO ()
 main = do
-  now <- getCurrentTime
-
   hakyllWith (withPrettyUrls defaultConfiguration) $ do
     match "templates/*" $ compile templateBodyCompiler
 
@@ -263,7 +259,7 @@ main = do
 
         atomTemplate <- loadBody "templates/atom.xml"
         atomItemTemplate <- loadBody "templates/atom-item.xml"
-        renderAtomWithTemplates atomTemplate atomItemTemplate feedConfiguration (feedCtx now) posts
+        renderAtomWithTemplates atomTemplate atomItemTemplate feedConfiguration feedCtx posts
 
 linkHeaders :: Pandoc -> Pandoc
 linkHeaders =
@@ -541,10 +537,9 @@ sitemapCtx pages =
       )
       (return pages)
 
-feedCtx :: UTCTime -> Context String
-feedCtx now =
+feedCtx :: Context String
+feedCtx =
   metadataField
     <> prettyUrlField "url"
     <> field "description" (\item -> (.itemBody) <$> loadSnapshot @String item.itemIdentifier "excerpt")
-    <> constField "updated" (formatTime defaultTimeLocale "%0Y-%m-%dT%H:%M%Ez" now)
     <> bodyField "body"
