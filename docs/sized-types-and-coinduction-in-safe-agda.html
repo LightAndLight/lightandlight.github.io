@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+
+  
+  <link rel="stylesheet" href="/res/math.css">
+  
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <title>Sized types and coinduction in Safe Agda - blog.ielliott.io</title>
+  
+
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda">
+<meta property="og:url" content="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda">
+<meta property="og:title" content="Sized types and coinduction in Safe Agda">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Sized types and coinduction in Safe Agda">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="Agda's sized types are inconsistent.
+This post is about why I care and how I've worked around it.">
+<meta property="og:description" content="Agda's sized types are inconsistent.
+This post is about why I care and how I've worked around it.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2024-09-04T00:00+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Sized types and coinduction in Safe Agda",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2024-09-04T00:00+00:00",
+  "dateModified":"2024-09-04T00:00+00:00",
+  "description":"Agda's sized types are inconsistent.
+This post is about why I care and how I've worked around it.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda"
+  },
+  "url": "https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda"
+}
+</script>
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+
+  <section>
+    
+    <script id="mathml-polyfill-script" src="/res/mathml-polyfill.js"></script>
+    
+
+    <article>
+  <h1>Sized types and coinduction in Safe Agda</h1>
+  <p class="date"> 4 September, 2024</p>
+  <div id="toc" style="float: right;">
+<h3>Contents</h3>
+<ul>
+<li><a href="#background">Background</a></li>
+<li><a href="#the-encoding">The encoding</a>
+<ul>
+<li><a href="#example-streams">Example: streams</a></li>
+<li><a href="#example-colists">Example: (co)lists</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul></li>
+<li><a href="#proof">Proof</a></li>
+<li><a href="#future-work">Future work</a></li>
+<li><a href="#appendix-philosophical-ramblings">Appendix: philosophical ramblings</a>
+<ul>
+<li><a href="#infinity-as-an-object">Infinity as an object</a></li>
+<li><a href="#codata-via-pi-types">Codata via <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types</a></li>
+</ul></li>
+</ul>
+</div>
+<p>Agda’s <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
+This post is about why I care and how I’ve worked around it.
+If you just want to read the code, go <a href="https://github.com/LightAndLight/agda-safe-sized-types">here</a>.</p>
+<h2 id="background"><a href="#background">Background</a></h2>
+<p>Here’s a <a href="https://agda.readthedocs.io/en/v2.7.0/language/coinduction.html">typical</a> coinductive type in Agda—a continuing stream:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">record</span> Stream <span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">coinductive</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">field</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    head <span class="ot">:</span> A</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    tail <span class="ot">:</span> Stream A</span></code></pre></div>
+<p>Some might describe <code>Stream</code> as an “infinite data structure”; an infinite list of <code>A</code>s.
+I think of it as a sequential process that can always yield another <code>A</code>.</p>
+<p>Coinductive types (codata for short) are important because they help us reason about potentially unending processes.
+A stream has no end—if you try to collect all of its elements then you’ll never finish—and yet there are many useful terminating programs we can write involving streams.</p>
+<p>The following function, <code>zipWith</code>, is an example of such a function.
+It defines an output stream in terms of two input streams,
+where each element of the output is the combination of the two input elements at that position.
+It uses <a href="https://agda.readthedocs.io/en/latest/language/copatterns.html">copattern syntax</a>, which is essentially a syntax to define record values by cases.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">{-# OPTIONS --guardedness #-}</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> Stream</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>zipWith <span class="ot">:</span> <span class="ot">{</span>A B C <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>A <span class="ot">→</span> B <span class="ot">→</span> C<span class="ot">)</span> <span class="ot">→</span> Stream A <span class="ot">→</span> Stream B <span class="ot">→</span> Stream C</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>head <span class="ot">(</span>zipWith f sa sb<span class="ot">)</span> <span class="ot">=</span> f <span class="ot">(</span>sa <span class="ot">.</span>head<span class="ot">)</span> <span class="ot">(</span>sb <span class="ot">.</span>head<span class="ot">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>tail <span class="ot">(</span>zipWith f sa sb<span class="ot">)</span> <span class="ot">=</span> zipWith f <span class="ot">(</span>sa <span class="ot">.</span>tail<span class="ot">)</span> <span class="ot">(</span>sb <span class="ot">.</span>tail<span class="ot">)</span></span></code></pre></div>
+<p>In words:</p>
+<ul>
+<li>The head of <code>zipWith f sa sb</code> is the combination of <code>sa</code>’s head and <code>sb</code>’s head via <code>f</code></li>
+<li>The tail of <code>zipWith f sa sb</code> is the the <code>zipWith</code>ed tails of <code>sa</code> and <code>sb</code>.</li>
+</ul>
+<p>The stream is <em>productive</em> the <code>head</code> case and the <code>tail</code> case always terminates.
+Definitions like <code>head (zipWith f sa sb) = head (zipWith f sa sb)</code> and <code>tail (zipWith f sa sb) = tail (zipWith f sa sb)</code> are not productive because they create infinite loops.
+And a function like <code>filter</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>filter <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>A <span class="ot">→</span> Bool<span class="ot">)</span> <span class="ot">→</span> Stream A <span class="ot">→</span> Stream A</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>head <span class="ot">(</span>filter f s<span class="ot">)</span> <span class="ot">=</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  if f <span class="ot">(</span>s <span class="ot">.</span>head<span class="ot">)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  then s <span class="ot">.</span>head</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  else <span class="ot">(</span>filter f <span class="ot">(</span>s <span class="ot">.</span>tail<span class="ot">))</span> <span class="ot">.</span>head</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>tail <span class="ot">(</span>filter f s<span class="ot">)</span> <span class="ot">=</span> filter f <span class="ot">(</span>s <span class="ot">.</span>tail<span class="ot">)</span></span></code></pre></div>
+<p>is not productive when all elements of the input stream fail the predicate.
+If you have a stream <code>s</code> of odd numbers and then <code>filter isEven s</code>, then <code>(filter isEven s) .head</code> will spin forever,
+trying to find the first even number.</p>
+<p>Productivity is undecidable, so productivity checking is always conservative.
+The <code>--guardedness</code> option in the definition of <code>zipWith</code> enables a particular productivity checking heuristic for recursive functions.</p>
+<p>I’ve found it quite easy to hit the limit of Agda’s productivity checker.
+For example, it rejects this definition of the fibonacci sequence<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, which (coming from a Haskell background) I consider an elegant and idiomatic use of streams:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fib <span class="ot">:</span> Stream ℕ</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>head fib <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>head <span class="ot">(</span>tail fib<span class="ot">)</span> <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>tail <span class="ot">(</span>tail fib<span class="ot">)</span> <span class="ot">=</span> zipWith <span class="ot">_</span>+<span class="ot">_</span> fib <span class="ot">(</span>tail fib<span class="ot">)</span></span></code></pre></div>
+<p>The limits of Agda’s productivity checking recently came up when I was working through
+<a href="http://conal.net/papers/language-derivatives/">Symbolic and Automatic Differentiation of Languages by Conal Elliott</a>.
+It defines a coinductive parser for context-free languages<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and some of the corecursive definitions are incorrectly rejected by the productivity checker.
+Conal uses Agda’s <a href="https://agda.readthedocs.io/en/v2.7.0/language/sized-types.html">sized types</a> to fix this.
+Sized types<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> are a type-based approach to termination and productivity checking,
+and they seem to be the canonical move in this situation;
+their section in the Agda manual uses the same kind of coinductive parser in its explanation of the feature.</p>
+<p>Unfortunately Agda’s implementation of sized types is inconsistent<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.
+I’m not very comfortable using known inconsistent features because I don’t want the burden of figuring out whether I’m using them correctly.
+When playing with infinite coinductive types like streams, I need the extra assurance that I’m not going to create an infinite loop or unsafe type cast.
+I started playing with my own encoding of sized types under Agda’s <a href="https://agda.readthedocs.io/en/v2.7.0/language/safe-agda.html"><code>--safe</code> flag</a>,
+which disables inconsistent features, and had some success.
+Here’s what I found.</p>
+<h2 id="the-encoding"><a href="#the-encoding">The encoding</a></h2>
+<p>First we need propositional equality for
+<a href="https://agda.readthedocs.io/en/v2.7.0/language/runtime-irrelevance.html">erased</a>
+values, because I found erased size indices necessary for reasonable performance.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="ot">_</span>≡<span class="ot">_</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">(@</span><span class="dv">0</span> x <span class="ot">:</span> A<span class="ot">)</span> <span class="ot">:</span> <span class="ot">@</span><span class="dv">0</span> A <span class="ot">→</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  refl <span class="ot">:</span> x ≡ x</span></code></pre></div>
+<h3 id="example-streams"><a href="#example-streams">Example: streams</a></h3>
+<p>Here’s how streams are defined:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Stream <span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">(@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">({@</span><span class="dv">0</span> j <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> i ≡ suc j <span class="ot">→</span> A × Stream A j<span class="ot">)</span> <span class="ot">→</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    Stream A i</span></code></pre></div>
+<p>In words: a <code>Stream A i</code> is a function that returns a head <code>A</code> and a tail <code>Stream A j</code> whenever
+you can show <code>i = j + 1</code>.</p>
+<p>The destructors look like this:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>head <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">{@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> Stream <span class="ot">(</span>suc i<span class="ot">)</span> A <span class="ot">→</span> A</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>head <span class="ot">(</span>stream s<span class="ot">)</span> <span class="ot">=</span> proj₁ <span class="ot">(</span>s refl<span class="ot">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>tail <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">{@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> Stream <span class="ot">(</span>suc i<span class="ot">)</span> A <span class="ot">→</span> Stream i A</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>tail <span class="ot">(</span>stream s<span class="ot">)</span> <span class="ot">=</span> proj₂ <span class="ot">(</span>s refl<span class="ot">)</span></span></code></pre></div>
+<p>The size parameter indicates how much of the stream is known to be usable (productive and consistent).
+<code>head</code> says that a stream with at least one element can produce a head.
+<code>tail</code> says that a stream with at least one element can produce a tail whose size is 1 smaller than the original.
+A stream with size parameter 0 is unusable because <code>0 ≡ suc j</code> is false;
+we have no information about the stream’s elements.</p>
+<p>This is enough to define streams via recursive functions:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>map <span class="ot">:</span> <span class="ot">{</span>A B <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">{@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>A <span class="ot">→</span> B<span class="ot">)</span> <span class="ot">→</span> Stream A i <span class="ot">→</span> Stream B i</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>map f s <span class="ot">=</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">λ{</span> refl <span class="ot">→</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    f <span class="ot">(</span>head s<span class="ot">)</span> , map f <span class="ot">(</span>tail s<span class="ot">)</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">}</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>zipWith <span class="ot">:</span> <span class="ot">{</span>A B C <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">{@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>A <span class="ot">→</span> B <span class="ot">→</span> C<span class="ot">)</span> <span class="ot">→</span> Stream A i <span class="ot">→</span> Stream B i <span class="ot">→</span> Stream C i</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>zipWith f s1 s2 <span class="ot">=</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">λ{</span> refl <span class="ot">→</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    f <span class="ot">(</span>head s1<span class="ot">)</span> <span class="ot">(</span>head s2<span class="ot">)</span> , zipWith f <span class="ot">(</span>tail s1<span class="ot">)</span> <span class="ot">(</span>tail s2<span class="ot">)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="ot">}</span></span></code></pre></div>
+<p>I was excited to write the Haskell-style fibonacci sequence<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fib <span class="ot">:</span> <span class="ot">{@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> Stream ℕ i</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fib <span class="ot">=</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">λ{</span> refl <span class="ot">→</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span> , stream <span class="ot">λ{</span> refl <span class="ot">→</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span> , zipWith <span class="ot">_</span>+<span class="ot">_</span> fib <span class="ot">(</span>tail fib<span class="ot">)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">}</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">}</span></span></code></pre></div>
+<p>Agda considers a function like <code>fib</code> total because the recursive calls are given a strictly smaller size parameter.
+<code>fib</code> takes <code>i</code> as an implicit argument.
+Inside the first <code>refl</code> case, <code>i</code> is refined to <code>suc j</code> for some <code>j</code>.
+Then inside the second <code>refl</code> case, <code>j</code> is refined to <code>suc j'</code> so <code>i</code> is refined to <code>suc (suc j')</code> for some <code>j'</code>.
+<code>zipWith _+_ fib (tail fib)</code> has type <code>Stream ℕ j'</code>, and size indices are passed implicitly as follows:
+<code>zipWith _+_ (fib {i = j'}) (tail (fib {i = suc j'}))</code>.
+Agda sees this is
+<a href="https://agda.readthedocs.io/en/v2.7.0/language/termination-checking.html#structural-recursion">structural recursion</a>—each recursive <code>fib</code> call is given a strictly smaller size—and accepts the definition as terminating.</p>
+<p>Streams can also have more complex sizes.
+The following function averages each consecutive pair of elements,
+and the sizes say that for every element in the output stream, two elements are required from the input stream:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fil <span class="ot">:</span> <span class="ot">{@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> Stream ℕ <span class="ot">(</span>i * <span class="dv">2</span><span class="ot">)</span> <span class="ot">→</span> Stream ℕ i</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fil s <span class="ot">=</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">λ{</span> refl <span class="ot">→</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    avg <span class="ot">(</span>head s<span class="ot">)</span> <span class="ot">(</span>head <span class="ot">(</span>tail s<span class="ot">))</span> , fil <span class="ot">(</span>tail <span class="ot">(</span>tail s<span class="ot">))</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">}</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    avg <span class="ot">:</span> ℕ <span class="ot">→</span> ℕ <span class="ot">→</span> ℕ</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    avg m n <span class="ot">=</span> <span class="ot">(</span>m + n<span class="ot">)</span> / <span class="dv">2</span></span></code></pre></div>
+<p>The size parameter of a stream can also be “forgotten”, for situations where sizes don’t matter:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Stream-∞ <span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  stream-∞ <span class="ot">:</span> <span class="ot">({@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> Stream A i<span class="ot">)</span> <span class="ot">→</span> Stream-∞ A</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>to-∞ <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">({@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> Stream A i<span class="ot">)</span> <span class="ot">→</span> Stream-∞ A</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>to-∞ <span class="ot">=</span> stream-∞</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>from-∞ <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> Stream-∞ A <span class="ot">→</span> <span class="ot">({@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> Stream A i<span class="ot">)</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>from-∞ <span class="ot">(</span>stream-∞ f<span class="ot">)</span> <span class="ot">=</span> f</span></code></pre></div>
+<p><code>Stream-∞</code> is the typical coinductive stream type, equivalent to the coinductive definition I gave at the start of this post.
+Such a stream is unboundedly usable; you can always get its head or tail:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>head-∞ <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> Stream-∞ A <span class="ot">→</span> A</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>head-∞ s <span class="ot">=</span> head <span class="ot">(</span>from-∞ s <span class="ot">{</span>i <span class="ot">=</span> <span class="dv">1</span><span class="ot">})</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>tail-∞ <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> Stream-∞ A <span class="ot">→</span> Stream-∞ A</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>tail-∞ s <span class="ot">=</span> to-∞ <span class="ot">(</span>tail <span class="ot">(</span>from-∞ s<span class="ot">))</span></span></code></pre></div>
+<p>A program that consumes an entire <code>Stream-∞</code> is productive but non-terminating.
+Non-termination isn’t useful for theorem proving, so it’s usually avoided in Agda, but it is useful for everyday programs.
+The <a href="https://en.wikipedia.org/wiki/Yes_(Unix)"><code>yes</code></a> command is a reasonable non-terminating program, and so is a program that prints the fibonacci sequence.
+Here’s one way to consume infinite streams that I consider morally okay, despite requiring unsafe Agda<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">postulate</span> <span class="ot">_</span>*&gt;<span class="ot">_</span> <span class="ot">:</span> <span class="ot">{</span>A B <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> IO A <span class="ot">→</span> IO B <span class="ot">→</span> IO B</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">{-# COMPILE GHC _*&gt;_ = \_ _ -&gt; (*&gt;) #-}</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="pp">{-# NON_TERMINATING #-}</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>consume-∞ <span class="ot">:</span> <span class="ot">{</span>A B <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">→</span> <span class="ot">(</span>A <span class="ot">→</span> IO ⊤<span class="ot">)</span> <span class="ot">→</span> Stream-∞ A <span class="ot">→</span> IO B</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>consume-∞ f s <span class="ot">=</span> f <span class="ot">(</span>head-∞ s<span class="ot">)</span> *&gt; consume-∞ f <span class="ot">(</span>tail-∞ s<span class="ot">)</span></span></code></pre></div>
+<p><code>consume-∞</code> is a loop that <a href="http://conal.net/blog/posts/is-haskell-a-purely-functional-language">arbitrarily</a> observes each stream element in turn.
+Its output type is <code>IO B</code> for all types <code>B</code> because it never returns.</p>
+<p>This can be used to print the fibonacci sequence:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>main <span class="ot">:</span> IO ⊤</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> consume-∞ putStrLn <span class="ot">(</span>to-∞ <span class="ot">(</span>map show-ℕ fib<span class="ot">))</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">import</span> Data<span class="ot">.</span>Nat<span class="ot">.</span>Show <span class="kw">renaming</span> <span class="ot">(</span>show <span class="kw">to</span> show-ℕ<span class="ot">)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">postulate</span> putStrLn <span class="ot">:</span> String <span class="ot">→</span> IO ⊤</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="pp">{-# FOREIGN GHC import qualified Data.Text.IO #-}</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="pp">{-# COMPILE GHC putStrLn = Data.Text.IO.putStrLn #-}</span></span></code></pre></div>
+<pre><code>$ ./fib | head -n 10
+0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+
+$ ./fib | head -n 1000 | tail -n 1
+26863810024485359386146727202142923967616609318986952340123175997617981700247881689338369654483356564191827856161443356312976673642210350324634850410377680367334151172899169723197082763985615764450078474174626</code></pre>
+<h3 id="example-colists"><a href="#example-colists">Example: (co)lists</a></h3>
+<p>Here’s a brief second example so you can start to extrapolate.
+<code>Colist</code> is the coinductive list; an <code>A</code>-producing process that could end, but might also continue forever:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Colist <span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">(@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  colist <span class="ot">:</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">({@</span><span class="dv">0</span> j <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> i ≡ suc j <span class="ot">→</span> Maybe <span class="ot">(</span>A × Colist A j<span class="ot">))</span> <span class="ot">→</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    Colist A i</span></code></pre></div>
+<h3 id="summary"><a href="#summary">Summary</a></h3>
+<p>In short: a datatype definition is given a size parameter, and recursive uses of the type are “guarded” by a proof that the size parameter decreases.</p>
+<p>In the
+<a href="https://github.com/LightAndLight/agda-safe-sized-types">actual code</a>
+I’ve packaged this pattern as its own type <code>■ : (A : @0 ℕ → Set) → @0 ℕ → Set</code>, so <code>Stream</code> and <code>Colist</code> become:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Stream <span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">(@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">:</span> ■ <span class="ot">(λ</span> j <span class="ot">→</span> A × Stream A j<span class="ot">)</span> i <span class="ot">→</span> Stream A i</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Colist <span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">(@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  colist <span class="ot">:</span> ■ <span class="ot">(λ</span> j <span class="ot">→</span> Maybe <span class="ot">(</span>A × Colist A j<span class="ot">))</span> i <span class="ot">→</span> Colist A i</span></code></pre></div>
+<h2 id="proof"><a href="#proof">Proof</a></h2>
+<p><code>Stream-∞</code> is clearly a coinductive stream, but I still had my doubts about <code>Stream</code>.
+The definitive test is whether it obeys <a href="https://en.wikipedia.org/wiki/Coinduction#Relationship_with_F-coalgebras">coalgebraic semantics</a>.
+I was able to prove that <code>Stream</code> is the final coalgebra of a particular functor, in the category of size-indexed families of types.
+The functor in question is like the one that gives rise to unsized streams (<code>F(X) = A * X</code>), but it also keeps track of the change in size indices.</p>
+<p>The proofs are not very fun to read, so I’ll omit them from this post.
+You can find them
+<a href="https://github.com/LightAndLight/agda-safe-sized-types/blob/8876b3de679618d352481a69e2e1b8ed48b460e6/src/Codata/SafeSized/Stream/Coalgebra.agda#L141-L243">here</a>.</p>
+<h2 id="future-work"><a href="#future-work">Future work</a></h2>
+<ul>
+<li><p>Parser combinators</p>
+<p>This all started because I wanted to figure out how to do parsing in Agda.
+I successfully used this style of sized coinductive types to write a coinductive parser.
+It was easy to write the connectives for parsing regular languages, as in Conal’s paper.
+I then added a guarded fixpoint combinator to parse non-regular languages, like expression trees.
+I’ve now got a total, <code>--safe</code> parser combinator library for Agda, which I’ll introduce in another post.</p></li>
+<li><p>Generalised greatest fixed point proofs</p>
+<p>I proved that <code>Stream</code> was a final coalgebra, but I have no proofs for any other codatatypes.
+I’m confident that I could write them, but it would be a chore.
+Is it possible to validate the approach once and for all for the greatest fixed point <code>ν : ((@0 ℕ → Set) → @0 ℕ → Set) → @0 ℕ → Set</code>?
+Then, justifying a particular codatatype definition would be as simple as defining an isomorphism with <code>ν F</code> for a particular <code>F</code>.</p></li>
+<li><p>Where’s the limit?</p>
+<p>I’m curious about the limitations of my approach.
+It’s good enough for the practical coinductive problems I’ve tested it on, so where does it break down?
+Consistency often comes at the expense of completeness.
+Does this technique rule out some sound programs that Agda’s normal sized types can encode?</p></li>
+</ul>
+<h2 id="appendix-philosophical-ramblings"><a href="#appendix-philosophical-ramblings">Appendix: philosophical ramblings</a></h2>
+<h3 id="infinity-as-an-object"><a href="#infinity-as-an-object">Infinity as an object</a></h3>
+<p>The original sized types paper (Hughes &amp; Pareto, 1996) and Agda’s implementation of sized types both introduce an explicit size for unbounded usability;
+called <code>ω</code> and <code>∞</code> respectively.
+I’m suspicious of this move, because it feels like it’s begging for paradoxes<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
+<p>The sized types paper is very careful about uses of <code>ω</code>, noting that for types <code>∀(i : Size). T</code> it’s not always sound
+to instantiate <code>i</code> with <code>ω</code> in <code>T</code>.
+The resulting type system is more complex and harder to implement correctly,
+and I doubt that the convenience is worth it.</p>
+<p>I think my intuitions here are justified given the state of Agda’s built-in sized types.
+Agda has an issue label called <a href="https://github.com/agda/agda/labels/infinity-less-than-infinity">infinity-less-than-infinity</a>,
+because there are a number of ways to prove <code>false</code> by assuming that the size <code>∞</code> is smaller than itself.
+Whether this is due to software bugs or broken theory,
+I think the root cause is the complexity of trying to think of infinity as “the same sort of thing” as a finite size.</p>
+<h3 id="codata-via-pi-types"><a href="#codata-via-pi-types">Codata via <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types</a></h3>
+<p>I like this encoding of sized types because it puts a <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-type at the center of the coinductive definition.
+It could be made even more obvious like this:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Field <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  head tail <span class="ot">:</span> Field</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Stream <span class="ot">(</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">)</span> <span class="ot">(@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">)</span> <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">:</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">({@</span><span class="dv">0</span> j <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> i ≡ suc j <span class="ot">→</span> <span class="ot">(</span>f <span class="ot">:</span> Field<span class="ot">)</span> <span class="ot">→</span> case f of <span class="ot">λ{</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>      head <span class="ot">→</span> A <span class="ot">;</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      tail <span class="ot">→</span> Stream A j</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="ot">})</span> <span class="ot">→</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    Stream A i</span></code></pre></div>
+<p>Then defining a stream by cases on <code>Field</code> is pretty close to copattern matching:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>repeat <span class="ot">:</span> <span class="ot">{</span>A <span class="ot">:</span> <span class="dt">Set</span><span class="ot">}</span> <span class="ot">{@</span><span class="dv">0</span> i <span class="ot">:</span> ℕ<span class="ot">}</span> <span class="ot">→</span> A <span class="ot">→</span> Stream A i</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>repeat x <span class="ot">=</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  stream <span class="ot">λ{</span> refl <span class="ot">→</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">λ{</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      head <span class="ot">→</span> x <span class="ot">;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      tail <span class="ot">→</span> repeat x</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">}</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">}</span></span></code></pre></div>
+<p>The relationship between data and codata seems analogous to the relationship between <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>-types and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types.
+I don’t have anything rigorous to say about this; it’s just a feeling.
+Here’s a table that expands on the feeling:</p>
+<style>
+.padded-columns tr > td + td {
+  padding-left: 2em;
+}
+</style>
+<table class="padded-columns" align="center">
+<tbody>
+<tr>
+<td>
+Data
+</td>
+<td>
+Codata
+</td>
+</tr>
+<tr>
+<td>
+Induction
+</td>
+<td>
+Coinduction
+</td>
+</tr>
+<tr>
+<td>
+Positive types
+</td>
+<td>
+Negative types
+</td>
+</tr>
+<tr>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>-types
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types
+</td>
+</tr>
+<tr>
+<td>
+Intensional equality
+</td>
+<td>
+Extensional equality
+</td>
+</tr>
+</tbody>
+</table>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Here’s a version that works:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fib <span class="ot">:</span> Stream ℕ</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fib <span class="ot">=</span> fib' <span class="dv">0</span> <span class="dv">1</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    fib' <span class="ot">:</span> ℕ <span class="ot">→</span> ℕ <span class="ot">→</span> Stream ℕ</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    head <span class="ot">(</span>fib' a b<span class="ot">)</span> <span class="ot">=</span> a</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    tail <span class="ot">(</span>fib' a b<span class="ot">)</span> <span class="ot">=</span> fib' b <span class="ot">(</span>a + b<span class="ot">)</span></span></code></pre></div>
+<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></li>
+<li id="fn2"><p>See also:</p>
+<ul>
+<li><p>Hasuo, I., &amp; Jacobs, B. (2005, September).
+Context-free languages via coalgebraic trace semantics.
+In International Conference on Algebra and Coalgebra in Computer Science (pp. 213-231). Berlin, Heidelberg: Springer Berlin Heidelberg.</p></li>
+<li><p>Winter, J., Bonsangue, M. M., &amp; Rutten, J. (2011, August).
+Context-free languages, coalgebraically.
+In International Conference on Algebra and Coalgebra in Computer Science (pp. 359-376). Berlin, Heidelberg: Springer Berlin Heidelberg.</p></li>
+<li><p>Abel, A. (2016).
+Equational reasoning about formal languages in coalgebraic style.
+preprint available at http://www.cse.chalmers.se/~abela/jlamp17.pdf.</p></li>
+</ul>
+<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></li>
+<li id="fn3"><p>See:</p>
+<ul>
+<li><p>Hughes, J., Pareto, L., &amp; Sabry, A. (1996, January).
+Proving the correctness of reactive systems using sized types. In Proceedings of the 23rd ACM SIGPLAN-SIGACT symposium on Principles of programming languages (pp. 410-423).</p></li>
+<li><p>Abel, A. (2008). Semi-continuous sized types and termination. Logical methods in computer science, 4.</p></li>
+</ul>
+<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></li>
+<li id="fn4"><p>See:</p>
+<ul>
+<li>Relevant GitHub activity: <a href="https://github.com/agda/agda/pull/5354" class="uri">https://github.com/agda/agda/pull/5354</a>
+<ul>
+<li><a href="https://github.com/agda/agda/issues/1201" class="uri">https://github.com/agda/agda/issues/1201</a></li>
+<li><a href="https://github.com/agda/agda/issues/1946" class="uri">https://github.com/agda/agda/issues/1946</a></li>
+<li><a href="https://github.com/agda/agda/issues/2820" class="uri">https://github.com/agda/agda/issues/2820</a></li>
+<li><a href="https://github.com/agda/agda/issues/3026" class="uri">https://github.com/agda/agda/issues/3026</a></li>
+</ul></li>
+<li><a href="https://ionathan.ch/2021/08/04/sized-types.html">The State of Sized Types (2021)</a></li>
+</ul>
+<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></li>
+<li id="fn5"><p>In Haskell: <code>fib = 0 : 1 : zipWith (+) fib (tail fib)</code><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>In the real code I defined this in a separate file so that I can use <code>--safe</code> everywhere else.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p><a href="https://ncatlab.org/nlab/show/HomePage">nLab</a> redirects Girard’s paradox to <a href="https://ncatlab.org/nlab/show/Burali-Forti%27s+paradox">Burali-Forti’s paradox</a>,
+which describes a paradox using ordinal numbers which has a very similar vibe to Agda’s sized types situation.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  <footer>
+    <p>
+      
+      <a href="/per-project-nix-substituters">Per-project Nix substituters - Previous</a>
+      
+      |
+      
+      <span>Newest</span>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:isaace71295@gmail.com">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:isaace71295@gmail.com">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+
+  <script>feather.replace()</script>
+</body>
+
+</html>
