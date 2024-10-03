@@ -24,3 +24,6 @@ main =
     cmd.run `git push`
 
     cmd.run `git checkout $branch`
+
+    println ""
+    println "View deployment progress at https://github.com/LightAndLight/lightandlight.github.io/actions"

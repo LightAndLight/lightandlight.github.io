@@ -49,17 +49,17 @@ By default, only the substituters in `substituters` will be used by Nix.
 
 ## Without Flakes
 
-To enable other substituters, use the `NIX_CONF` environment variable
+To enable other substituters, use the `NIX_CONFIG` environment variable
 with the `extra-substituters`[^extra]<sup>,</sup>[^substituters] setting:
 
 ```bash
-export NIX_CONF="extra-substituters = substituter-42"
+export NIX_CONFIG="extra-substituters = substituter-42"
 ```
 
 Or use `substituters` to override the system's substituters:
 
 ```bash
-export NIX_CONF="substituters = substituter-42"
+export NIX_CONFIG="substituters = substituter-42"
 ```
 
 If the substituters named in these local settings aren't defined in the `trusted-substituters`
@@ -70,7 +70,7 @@ then Nix will ignore them and print the following message:
 warning: ignoring untrusted substituter '{substituter URL}', you are not a trusted user.
 ```
 
-I use [direnv](https://direnv.net/) to automatically set and unset `NIX_CONF` by putting the `export NIX_CONF=...`
+I use [direnv](https://direnv.net/) to automatically set and unset `NIX_CONFIG` by putting the `export NIX_CONFIG=...`
 command inside a `.envrc` in the project root.
 
 ## With Flakes
