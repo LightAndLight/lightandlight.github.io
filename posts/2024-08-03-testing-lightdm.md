@@ -29,7 +29,7 @@ I'd like to preview the changes in a window while I've got my editor open in ano
 
   * Greeter logs (`.cache/lightdm/log/seat0-greeter.log`) show `Failed to open PAM session: Authentication failure`
 
-* `sudo -u lightdm --test-mode --debug` reports `Failed to get D-Bus connection`
+* `sudo -u lightdm lightdm --test-mode --debug` reports `Failed to get D-Bus connection`
 
   * X logs (`/var/lib/lightdm/.cache/lightdm/log/x-1.log`) contain
 
@@ -43,7 +43,7 @@ I'd like to preview the changes in a window while I've got my editor open in ano
 ### Solution
 
 Run `xhost +SI:localuser:lightdm` to allow the `lightdm` user to connect to the X user,
-then run `sudo -u lightdm --test-mode`.
+then run `sudo -u lightdm lightdm --test-mode`.
 
 ## Details
 
