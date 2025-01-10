@@ -608,7 +608,7 @@ I’d like to preview the changes in a window while I’ve got my editor open in
 <ul>
 <li>Greeter logs (<code>.cache/lightdm/log/seat0-greeter.log</code>) show <code>Failed to open PAM session: Authentication failure</code></li>
 </ul></li>
-<li><p><code>sudo -u lightdm --test-mode --debug</code> reports <code>Failed to get D-Bus connection</code></p>
+<li><p><code>sudo -u lightdm lightdm --test-mode --debug</code> reports <code>Failed to get D-Bus connection</code></p>
 <ul>
 <li><p>X logs (<code>/var/lib/lightdm/.cache/lightdm/log/x-1.log</code>) contain</p>
 <pre><code>Authorization required, but no authorization protocol specified
@@ -619,7 +619,7 @@ Xephyr cannot open host display. Is DISPLAY set?</code></pre></li>
 </ul>
 <h3 id="solution"><a href="#solution">Solution</a></h3>
 <p>Run <code>xhost +SI:localuser:lightdm</code> to allow the <code>lightdm</code> user to connect to the X user,
-then run <code>sudo -u lightdm --test-mode</code>.</p>
+then run <code>sudo -u lightdm lightdm --test-mode</code>.</p>
 <h2 id="details"><a href="#details">Details</a></h2>
 <p>When I ran <code>lightdm --test-mode</code> a small black window briefly appeared and then the program exited with status 1.
 I added the <code>--debug</code> flag, and saw that a subprocess had failed:</p>
