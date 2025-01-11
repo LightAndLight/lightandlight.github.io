@@ -10,8 +10,57 @@
         <email>isaace71295@gmail.com</email>
         
     </author>
-    <updated>2024-09-22T00:00:00Z</updated>
+    <updated>2025-01-11T00:00:00Z</updated>
     <entry>
+    <title>In Praise of ZSA</title>
+    <link href="https://blog.ielliott.io/in-praise-of-zsa" />
+    
+    <id>https://blog.ielliott.io/in-praise-of-zsa</id>
+    
+    <published>2025-01-11T00:00:00Z</published>
+    <updated>2025-01-11T00:00:00Z</updated>
+    <summary type="html"><![CDATA[<p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
+I own two of their <a href="https://ergodox-ez.com/">Ergodox EZ</a>s (one for work, one for home) which I use every day.
+They also publish an <a href="https://www.zsa.io/the-ergo">email newsletter</a> that I subscribe to and happily read.
+In the <a href="https://mailchi.mp/zsa/the-ergo-75">December 2024 issue</a>, they noted that ZSA doesn’t advertise (see <a href="https://www.zsa.io/trust">Why trust us | zsa.io</a>), and essentially rely on recommendations from customers.
+I like ZSA and hope they continue to be successful, so this short article is my attempt to give something back to them without buying <em>another</em> keyboard.</p>]]></summary>
+    
+    <content type="html" xml:base="https://blog.ielliott.io/in-praise-of-zsa">
+      <![CDATA[<p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
+I own two of their <a href="https://ergodox-ez.com/">Ergodox EZ</a>s (one for work, one for home) which I use every day.
+They also publish an <a href="https://www.zsa.io/the-ergo">email newsletter</a> that I subscribe to and happily read.
+In the <a href="https://mailchi.mp/zsa/the-ergo-75">December 2024 issue</a>, they noted that ZSA doesn’t advertise (see <a href="https://www.zsa.io/trust">Why trust us | zsa.io</a>), and essentially rely on recommendations from customers.
+I like ZSA and hope they continue to be successful, so this short article is my attempt to give something back to them without buying <em>another</em> keyboard.</p>
+<p>My Ergodox EZs are great. I edit my configuration using
+<a href="https://configure.zsa.io/">ZSA’s online configuration tool</a>
+(here’s <a href="https://configure.zsa.io/ergodox-ez/layouts/60G6R/latest/0">my layout</a>)
+and then flash a keyboard using <a href="https://github.com/zsa/wally">wally</a>.
+The firmware has a lot of great features and has allowed me to turn my keyboard into a personalised programming tool.</p>
+<div style="display: flex; flex-direction: row">
+<figure>
+<a href="./images/zsa-1.png"><img src="./images/zsa-1.png"></a>
+<figcaption>
+My base keyboard layout
+</figcaption>
+</figure>
+<figure>
+<a href="./images/zsa-2.png"><img src="./images/zsa-2.png"></a>
+<figcaption>
+My symbols layer
+</figcaption>
+</figure>
+</div>
+<p>I expect to use these keyboards for decades, and that’s something I can’t often say about products I own.
+I think planned obsolescence is increasing because it can give businesses more consistent revenue over decades.
+Why sell something for <code>$X</code> that will last 20 years, when you can sell one for <code>0.15 * $X</code> that lasts 2 years and have a customer purchase 10 (and throw out 9) over the same period?
+Of course, the business metrics that improve as a result come at the expense of the customer and the world at large.</p>
+<p>In contrast, ZSA really seems to be doing business right: existing to serve its customers, rather than existing to self-perpetuate.
+My Ergodox EZ is <em>for me</em> in a way that many other technology products I use are not.
+Every newsletter email I get from conveys sincerity and integrity that I find increasingly lacking in businesses, especially in the technology industry.
+I wish them all the best.</p>]]>
+    </content>
+    
+</entry><entry>
     <title>Unfettering the imagination</title>
     <link href="https://blog.ielliott.io/unfettering-the-imagination" />
     
