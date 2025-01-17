@@ -18,7 +18,7 @@ description: My curriculum vitae.
   I was responsible for setting a new technological direction,
   aiming to move the company from a B2B/consulting model to a software-as-a-service product.
   I created some foundational Haskell tooling for generating courses that can be imported into LMSs
-  and for [LMS interoperability with external appplications](https://en.wikipedia.org/wiki/Learning_Tools_Interoperability).
+  and for [LMS interoperability with external applications](https://en.wikipedia.org/wiki/Learning_Tools_Interoperability).
   I also set an example for day-to-day software development and operations:
   we moved from CodeCommit to GitLab,
   and started tracking work with issues and collaborating with merge requests.
@@ -26,7 +26,7 @@ description: My curriculum vitae.
 * Jul 2020 - Feb 2022 &mdash; Software Engineer at [PaidRight](https://paidright.io) &mdash; Haskell, Elm, Nix, Google Cloud
 
   PaidRight calculates payroll compliance for Australian companies.
-  I joined the team while it was incubating in CSIRO's Data61, and they rehired me after then spun out in 2020.
+  I joined the team while it was incubating in CSIRO's Data61, and they rehired me after they spun out in 2020.
   While I was there the payroll models were written in a custom programming language and run via a web app.
   I contributed to the language runtime, the web-based structural code editor, and general web services.
   I also set up and was responsible for the CI system ([Nix / NixOS](https://nixos.org/) + [Buildkite](https://buildkite.com/)).
@@ -44,7 +44,7 @@ description: My curriculum vitae.
 * Jun 2017 - Jun 2020 &mdash; Functional Programming Engineer at [CSIRO's Data61](https://www.csiro.au/en/about/people/business-units/data61) &mdash; Haskell
 
   Data61 is a division of [CSIRO](https://en.wikipedia.org/wiki/CSIRO).
-  For 3 years I was a part of the [Queensland Functional Programming Lap (QFPL)](https://qfpl.io/),
+  For 3 years I was a part of the [Queensland Functional Programming Lab (QFPL)](https://qfpl.io/),
   formed with the intention of improving functional programming adoption inside Data61 and in Australia at large.
   I wrote Haskell libraries (personally significant: [hpython](https://github.com/qfpl/hpython), [hedgehog-fn](https://github.com/qfpl/hedgehog-fn)),
   helped run in-person [introductory functional programming courses](https://github.com/system-f/fp-course),
@@ -55,7 +55,7 @@ description: My curriculum vitae.
 * Jun 2016 - Feb 2017 &mdash; Software Developer at [iRecruit Australia](https://web.archive.org/web/20170204063104/https://irecruit.com.au/) &mdash; Python
 
   iRecruit was a startup working on a job matching platform.
-  This was first programming job, and I worked part time while attending university.
+  This was my first programming job, and I worked part time while attending university.
   I worked on web services using Django.
 
 * Feb 2014 - Jun 2017 &mdash; Bachelor of Engineering (Software Engineering) student at University of Queensland &mdash; incomplete
