@@ -251,7 +251,7 @@ main = do
                 { feedTitle = "blog.ielliott.io"
                 , feedDescription = "Isaac Elliott's personal blog"
                 , feedAuthorName = "Isaac Elliott"
-                , feedAuthorEmail = "isaace71295@gmail.com"
+                , feedAuthorEmail = "blog@id.ielliott.io"
                 , feedRoot = root
                 }
 
