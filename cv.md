@@ -31,7 +31,7 @@ description: My curriculum vitae.
 * Feb 2022 - Mar 2023 &mdash; CTO at [NineByte](https://ninebyte.com) &mdash; Haskell, AWS
 
   NineByte deals in digital education resources.
-  Its specialties are: turning publishers' textbooks into online courses, hosting said online courses,
+  Its specialties are turning publishers' textbooks into online courses, hosting said online courses,
   and hosting [learning management systems (LMSs)](https://en.wikipedia.org/wiki/Learning_management_system) for course delivery.
 
   I was responsible for setting a new technological direction,
@@ -54,7 +54,7 @@ description: My curriculum vitae.
 
   I completed one semester of part time study while working at CSIRO in order to make some progress toward getting a degree.
   I may have kept going, but then COVID happened.
-  I switched to the newly-introduced Bachelor of Computer Science and transferred most of my BEng credits.
+  I switched to the newly introduced Bachelor of Computer Science and transferred most of my BEng credits.
   Unfortunately I didn't learn very much;
   I completed some mandatory subjects in which I was already proficient because the university wouldn't give me credit.
   This included [Theory of Computing (COMP2048)](https://my.uq.edu.au/programs-courses/course.html?course_code=COMP2048),
