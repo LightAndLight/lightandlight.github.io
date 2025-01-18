@@ -13,7 +13,7 @@ description: My curriculum vitae.
 
   We are working on a web discussion platform.
   My main responsibility is researching and implementing trust metrics,
-  so that we can rank and suggest content to users based on their subjective trust instead of using inscrutible machine learning methods.
+  so that we can rank and suggest content to users based on their subjective trust instead of using inscrutable machine learning methods.
   I also contribute to the frontend
   (Haskell: [reflex](https://reflex-frp.org/) + [GHCJS](https://github.com/ghcjs/ghcjs)),
   backend (also Haskell),
