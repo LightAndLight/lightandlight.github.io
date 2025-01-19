@@ -15,7 +15,7 @@ Here's a reference for what I've done so far ([Nix configs](https://github.com/L
 
 ## Meta
 
-* Every command that changes the repo state prints the updated state using [`git st`](#git-st).
+* Every command that changes repo state prints the updated state using [`git st`](#git-st).
 
 * Every command that acts on a Git object, like a commit or a branch, opens a fuzzy finder if the object is omitted.
 
