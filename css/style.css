@@ -30,6 +30,10 @@ a {
     color: #379392
 }
 
+figure {
+    margin: 0;
+}
+
 .image {
     text-decoration: none;
 }
