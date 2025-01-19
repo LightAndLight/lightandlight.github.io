@@ -21,6 +21,7 @@ after pushing for the changes to show up on the blog.
 * [Tag pages](#tag-pages)
 * [Math support](#math-support)
 * [Table of contents generation](#table-of-contents-generation)
+* [Asciinema](#asciinema)
 
 ### Post front-matter
 
@@ -33,6 +34,7 @@ after pushing for the changes to show up on the blog.
 | `tags` | no | list of string | Shown for each post on the post index, and at the bottom of a post's page. See also: [Tag pages](#tag-pages). |
 | `math` | no | bool | Enable [Math support](#math-support) |
 | `chinese` | no | bool | Use a better font for Chinese characters |
+| `asciinema` | no | bool | Enable [Asciinema](#asciinema) |
 | `feed_id` | no | string | Used for feed compatibility. A post's feed ID is based on its `permalink`, so if you change the permalink then feed readers will think you wrote a new post. If you change a `permalink`, set the post's `feed_id` to whatever it was when it was originally published. |
 
 ### Tag pages
@@ -100,4 +102,15 @@ The above subheading is included, because its parent hasn't set `toc:omit_childr
 </tr>
 </tbody>
 </table>
+
+### Asciinema
+
+When the [post front-matter](#post-front-matter) has `asciinema: true`,
+[Asciinema](https://asciinema.org) casts can be embedded using the `<x-asciinema-cast>` element.
+
+Example:
+
+```html
+<x-asciinema-cast data-src="/path/to/cast"></x-asciinema-cast>
+```
 

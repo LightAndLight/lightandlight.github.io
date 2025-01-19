@@ -35,6 +35,10 @@
   <script src="https://unpkg.com/feather-icons"></script>
   <script src="/res/script.js"></script>
 
+  $if(asciinema)$
+  <link type="text/css" href="/res/asciinema-player.css" rel="stylesheet">
+  $endif$
+
   $if(title)$
   <title>$title$ - blog.ielliott.io</title>
   $else$
@@ -58,6 +62,19 @@
   $partial("templates/footer.html")$
 
   <script>feather.replace()</script>
+
+  $if(asciinema)$
+  <script src="/res/asciinema-player.min.js"></script>
+  <script>
+    const casts = document.getElementsByTagName("x-asciinema-cast");
+    for (cast of casts) {
+      AsciinemaPlayer.create(cast.dataset.src, cast, {
+        speed: cast.dataset.speed,
+        idleTimeLimit: cast.dataset.idleTimeLimit
+      });
+    }
+  </script>
+  $endif$
 </body>
 
 </html>
