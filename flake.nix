@@ -7,15 +7,14 @@
     flake-utils.lib.eachDefaultSystem (system:
       let 
         pkgs = import nixpkgs { inherit system; };
-        ghcVersion = "927";
       in {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
-            haskell.packages."ghc${ghcVersion}".ghc
+            haskellPackages.ghc
             cabal-install
-            (haskell-language-server.override { supportedGhcVersions = [ ghcVersion ]; })
+            haskell-language-server
             
-            haskell.packages."ghc${ghcVersion}".hakyll
+            haskellPackages.hakyll
             zlib
             
             ipso.defaultPackage.${system}
