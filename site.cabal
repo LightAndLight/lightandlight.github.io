@@ -8,7 +8,7 @@ executable site
   build-depends:    base == 4.*
                   , directory
                   , filepath
-                  , hakyll == 4.16.*
+                  , hakyll == 4.16.5.*
                   , pandoc
                   , pandoc-types
                   , text

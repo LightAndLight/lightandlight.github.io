@@ -30,6 +30,32 @@ a {
     color: #379392
 }
 
+figure {
+    margin: 0;
+    font-style: italic;
+
+    /*display: flex;
+    flex-direction: column;
+    align-items: center;*/
+
+    border: 1px solid #d0d0dd;
+    border-radius: 0.25em;
+    padding: 0.75em;
+}
+
+figure > img {
+    display: block;
+    margin: auto;
+}
+
+figcaption {
+    margin-top: 1em;
+}
+
+figcaption > p {
+    margin: 0;
+}
+
 .image {
     text-decoration: none;
 }
@@ -288,7 +314,8 @@ footer {
 }
 
 #toc ul {
-    margin: 0;
+    margin: 0 0 0 0.5em;
+    text-indent: -0.5em;
     list-style-type: none;
 }
 
