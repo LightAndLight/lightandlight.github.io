@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+
+  
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+
+  
+  <title>2024 Project Review - blog.ielliott.io</title>
+  
+
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/2024-project-review">
+<meta property="og:url" content="https://blog.ielliott.io/2024-project-review">
+<meta property="og:title" content="2024 Project Review">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="2024 Project Review">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="Reflections on 2024's hobby projects.">
+<meta property="og:description" content="Reflections on 2024's hobby projects.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-02-26T22:45+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"2024 Project Review",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2025-02-26T22:45+00:00",
+  "dateModified":"2025-02-26T22:45+00:00",
+  "description":"Reflections on 2024's hobby projects.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/2024-project-review"
+  },
+  "url": "https://blog.ielliott.io/2024-project-review"
+}
+</script>
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+
+  <section>
+    
+
+    <article>
+  <h1>2024 Project Review</h1>
+  <p class="date">26 February, 2025</p>
+  <div id="toc" style="float: right; max-width: 15em; white-space: normal;">
+<h3>Contents</h3>
+<ul>
+<li><a href="#blog">Blog</a></li>
+<li><a href="#self-hosted-github-ci-runners">Self-hosted GitHub CI runners</a></li>
+<li><a href="#citools"><code>citools</code></a></li>
+<li><a href="#using-linear-algebra-for-quantitative-queries">Using linear algebra for quantitative queries</a></li>
+<li><a href="#travel-planning-web-app">Travel planning web app</a></li>
+<li><a href="#nix-flakes-for-nixos-configurations">Nix Flakes for NixOS configurations</a></li>
+<li><a href="#basque"><code>basque</code></a></li>
+<li><a href="#opstools"><code>opstools</code></a></li>
+<li><a href="#improved-cd-command">Improved <code>cd</code> command</a></li>
+<li><a href="#git-format-staged"><code>git-format-staged</code></a></li>
+<li><a href="#git-cli-overhaul">Git CLI overhaul</a></li>
+<li><a href="#haskell-build-tool-experiments">Haskell build tool experiments</a></li>
+<li><a href="#beginner-os-dev">Beginner OS dev</a></li>
+<li><a href="#functional-web-routing">Functional web routing</a></li>
+<li><a href="#desktop-environment-theming">Desktop environment theming</a></li>
+<li><a href="#safe-sized-types-and-coinduction-in-agda">Safe sized types and coinduction in Agda</a></li>
+<li><a href="#xeval"><code>xeval</code></a></li>
+<li><a href="#haskell-code-manipulation-via-ghc-exactprint">Haskell code manipulation via <code>ghc-exactprint</code></a></li>
+<li><a href="#haskell-syntax-tools"><code>haskell-syntax-tools</code></a></li>
+<li><a href="#template-monoid"><code>template-monoid</code></a></li>
+<li><a href="#hedge"><code>hedge</code></a></li>
+<li><a href="#replace-taffybar-with-polybar">Replace Taffybar with Polybar</a></li>
+<li><a href="#neuron-performance-improvements"><code>neuron</code> performance improvements</a></li>
+</ul>
+</div>
+<h2 id="blog"><a href="#blog">Blog</a></h2>
+<p><em>ongoing</em></p>
+<p>Posts:</p>
+<ul>
+<li><a href="https://blog.ielliott.io/troubleshooting-lightdms-test-mode">Troubleshooting LightDM’s test mode</a></li>
+<li><a href="https://blog.ielliott.io/per-project-nix-substituters">Per-project Nix substituters</a></li>
+<li><a href="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda">Sized types and coinduction in Safe Adga</a></li>
+<li><a href="https://blog.ielliott.io/unfettering-the-imagination">Unfettering the imagination</a></li>
+</ul>
+<p>My <a href="https://github.com/LightAndLight/lightandlight.github.io">Hakyll setup</a> now has documentation.
+Someone asked my permission use my blog as a template, which I gave.
+I added documentation so that they (and whoever else) can use all the features.</p>
+<h2 id="self-hosted-github-ci-runners"><a href="#self-hosted-github-ci-runners">Self-hosted GitHub CI runners</a></h2>
+<p><em>January</em></p>
+<p><a href="https://github.com/LightAndLight/github-runner" class="uri">https://github.com/LightAndLight/github-runner</a> (private)</p>
+<p>I started playing around with self-hosting a GitHub CI runners on <a href="https://www.digitalocean.com/">DigitalOcean</a> for use in <a href="https://ipso.dev">Ipso</a>.
+The repo is private because I committed secrets, some encrypted and unencrypted, while I figured out how I wanted to do secret management.
+It uses <a href="https://github.com/getsops/sops">SOPS</a> with <a href="https://github.com/FiloSottile/age">age</a> for secrets,
+<a href="https://www.terraform.io/">Terraform</a> for provisioning infrastructure,
+and <a href="https://nixos.org/">NixOS</a> for machine configurations.</p>
+<h2 id="citools"><a href="#citools"><code>citools</code></a></h2>
+<p><em>January</em></p>
+<p><a href="https://github.com/LightAndLight/citools" class="uri">https://github.com/LightAndLight/citools</a></p>
+<p>Nix derivations and <a href="https://ipso.dev">Ipso</a> scripts that I want to reuse outside of <a href="#self-hosted-github-ci-runners">Self-hosted GitHub CI runners</a>.</p>
+<h2 id="using-linear-algebra-for-quantitative-queries"><a href="#using-linear-algebra-for-quantitative-queries">Using linear algebra for quantitative queries</a></h2>
+<p><em>January</em></p>
+<p><a href="https://github.com/LightAndLight/misc/tree/main/20240112-linear-algebra-queries" class="uri">https://github.com/LightAndLight/misc/tree/main/20240112-linear-algebra-queries</a></p>
+<p>Linear algebra on semirings sort-of generalises relational algebra.
+This is a little bit of Agda code where I played around with the idea.
+See the README for an overview.</p>
+<p>Related reading:</p>
+<ul>
+<li><a href="https://repositorio.inesctec.pt/server/api/core/bitstreams/a533c8a1-0d69-4517-87e9-060503d3dc48/content">A linear algebra approach to OLAP</a></li>
+<li><a href="https://www.di.uminho.pt/~jno/ps/infoblender16sl.pdf">Towards a linear algebra semantics for SQL</a></li>
+<li><a href="https://web.archive.org/web/20160305153614id_/http://www.cl.cam.ac.uk/~sd601/papers/semirings.pdf">Fun with Semirings</a></li>
+</ul>
+<h2 id="travel-planning-web-app"><a href="#travel-planning-web-app">Travel planning web app</a></h2>
+<p><em>February—March</em></p>
+<p><a href="https://gitlab.com/LightAndLight/ix-travel" class="uri">https://gitlab.com/LightAndLight/ix-travel</a> (private)</p>
+<p>I wanted to collaborate on software with my partner, who’s interested in the UX design and product management side of things.
+She suggested we create a web app for travel planning.
+We don’t have much beyond signup, login, and deployment, because I got distracted by creating my own frameworks (see <a href="#basque"><code>basque</code></a>, <a href="#functional-web-routing">Functional web routing</a>, <a href="#hedge"><code>hedge</code></a>).
+It was fun to work together and I look forward to resuming it at some point.</p>
+<h2 id="nix-flakes-for-nixos-configurations"><a href="#nix-flakes-for-nixos-configurations">Nix Flakes for NixOS configurations</a></h2>
+<p><em>March</em></p>
+<p><a href="https://github.com/LightAndLight/personal-configs" class="uri">https://github.com/LightAndLight/personal-configs</a></p>
+<p>I use NixOS and <a href="https://nix-community.github.io/home-manager/index.xhtml#ch-introduction"><code>home-manager</code></a> to manage configuration across all my computers.
+The <a href="https://nixos-and-flakes.thiscute.world/">NixOS &amp; Flakes Book</a> showed me how to manage my entire system configuration, including my <code>home-manager</code> configs, with Flakes.</p>
+<p>The main advantage of this approach is Flakes’ external dependency management.
+Rather than having
+<a href="https://nix.dev/manual/nix/2.18/language/builtins.html?highlight=fetchtarball#builtins-fetchTarball"><code>fetchTarball</code></a>s
+littered everywhere, all my dependencies are listed in a
+<a href="https://github.com/LightAndLight/personal-configs/blob/547a8a4c3864c6318601111896a4f1a6ee101089/flake.nix#L1-L37">single place</a>,
+and can be updated with a
+<a href="https://nix.dev/manual/nix/2.24/command-ref/new-cli/nix3-flake-update.html">single command</a>.</p>
+<h2 id="basque"><a href="#basque"><code>basque</code></a></h2>
+<p><em>March</em></p>
+<p><a href="https://github.com/LightAndLight/basque" class="uri">https://github.com/LightAndLight/basque</a> (private)</p>
+<p><code>basque</code> is a Haskell database library, inspired by <a href="https://haskell-beam.github.io/beam/"><code>beam</code></a>’s shortcomings.
+I love the core premise of <code>beam</code>—a table is defined as a Haskell record—but I don’t like the library’s complexity, poor error messages, and SQL generation gotchas.
+<a href="https://hackage.haskell.org/package/rel8"><code>rel8</code></a> also tackles these issues, but I haven’t tried it yet.</p>
+<p>One fun feature of <code>basque</code> is auto-migration, which was inspired by <a href="https://hackage.haskell.org/package/beam-automigrate"><code>beam-automigrate</code></a>.
+Auto-migration diffs the actual schema against the expected schema, and executes a series of schema changes to bring the actual schema up-to-date.
+This is really nice for local iteration, but it can be finnicky in production.
+I’m still figuring out how to think about auto-migration and whether/how it should be combined with traditional database migrations.</p>
+<p><code>basque</code> is private because it’s incomplete and it overlaps with some code in <a href="#hedge"><code>hedge</code></a>.
+<code>hedge</code> attempts to improve on <a href="#basque"><code>basque</code></a>’s database migrations.
+It has auto-migration for local development, static migrations for production, and a tool that generates static migrations based on your code changes.</p>
+<h2 id="opstools"><a href="#opstools"><code>opstools</code></a></h2>
+<p><em>March</em></p>
+<p><a href="https://github.com/LightAndLight/opstools" class="uri">https://github.com/LightAndLight/opstools</a></p>
+<p>Tools that I created while working on <a href="#travel-planning-web-app">Travel planning web app</a>, that I think are broadly useful:</p>
+<ul>
+<li><code>sshgen</code> - Simplified interface to ssh-keygen for stdin/stdout-based SSH key generation.</li>
+<li><code>tmply</code> - Pass temporary data to a process and clean up after.</li>
+<li><code>retry</code> - Retry a failing command.</li>
+</ul>
+<h2 id="improved-cd-command"><a href="#improved-cd-command">Improved <code>cd</code> command</a></h2>
+<p><em>March</em></p>
+<p><a href="https://github.com/LightAndLight/personal-configs/blob/547a8a4c3864c6318601111896a4f1a6ee101089/home/fish.nix#L18-L30" class="uri">https://github.com/LightAndLight/personal-configs/blob/547a8a4c3864c6318601111896a4f1a6ee101089/home/fish.nix#L18-L30</a></p>
+<p>I almost always run <code>ls</code> after <code>cd</code> to get an overview of the new directory’s contents.
+For large directories, the <code>ls</code> output takes up too much screen space.
+I overrode Fish’s <code>cd</code> command to list the first 20 items after I <code>cd</code>.
+If there are no more than 20 items, this looks like normal <code>ls</code> output.
+But if there are more than 20 items, the final line says <code>(20 of X items shown)</code>.</p>
+<p>The <code>ls</code> output is truncated using <code>head</code>: <code>ls | head -n 20</code>.
+This creates a new problem; it removes the column formatting that <code>ls</code> produces when you call it from a terminal.
+I tried using the <a href="https://www.man7.org/linux/man-pages/man1/column.1.html"><code>column</code></a> program, but it didn’t support terminal escape sequences.
+It counted the escape sequences as visible characters, which threw off the column calculations.
+This seemed like a simple kind of program, so I wrote my own: <a href="https://github.com/LightAndLight/columnize"><code>columnize</code></a>.</p>
+<h2 id="git-format-staged"><a href="#git-format-staged"><code>git-format-staged</code></a></h2>
+<p><em>March</em></p>
+<ul>
+<li><a href="https://github.com/LightAndLight/git-format-staged" class="uri">https://github.com/LightAndLight/git-format-staged</a></li>
+<li><a href="https://github.com/LightAndLight/git-ustash" class="uri">https://github.com/LightAndLight/git-ustash</a> (precursor to <code>git-format-staged</code>)</li>
+</ul>
+<p>Modify staged files, backporting changes onto their unstaged versions. Useful for formatting files as part of a <a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">pre-commit hook</a>.</p>
+<p>This is something I’ve wanted when writing <a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">pre-commit hooks</a> that do auto-formatting.
+The goal of a pre-commit auto-formatter is to format staged files without affecting any other files.
+<code>git diff --cached --name-only</code> gives the list of staged files, but if you <em>just</em> format them without any other preparation then you can cause issues with unstaged files.
+For example, if you use <code>git add -p</code> to stage a file using a partial patch, then you will have the rest of the file unstaged.
+How to format just the staged copy of the file?
+The unstaged version (with the remainder of the changes) is the only one on disk.
+Using <code>git stash --keep-index</code> almost does the right thing; it gets the unstaged files out of the way so it looks like you are free to work on just the staged files.
+Unfortunately it also stashes the staged files, so that when you auto-format the staged files, re-add them to the index, and pop from the stash, the formatted files are overwritten by the stash.
+<a href="https://stackoverflow.com/a/71222518/2884502">This answer on StackOverflow</a> looked promising, but <code>git stash push --staged</code> fails with an error when I use it in the <code>git add -p</code> aforementioned situation.</p>
+<h2 id="git-cli-overhaul"><a href="#git-cli-overhaul">Git CLI overhaul</a></h2>
+<p><em>April</em></p>
+<p><a href="https://github.com/LightAndLight/personal-configs/blob/547a8a4c3864c6318601111896a4f1a6ee101089/home/git.nix#L26-L403" class="uri">https://github.com/LightAndLight/personal-configs/blob/547a8a4c3864c6318601111896a4f1a6ee101089/home/git.nix#L26-L403</a></p>
+<p>I used Nix (via <code>home-manager</code>) to set up dozens of <a href="https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases">Git aliases</a>, essentially creating my own alternative Git CLI.
+Read the detailed listing (with demo videos) <a href="/my-git-cli-overhaul">here</a>.</p>
+<h2 id="haskell-build-tool-experiments"><a href="#haskell-build-tool-experiments">Haskell build tool experiments</a></h2>
+<p><em>April</em></p>
+<p><a href="https://github.com/LightAndLight/hbuild" class="uri">https://github.com/LightAndLight/hbuild</a> (private)</p>
+<p>I experimented with building Haskell packages from scratch, without <a href="https://www.haskell.org/cabal/">Cabal</a> (or <a href="https://haskellstack.org">Stack</a>).
+I started by writing a Makefile that can build an example Haskell library and executable.
+It directly uses the <a href="https://downloads.haskell.org/ghc/latest/docs/users_guide/packages.html">GHC package database</a> for dependencies
+and generates a package database entry for the library.
+After that I wrote a build tool that reads a <a href="https://toml.io">TOML</a> manifest and uses <a href="https://shakebuild.com">Shake</a> for incremental rebuilds.
+The next step would be to download dependencies from Hackage.</p>
+<p>This code is private because experimenting with alternative Haskell build tools seems like a sensitive topic.
+I remember a bunch of Cabal/Stack drama from ~10 years ago and don’t want to repeat it.
+That said, I think Cabal is not a great build tool, and I want to see if I can do better.
+My main focuses are user experience, performance, and implementation simplicity.
+If I create something that I’m willing to use, and it feels good and is well written, then I’ll make it public.
+Then I’ll use it as an exemplar to motivate improvements to Cabal.
+For projects as large and old as Cabal, I feel like it’s better to demonstrate what things should be like with a prototype instead of arguing over hypothetical improvements.</p>
+<h2 id="beginner-os-dev"><a href="#beginner-os-dev">Beginner OS dev</a></h2>
+<p><em>June</em></p>
+<p><a href="https://github.com/LightAndLight/learn-os" class="uri">https://github.com/LightAndLight/learn-os</a></p>
+<p>I started learning about OS development from first principles.
+So far I have a barebones UEFI program that loads a kernel which prints <code>hello from kernel!</code> to a serial device.</p>
+<p>I remember being fascinated by <a href="https://en.wikipedia.org/wiki/Virtual_memory">virtual memory</a>,
+the <a href="https://en.wikipedia.org/wiki/Page_table">page table</a>,
+and how the kernel manages it all.
+Since CPU instructions are also read from memory, they’re also subject to address translation.
+This means kernel code that changes the page table could accidentally alter its own control flow.
+In order for the kernel to continue normally after changing the page table,
+the region of code responsible for switching needs to live at the same virtual addresses in the old and new page tables.</p>
+<p>I also got <a href="https://github.com/rust-osdev/uefi-rs/pull/1187">a small pull request</a> merged into <a href="https://github.com/rust-osdev/uefi-rs"><code>uefi-rs</code></a>.
+I want to do more of these small fixes for open source libraries, because it feels like if we all do this sort of thing then we’ll end up with very high quality software.</p>
+<h2 id="functional-web-routing"><a href="#functional-web-routing">Functional web routing</a></h2>
+<p><em>July</em></p>
+<p><a href="https://github.com/LightAndLight/misc/tree/main/20240704-functional-web-routing" class="uri">https://github.com/LightAndLight/misc/tree/main/20240704-functional-web-routing</a></p>
+<p>This started out as an attempt to do trie-based URL routing on well-typed web route specifications,
+and grew into a <a href="https://servant.dev">Servant</a>-like web framework,
+but with a much smaller type-level DSL.
+I quite like it, and I’ve been expanding on it in another project, <a href="#hedge"><code>hedge</code></a>.</p>
+<h2 id="desktop-environment-theming"><a href="#desktop-environment-theming">Desktop environment theming</a></h2>
+<p><em>August</em></p>
+<ul>
+<li><a href="https://github.com/LightAndLight/personal-configs/blob/cdb00b793006e72768b2f6a6b8d0622ab7cd4c33/home/taffybar/taffybar.css" class="uri">https://github.com/LightAndLight/personal-configs/blob/cdb00b793006e72768b2f6a6b8d0622ab7cd4c33/home/taffybar/taffybar.css</a></li>
+<li><a href="https://github.com/LightAndLight/personal-configs/blob/cdb00b793006e72768b2f6a6b8d0622ab7cd4c33/home/xsession/xmonad.hs#L29" class="uri">https://github.com/LightAndLight/personal-configs/blob/cdb00b793006e72768b2f6a6b8d0622ab7cd4c33/home/xsession/xmonad.hs#L29</a></li>
+<li><a href="https://github.com/LightAndLight/personal-configs/blob/cdb00b793006e72768b2f6a6b8d0622ab7cd4c33/home/xsession/default.nix#L14-L23" class="uri">https://github.com/LightAndLight/personal-configs/blob/cdb00b793006e72768b2f6a6b8d0622ab7cd4c33/home/xsession/default.nix#L14-L23</a></li>
+</ul>
+<p>I set up a consistent colour scheme (based on <a href="https://github.com/morhetz/gruvbox">Gruvbox</a>) across
+<a href="https://xmonad.org/">Xmonad</a>,
+<a href="https://github.com/taffybar/taffybar">Taffybar</a>,
+and
+<a href="https://tools.suckless.org/dmenu/">dmenu</a>.
+I used <a href="https://github.com/yshui/picom">picom</a> to add rounded corners to my X windows.
+See <a href="#replace-taffybar-with-polybar">Replace Taffybar with Polybar</a> for a screenshot; I did more customisation later in the year.</p>
+<h2 id="safe-sized-types-and-coinduction-in-agda"><a href="#safe-sized-types-and-coinduction-in-agda">Safe sized types and coinduction in Agda</a></h2>
+<p><em>August</em></p>
+<ul>
+<li><a href="https://github.com/LightAndLight/agda-safe-sized-types" class="uri">https://github.com/LightAndLight/agda-safe-sized-types</a></li>
+<li><a href="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda" class="uri">https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda</a></li>
+</ul>
+<p>Coinduction is important for total languages like Agda because can be used to write and reason about continuing (essentially non-terminating) processes.
+A few of the official coinductive methods in Agda are unsound, but I think I found an approach that implements coinduction using sound extensions.</p>
+<p>The practical motivation for all of this is writing parser combinators in Agda.
+The naive (i.e. “just port it from Haskell”) approach doesn’t work due to Agda’s restrictive termination checker.
+Coinduction plus a slightly safer set of combinators makes everything work.</p>
+<h2 id="xeval"><a href="#xeval"><code>xeval</code></a></h2>
+<p><em>September</em></p>
+<p><a href="https://github.com/LightAndLight/xeval" class="uri">https://github.com/LightAndLight/xeval</a></p>
+<p><code>xeval</code> is a program that reads the X11 selection, evaluates it if it’s an arithmetic expression, and replaces the selection with the result.
+I bound it to <code>mod+e</code> in my XMonad config.
+I’ve noticed that it doesn’t work very well because different programs have slightly different ways of managing the X11 selection.
+Testing it with one kind of text input (e.g. the Firefox URL bar) doesn’t guarantee that it works with another kind of text input
+(e.g. the Chromium URL bar).</p>
+<h2 id="haskell-code-manipulation-via-ghc-exactprint"><a href="#haskell-code-manipulation-via-ghc-exactprint">Haskell code manipulation via <code>ghc-exactprint</code></a></h2>
+<p><em>October</em></p>
+<p><a href="https://github.com/LightAndLight/misc/tree/main/20241019-ghc-exactprint" class="uri">https://github.com/LightAndLight/misc/tree/main/20241019-ghc-exactprint</a></p>
+<p>This was an attempt to use <a href="https://hackage.haskell.org/package/ghc">GHC API</a> and <a href="https://hackage.haskell.org/package/ghc-exactprint"><code>ghc-exactprint</code></a> for formatting-preserving syntax tranformations.
+I’ve applying what I’ve learned to to <a href="https://guides.rubyonrails.org/command_line.html#bin-rails-generate">Rails-style boilerplate generation</a> for a Haskell web framework (see <a href="#hedge"><code>hedge</code></a>).</p>
+<p><code>rails generate controller CONTROLLER ACTION*</code> creates a new controller by generating some files from templates,
+and it registers the actions’ routes by adding some lines to an existing Ruby file (<code>routes.rb</code>).
+This piqued my interest because it’s not just adding those lines to the end of a file; it’s somewhat syntax-aware.</p>
+<p>It’s <a href="https://stackoverflow.com/a/39742150/2884502">a little more finnicky</a> to add an action to an existing controller via the CLI.
+I think most people just write the code.
+I want a workflow in Haskell where there are a few conventional modules that a CLI tool can programmatically update to add a new endpoint.</p>
+<p>The practise program I wrote can add fields to a record while preserving formatting:</p>
+<table>
+<thead>
+<th>
+Input
+</th>
+<th>
+Action
+</th>
+<th>
+Output
+</th>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">X</span> <span class="ot">=</span> <span class="dt">X</span> {<span class="ot"> a ::</span> <span class="dt">Int</span>,<span class="ot"> b ::</span> <span class="dt">Int</span> }</span></code></pre></div>
+</td>
+<td>
+<p>add <code>c :: Int</code></p>
+</td>
+<td>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">X</span> <span class="ot">=</span> <span class="dt">X</span> {<span class="ot"> a ::</span> <span class="dt">Int</span>,<span class="ot"> b ::</span> <span class="dt">Int</span>,<span class="ot"> c ::</span> <span class="dt">Int</span> }</span></code></pre></div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">X</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">X</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  {<span class="ot"> a ::</span> <span class="dt">Int</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  ,<span class="ot"> b ::</span> <span class="dt">Int</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+</td>
+<td>
+<p>add <code>c :: Int</code></p>
+</td>
+<td>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">X</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">X</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  {<span class="ot"> a ::</span> <span class="dt">Int</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  ,<span class="ot"> b ::</span> <span class="dt">Int</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  ,<span class="ot"> c ::</span> <span class="dt">Int</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">X</span> <span class="ot">=</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">X</span>{</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ot">    a ::</span> <span class="dt">Int</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    b ::</span> <span class="dt">Int</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+</td>
+<td>
+<p>add <code>c :: Int</code></p>
+</td>
+<td>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">X</span> <span class="ot">=</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">X</span>{</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ot">    a ::</span> <span class="dt">Int</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    b ::</span> <span class="dt">Int</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ot">    c ::</span> <span class="dt">Int</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="haskell-syntax-tools"><a href="#haskell-syntax-tools"><code>haskell-syntax-tools</code></a></h2>
+<p><em>October</em></p>
+<p><a href="https://github.com/LightAndLight/haskell-syntax-tools" class="uri">https://github.com/LightAndLight/haskell-syntax-tools</a></p>
+<p>After <a href="#haskell-code-manipulation-via-ghc-exactprint">Haskell code manipulation via <code>ghc-exactprint</code></a>,
+I created some support libraries to help me write scaffolding and boilerplate generation for <a href="#hedge"><code>hedge</code></a>.
+I initially tried to use <a href="https://hackage.haskell.org/package/ghc-exactprint"><code>ghc-exactprint</code></a>,
+but I found its documentation was lacking and its API wasn’t intuitive.
+It was easier to start from scratch.</p>
+<p><code>haskell-syntax-tools</code> includes:
+<a href="https://github.com/LightAndLight/haskell-syntax-tools/blob/2981581fbddc6011f41558ae693e21e1ec556509/ghc-lens/src/GHC/Lens.hs">optics for the GHC AST</a>,
+<a href="https://github.com/LightAndLight/haskell-syntax-tools/blob/2981581fbddc6011f41558ae693e21e1ec556509/ghc-exactprint-transform/src/GHC/ExactPrint/Transform.hs">common syntax manipluations</a>,
+and <a href="https://github.com/LightAndLight/haskell-syntax-tools/blob/2981581fbddc6011f41558ae693e21e1ec556509/ghc-exactprint-syntax/src/GHC/ExactPrint/QQ.hs">a quasiquoter for writing GHC AST fragments</a>.</p>
+<h2 id="template-monoid"><a href="#template-monoid"><code>template-monoid</code></a></h2>
+<p><em>October</em></p>
+<p><a href="https://github.com/LightAndLight/template-monoid" class="uri">https://github.com/LightAndLight/template-monoid</a></p>
+<p><code>template-monoid</code> is a simple Haskell library for combining monoidal values with effects.
+Quoting the README:</p>
+<blockquote>
+<p>The <code>Template</code> type defined in this library already exists in <code>base</code> as <a href="https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-Monoid.html#t:Ap"><code>Ap</code></a>.
+I’ve created a new package because I think it deserves to stand on its own as a concept, with explanations and code examples.</p>
+<p>The description of the <code>Ap</code> type is:</p>
+<blockquote>
+<p>This data type witnesses the lifting of a Monoid into an Applicative pointwise.</p>
+</blockquote>
+<p>While accurate, this description is rather dry and doesn’t spark my curiosity or gesture at potential uses for this datatype.</p>
+</blockquote>
+<p><code>Template</code> has an <code>IsString</code> instance, so you can write code like <code>("Hello, " &lt;&gt; Template readLine) :: Template IO String</code>.
+I’ve used it to generate SQL queries in <a href="#basque"><code>basque</code></a> and <a href="#hedge"><code>hedge</code></a>.
+SQL queries are mostly strings, but if you want to escape identifiers then the strings have to live in <code>ReaderT Connection IO</code>.
+<code>Template</code> makes this quite pretty, e.g. <code>("SELECT * FROM " &lt;&gt; escape tableName &lt;&gt; " WHERE id = 1") :: Template (ReaderT Connection IO) String</code>.</p>
+<h2 id="hedge"><a href="#hedge"><code>hedge</code></a></h2>
+<p><em>October—November</em></p>
+<p><a href="https://github.com/LightAndLight/hedge" class="uri">https://github.com/LightAndLight/hedge</a> (private)</p>
+<p><code>hedge</code> is my attempt at a web framework that combines my favourite parts of
+<a href="https://rubyonrails.org/">Ruby on Rails</a> with my favourite parts of
+<a href="https://www.haskell.org/">Haskell</a> and functional programming.
+My taste for web frameworks has become more refined,
+and I want a framework that has all of my favourite features of various frameworks with none of the incidental downsides.</p>
+<p>For example:</p>
+<ul>
+<li>I like Rails’ “convention over configuration”, “everything is Ruby”, and use of scaffolding tools, but I dislike Ruby’s type system.</li>
+<li>I like <a href="https://www.servant.dev/">Servant</a>’s type safety, but dislike its implementation complexity.</li>
+<li>I like <a href="https://www.yesodweb.com/">Yesod</a>’s boilerplate generation, but dislike its use of Template Haskell DSLs for this.</li>
+<li>I like <a href="https://ihp.digitallyinduced.com/">IHP</a>’s comprehensiveness and focus on developer experience, but disagree with a lot of its software engineering choices.</li>
+</ul>
+<p><code>hedge</code> is an expression of some of my software engineering and web development values,
+and it will probably live in a new corner of the design space when it comes to Haskell web frameworks.
+It’s currently private because I don’t like having half-finished public repositories.
+I’ll open source it when I think it’s usable.</p>
+<h2 id="replace-taffybar-with-polybar"><a href="#replace-taffybar-with-polybar">Replace Taffybar with Polybar</a></h2>
+<p><em>December</em></p>
+<p>I got a new laptop and started playing with battery usage optimisation.
+I soon noticed that Taffybar consistently used 100% of a CPU core while idle.
+After a bit of searching I couldn’t find anything that suggested improvements, so I started looking for alternatives.
+I found <a href="https://github.com/polybar/polybar">polybar</a>, and <a href="https://github.com/LightAndLight/personal-configs/commit/009d2b68332725421aa16b5c00bcc4fbef185565">tried it out</a>.
+It works great.
+Here’s my current config: <a href="https://github.com/LightAndLight/personal-configs/blob/3e340b4d93359386bdda492cb72dfcc8b0922e17/home/polybar/config.ini.nix" class="uri">https://github.com/LightAndLight/personal-configs/blob/3e340b4d93359386bdda492cb72dfcc8b0922e17/home/polybar/config.ini.nix</a>.</p>
+<figure>
+<img src="./images/2025-02-27-desktop.png">
+<figcaption>
+Screenshot of my desktop.
+There are two Polybar bars; one at the top of the screen and one at the bottom.
+The top bar shows my X workspace selection, and the current date and time.
+The bottom bar shows my computer’s resource usage: CPU, RAM, and network traffic.
+</figcaption>
+</figure>
+<h2 id="neuron-performance-improvements"><a href="#neuron-performance-improvements"><code>neuron</code> performance improvements</a></h2>
+<p><em>December</em></p>
+<p><a href="https://github.com/LightAndLight/neuron" class="uri">https://github.com/LightAndLight/neuron</a></p>
+<p><a href="https://github.com/srid/neuron"><code>neuron</code></a> is a simple <a href="https://en.wikipedia.org/wiki/Zettelkasten">Zettelkasten</a> tool
+that I’ve been using for a couple of years.
+It’s no longer maintained, but it has worked fine for me for a long time.
+Recently it started getting really slow, and I decided to investigate.</p>
+<p>I eventually figured out that it was traversing the entirety of <a href="https://direnv.net/"><code>.direnv</code></a>,
+which contained a checkout of <a href="https://github.com/nixos/nixpkgs"><code>nixpkgs</code></a>
+—a repo consisting of hundreds of thousands of files.
+The code created a full file tree in memory then filtered out entries such as hidden directories.
+I fixed it by applying the filepath filters while constructing the in-memory file tree,
+so that it would skip <code>.direnv</code> and never even look at its contents.</p>
+<p>I read a similar story recently:
+<a href="https://randomascii.wordpress.com/2022/09/29/why-modern-software-is-slow-windows-voice-recorder/">Why Modern Software is Slow–Windows Voice Recorder</a>.</p>
+  <footer>
+    <p>
+      
+      <a href="/my-git-cli-overhaul">My Git CLI overhaul - Previous</a>
+      
+      |
+      
+      <span>Newest</span>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:blog@id.ielliott.io">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:blog@id.ielliott.io">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+
+  <script>feather.replace()</script>
+
+  
+</body>
+
+</html>

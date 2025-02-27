@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+
+  
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+  <link type="text/css" href="/res/asciinema-player.css" rel="stylesheet">
+  
+
+  
+  <title>My Git CLI overhaul - blog.ielliott.io</title>
+  
+
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/my-git-cli-overhaul">
+<meta property="og:url" content="https://blog.ielliott.io/my-git-cli-overhaul">
+<meta property="og:title" content="My Git CLI overhaul">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="My Git CLI overhaul">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="Showing off the Git aliases I use daily.">
+<meta property="og:description" content="Showing off the Git aliases I use daily.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-02-26T22:45+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"My Git CLI overhaul",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2025-02-26T22:45+00:00",
+  "dateModified":"2025-02-26T22:45+00:00",
+  "description":"Showing off the Git aliases I use daily.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/my-git-cli-overhaul"
+  },
+  "url": "https://blog.ielliott.io/my-git-cli-overhaul"
+}
+</script>
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+
+  <section>
+    
+
+    <article>
+  <h1>My Git CLI overhaul</h1>
+  <p class="date">26 February, 2025</p>
+  <p><em>I split this out of <a href="/2024-project-review">my 2024 project review</a> because it got too long.</em></p>
+<p>Last year I improved my daily Git experience by writing a bunch of aliases.
+Here’s a reference for what I’ve done so far (<a href="https://github.com/LightAndLight/personal-configs/blob/3e340b4d93359386bdda492cb72dfcc8b0922e17/home/git.nix#L26">Nix configs</a>).</p>
+<div id="toc" style="float: right; max-width: 15em; white-space: normal; column-count: 2;">
+<h3>Contents</h3>
+<ul>
+<li><a href="#meta">Meta</a></li>
+<li><a href="#git-a"><code>git a</code></a></li>
+<li><a href="#git-amend"><code>git amend</code></a></li>
+<li><a href="#git-ap"><code>git ap</code></a></li>
+<li><a href="#git-au"><code>git au</code></a></li>
+<li><a href="#git-br"><code>git br</code></a></li>
+<li><a href="#git-co"><code>git co</code></a></li>
+<li><a href="#git-coe"><code>git coe</code></a></li>
+<li><a href="#git-com"><code>git com</code></a></li>
+<li><a href="#git-ch"><code>git ch</code></a></li>
+<li><a href="#git-chn"><code>git chn</code></a></li>
+<li><a href="#git-d"><code>git d</code></a></li>
+<li><a href="#git-ds"><code>git ds</code></a></li>
+<li><a href="#git-f"><code>git f</code></a></li>
+<li><a href="#git-l"><code>git l</code></a></li>
+<li><a href="#git-lg"><code>git lg</code></a></li>
+<li><a href="#git-p"><code>git p</code></a></li>
+<li><a href="#git-pa"><code>git pa</code></a></li>
+<li><a href="#git-pf"><code>git pf</code></a></li>
+<li><a href="#git-r"><code>git r</code></a></li>
+<li><a href="#git-re"><code>git re</code></a></li>
+<li><a href="#git-rec"><code>git rec</code></a></li>
+<li><a href="#git-rei"><code>git rei</code></a></li>
+<li><a href="#git-reword"><code>git reword</code></a></li>
+<li><a href="#git-st"><code>git st</code></a></li>
+<li><a href="#git-spop"><code>git spop</code></a></li>
+<li><a href="#git-spush"><code>git spush</code></a></li>
+<li><a href="#git-undo"><code>git undo</code></a></li>
+</ul>
+</div>
+<h2 id="meta"><a href="#meta">Meta</a></h2>
+<ul>
+<li><p>Every command that changes repo state prints the updated state using <a href="#git-st"><code>git st</code></a>.</p></li>
+<li><p>Every command that acts on a Git object, like a commit or a branch, opens a fuzzy finder if the object is omitted.</p></li>
+</ul>
+<h2 id="git-a"><a href="#git-a"><code>git a</code></a></h2>
+<p><code>git a FILE+</code> - Stage the given <code>FILE</code>s.</p>
+<p>Inverse: <a href="#git-r"><code>git r</code></a>.</p>
+<h2 id="git-amend"><a href="#git-amend"><code>git amend</code></a></h2>
+<p><code>git amend</code> - Add the currently staged changes to a given commit.</p>
+<figure>
+<x-asciinema-cast data-src="./images/git-amend.cast" data-idle-time-limit="1" aria-details="git-amend-details"></x-asciinema-cast>
+<figcaption id="git-amend-details">
+<p><a href="https://asciinema.org/">Asciinema</a> cast of <code>git amend</code> (<a href="./images/git-amend.cast">source</a>).
+After a file is staged, <code>git amend</code> brings up a fuzzy-finder showing recent commits.
+A commit is selected, and the staged change inserted into that commit.</p>
+<noscript>
+Enable JavaScript to view the cast.
+</noscript>
+</figcaption>
+</figure>
+<h2 id="git-ap"><a href="#git-ap"><code>git ap</code></a></h2>
+<p><code>git ap</code> - Stage files using <a href="https://git-scm.com/docs/git-add#_interactive_mode">interactive patch mode</a>.</p>
+<h2 id="git-au"><a href="#git-au"><code>git au</code></a></h2>
+<p><code>git au</code> - Stage all modified files.</p>
+<h2 id="git-br"><a href="#git-br"><code>git br</code></a></h2>
+<p><code>git br OPTION*</code> - Branch management.</p>
+<p>Prints the current branch name if <code>OPTION</code>s are ommitted. Otherwise, <code>OPTION</code>s are passed to <a href="https://git-scm.com/docs/git-branch"><code>git branch</code></a>.</p>
+<h2 id="git-co"><a href="#git-co"><code>git co</code></a></h2>
+<p><code>git co</code> - Commit staged files, opening an editor for the commit message.</p>
+<p>Inverse: <a href="#git-undo"><code>git undo</code></a>.</p>
+<h2 id="git-coe"><a href="#git-coe"><code>git coe</code></a></h2>
+<p><code>git coe MESSAGE</code> - Create an empty commit with message <code>MESSAGE</code>.</p>
+<p>Inverse: <a href="#git-undo"><code>git undo</code></a>.</p>
+<h2 id="git-com"><a href="#git-com"><code>git com</code></a></h2>
+<p><code>git com MESSAGE</code> - Commit staged files with message <code>MESSAGE</code>.</p>
+<p>Inverse: <a href="#git-undo"><code>git undo</code></a>.</p>
+<h2 id="git-ch"><a href="#git-ch"><code>git ch</code></a></h2>
+<p><code>git ch BRANCH?</code> - Switch to a branch.</p>
+<figure>
+<x-asciinema-cast data-src="./images/git-ch.cast" data-idle-time-limit="1" aria-details="git-ch-details"></x-asciinema-cast>
+<figcaption id="git-ch-details">
+<p><a href="https://asciinema.org/">Asciinema</a> cast of <code>git ch</code> (<a href="./images/git-ch.cast">source</a>).
+<code>git ch</code> brings up a fuzzy-finder showing available branches.
+A branch is selected and switched to.</p>
+<noscript>
+Enable JavaScript to view the cast.
+</noscript>
+</figcaption>
+</figure>
+<h2 id="git-chn"><a href="#git-chn"><code>git chn</code></a></h2>
+<p><code>git chn BRANCH</code> - Create and switch to branch <code>BRANCH</code>.</p>
+<h2 id="git-d"><a href="#git-d"><code>git d</code></a></h2>
+<p><code>git d</code> - Diff unstaged files against staged and committed files.</p>
+<h2 id="git-ds"><a href="#git-ds"><code>git ds</code></a></h2>
+<p><code>git ds</code> - Diff staged files against committed files.</p>
+<h2 id="git-f"><a href="#git-f"><code>git f</code></a></h2>
+<p><code>git f</code> - Fetch new changes, and show whether recent commits have diverged.</p>
+<figure>
+<img src="./images/git-f-diverged.png" aria-details="git-f-details" style="width: auto; max-height: 100px;">
+<figcaption id="git-f-details">
+Screenshot of <code>git f</code>, where the local changes have diverged from the remote changes.
+The commits are listed in the same format as <a href="#git-l"><code>git l</code></a>, but both the local and remote commits are listed, and an ASCII graph highlights the divergence.
+</figcaption>
+</figure>
+<h2 id="git-l"><a href="#git-l"><code>git l</code></a></h2>
+<p><code>git l</code> - Display the 20 most recent commits.</p>
+<figure>
+<img src="./images/git-l.png" aria-details="git-l-details">
+<figcaption id="git-l-details">
+Screenshot of <code>git l</code>.
+Commits are listed one per line.
+Each line includes: a shortened commit hash, the first line of the commit message, the time since the commit was made, and any branches that point to the commit.
+</figcaption>
+</figure>
+<h2 id="git-lg"><a href="#git-lg"><code>git lg</code></a></h2>
+<p><code>git lg</code> - Display the 20 most recent commits using an ASCII graph.</p>
+<p>See <a href="#git-f"><code>git f</code></a> for a screenshot of an ASCII graph.</p>
+<h2 id="git-p"><a href="#git-p"><code>git p</code></a></h2>
+<p><code>git p</code> - Push the current branch.</p>
+<h2 id="git-pa"><a href="#git-pa"><code>git pa</code></a></h2>
+<p><code>git pa</code> - Push all branches.</p>
+<h2 id="git-pf"><a href="#git-pf"><code>git pf</code></a></h2>
+<p><code>git pf</code> - Force-push the current branch.</p>
+<h2 id="git-r"><a href="#git-r"><code>git r</code></a></h2>
+<p><code>git r FILE+</code> - Unstage staged <code>FILE</code>s.</p>
+<h2 id="git-re"><a href="#git-re"><code>git re</code></a></h2>
+<p><code>git re OPTION*</code> - Call <a href="https://git-scm.com/docs/git-rebase"><code>git rebase</code></a> with <code>OPTION</code>s.</p>
+<h2 id="git-rec"><a href="#git-rec"><code>git rec</code></a></h2>
+<p><code>git rec</code> - Alias for <code>git rebase --continue</code>.</p>
+<h2 id="git-rei"><a href="#git-rei"><code>git rei</code></a></h2>
+<p><code>git rei COMMIT?</code> - Start an <a href="https://git-scm.com/docs/git-rebase#_interactive_mode">interactive rebase</a>.</p>
+<p>Uses <code>COMMIT</code> as the base commit if provided.
+Otherwise, launches a fuzzy finder to select the base commit.</p>
+<h2 id="git-reword"><a href="#git-reword"><code>git reword</code></a></h2>
+<p><code>git reword COMMIT?</code> - Edit a commit message.</p>
+<p>Edits <code>COMMIT</code> if provided.
+Otherwise, launches a fuzzy finder to select the commit.</p>
+<figure>
+<x-asciinema-cast data-src="./images/git-reword.cast" data-idle-time-limit="1" aria-details="git-reword-details"></x-asciinema-cast>
+<figcaption id="git-reword-details">
+<p><a href="https://asciinema.org/">Asciinema</a> cast of <code>git reword</code> (<a href="./images/git-reword.cast">source</a>).
+<code>git reword</code> brings up a fuzzy-finder showing recent commits.
+A commit is selected, and an editor opens containing that commit’s message.
+The message is edited, the editor saved then closed, updating the commit’s message.</p>
+<noscript>
+Enable JavaScript to view the cast.
+</noscript>
+</figcaption>
+</figure>
+<h2 id="git-st"><a href="#git-st"><code>git st</code></a></h2>
+<p><code>git st</code> - Print the repo’s state.</p>
+<figure>
+<img src="./images/git-st.png" aria-details="git-st-details">
+<figcaption id="git-st-details">
+Screenshot of <code>git st</code>.
+Modified files are marked with a red “M”, staged files are marked with a green “A”, and new files are marked witha a red “??”.
+The command also lists any unpushed commits.
+</figcaption>
+</figure>
+<h2 id="git-spop"><a href="#git-spop"><code>git spop</code></a></h2>
+<p><code>git spop</code> - Alias for <code>git stash pop</code>.</p>
+<h2 id="git-spush"><a href="#git-spush"><code>git spush</code></a></h2>
+<p><code>git spush</code> - Alias for <code>git stash push</code>.</p>
+<h2 id="git-undo"><a href="#git-undo"><code>git undo</code></a></h2>
+<p><code>git undo</code> - Remove the most recent commit, staging its files.</p>
+<p>Inverse of <a href="#git-co"><code>git co</code></a>, <a href="#git-coe"><code>git coe</code></a>, <a href="#git-com"><code>git com</code></a>.</p>
+  <footer>
+    <p>
+      
+      <a href="/in-praise-of-zsa">In Praise of ZSA - Previous</a>
+      
+      |
+      
+      <a href="/2024-project-review">Next - 2024 Project Review</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:blog@id.ielliott.io">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:blog@id.ielliott.io">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+
+  <script>feather.replace()</script>
+
+  
+  <script src="/res/asciinema-player.min.js"></script>
+  <script>
+    const casts = document.getElementsByTagName("x-asciinema-cast");
+    for (cast of casts) {
+      AsciinemaPlayer.create(cast.dataset.src, cast, {
+        speed: cast.dataset.speed,
+        idleTimeLimit: cast.dataset.idleTimeLimit
+      });
+    }
+  </script>
+  
+</body>
+
+</html>

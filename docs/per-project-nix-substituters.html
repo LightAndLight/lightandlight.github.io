@@ -30,6 +30,8 @@
   <script src="/res/script.js"></script>
 
   
+
+  
   <title>Per-project Nix substituters - blog.ielliott.io</title>
   
 
@@ -111,7 +113,7 @@ to selectively enable other substituters while I’m working on a project that n
 Here’s how I do it.</p>
 <h2 id="setup"><a href="#setup">Setup</a></h2>
 <p>In <code>configuration.nix</code>, set the system’s trusted substituters<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nix.settings.trusted<span class="op">-</span>substituters = <span class="op">[</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nix<span class="op">.</span>settings<span class="op">.</span>trusted<span class="op">-</span>substituters = <span class="op">[</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;https://cache.nixos.org/&quot;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;substituter-1&quot;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;substituter-2&quot;</span></span>
@@ -119,7 +121,7 @@ Here’s how I do it.</p>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;substituter-N&quot;</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">]</span>;</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>nix.settings.trusted<span class="op">-</span>public<span class="op">-</span>keys = <span class="op">[</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>nix<span class="op">.</span>settings<span class="op">.</span>trusted<span class="op">-</span>public<span class="op">-</span>keys = <span class="op">[</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=&quot;</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;other-public-key-1&quot;</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;other-public-key-2&quot;</span></span>
@@ -127,7 +129,7 @@ Here’s how I do it.</p>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;other-public-key-N&quot;</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">]</span>;</span></code></pre></div>
 <p>And set Nix’s default substituter:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nix.settings.substituters = <span class="op">[</span></span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nix<span class="op">.</span>settings<span class="op">.</span>substituters = <span class="op">[</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;https://cache.nixos.org/&quot;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">]</span>;</span></code></pre></div>
 <p>By default, only the substituters in <code>substituters</code> will be used by Nix.
@@ -151,15 +153,15 @@ command inside a <code>.envrc</code> in the project root.</p>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;substituter-42&quot;</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">];</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">inputs</span> <span class="op">=</span> ...<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">inputs</span> <span class="op">=</span> <span class="op">.</span>..;</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="va">outputs</span> <span class="op">=</span> ...<span class="op">;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  outputs = <span class="op">.</span>..;</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>By default, Nix will ask for permission to use the config specified by the Flake.
 I use <a href="https://github.com/nix-community/nix-direnv">nix-direnv</a> to automatically load and unload <a href="https://nix.dev/manual/nix/2.18/command-ref/new-cli/nix3-develop">Nix develop shells</a> when switching projects,
 and the permission prompt <a href="https://github.com/direnv/direnv/issues/1022">breaks direnv on my shell</a>.</p>
 <p>To work around this, I enable the <a href="https://nix.dev/manual/nix/2.18/command-ref/conf-file#conf-accept-flake-config"><code>accept-flake-config</code></a> Nix option in my <code>configuration.nix</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nix.extraOptions = <span class="st">''</span></span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nix<span class="op">.</span>extraOptions = <span class="st">''</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="st">  experimental-features = nix-command flakes</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">  accept-flake-config = true</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">''</span>;</span></code></pre></div>
@@ -249,6 +251,8 @@ by <code>extra-</code> to append to the previous value.</p>
 </footer>
 
   <script>feather.replace()</script>
+
+  
 </body>
 
 </html>
