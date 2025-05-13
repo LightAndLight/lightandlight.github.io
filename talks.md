@@ -6,6 +6,10 @@ description: Presentations I've given.
 
 # Talks
 
+* May 2025 &mdash; A "third way" of compiling polymorphism ([source](https://github.com/LightAndLight/polymorphism-third-way-talk), [slides](/talks/polymorphism-third-way.pdf))
+  
+  [BFPG](https://bfpg.org) presentation.
+
 * September 2023 &mdash; Rust and functional programming ([source](https://github.com/LightAndLight/rust-and-fp), [slides](/talks/rust-and-fp.pdf))
   
   [BFPG](https://bfpg.org) presentation.
