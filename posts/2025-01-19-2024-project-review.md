@@ -382,7 +382,7 @@ It was easier to start from scratch.
 
 `haskell-syntax-tools` includes:
 [optics for the GHC AST](https://github.com/LightAndLight/haskell-syntax-tools/blob/2981581fbddc6011f41558ae693e21e1ec556509/ghc-lens/src/GHC/Lens.hs),
-[common syntax manipluations](https://github.com/LightAndLight/haskell-syntax-tools/blob/2981581fbddc6011f41558ae693e21e1ec556509/ghc-exactprint-transform/src/GHC/ExactPrint/Transform.hs),
+[common syntax manipulations](https://github.com/LightAndLight/haskell-syntax-tools/blob/2981581fbddc6011f41558ae693e21e1ec556509/ghc-exactprint-transform/src/GHC/ExactPrint/Transform.hs),
 and [a quasiquoter for writing GHC AST fragments](https://github.com/LightAndLight/haskell-syntax-tools/blob/2981581fbddc6011f41558ae693e21e1ec556509/ghc-exactprint-syntax/src/GHC/ExactPrint/QQ.hs).
 
 ## `template-monoid`
