@@ -112,7 +112,7 @@ This post is about why I care and how I've worked around it.",
 <li><a href="#appendix-philosophical-ramblings">Appendix: philosophical ramblings</a>
 <ul>
 <li><a href="#infinity-as-an-object">Infinity as an object</a></li>
-<li><a href="#codata-via-pi-types">Codata via <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types</a></li>
+<li><a href="#codata-via-pi-types">Codata via <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types</a></li>
 </ul></li>
 </ul>
 </div>
@@ -351,8 +351,8 @@ Agda has an issue label called <a href="https://github.com/agda/agda/labels/infi
 because there are a number of ways to prove <code>false</code> by assuming that the size <code>∞</code> is smaller than itself.
 Whether this is due to software bugs or broken theory,
 I think the root cause is the complexity of trying to think of infinity as “the same sort of thing” as a finite size.</p>
-<h3 id="codata-via-pi-types"><a href="#codata-via-pi-types">Codata via <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types</a></h3>
-<p>I like this encoding of sized types because it puts a <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-type at the center of the coinductive definition.
+<h3 id="codata-via-pi-types"><a href="#codata-via-pi-types">Codata via <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types</a></h3>
+<p>I like this encoding of sized types because it puts a <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-type at the center of the coinductive definition.
 It could be made even more obvious like this:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode agda"><code class="sourceCode agda"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> Field <span class="ot">:</span> <span class="dt">Set</span> <span class="kw">where</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  head tail <span class="ot">:</span> Field</span>
@@ -373,7 +373,7 @@ It could be made even more obvious like this:</p>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      tail <span class="ot">→</span> repeat x</span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">}</span></span>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">}</span></span></code></pre></div>
-<p>The relationship between data and codata seems analogous to the relationship between <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>-types and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types.
+<p>The relationship between data and codata seems analogous to the relationship between <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>-types and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types.
 I don’t have anything rigorous to say about this; it’s just a feeling.
 Here’s a table that expands on the feeling:</p>
 <style>
@@ -409,10 +409,10 @@ Negative types
 </tr>
 <tr>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>-types
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>-types
 </td>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math>-types
 </td>
 </tr>
 <tr>

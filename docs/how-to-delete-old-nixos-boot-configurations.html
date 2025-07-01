@@ -124,12 +124,12 @@ improved since then. Either way, these instructions are more complex
 than necessary, so I’ve updated them.</p>
 <ol type="1">
 <li><p><del>Delete the old (excludes the current) package configurations for the
-NixOS system <code>sudo nix-env -p /nix/var/nix/profiles/system --delete-generations old</code></del></p></li>
+NixOS system <code>sudo nix-env -p /nix/var/nix/profiles/system    --delete-generations old</code></del></p></li>
 <li><p><del>Collect garbage <code>nix-collect-garbage -d</code></del></p></li>
-<li><p><del>View the remaining generation <code>nix-env -p /nix/var/nix/profiles/system --list-generations</code>. Take note of this for the next step.</del></p></li>
+<li><p><del>View the remaining generation <code>nix-env -p /nix/var/nix/profiles/system    --list-generations</code>. Take note of this for the next step.</del></p></li>
 <li><p><del>Remove unnecessary boot loader entries. I use <code>systemd-boot</code>, so all
 my entries are located in <code>/boot/loader/entries</code>. To remove all the
-old entries, run <code>sudo bash -c "cd /boot/loader/entries; ls | grep -v &lt;current-generation-name&gt; | xargs rm"</code> (you might want to back up
+old entries, run <code>sudo bash -c "cd /boot/loader/entries; ls | grep    -v &lt;current-generation-name&gt; | xargs rm"</code> (you might want to back up
 the entries somewhere to be safe)</del></p></li>
 </ol>
   <footer>
