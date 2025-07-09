@@ -49,8 +49,18 @@
 </head>
 
 <body>
-  $partial("templates/header.html")$
-  $partial("templates/nav.html")$
+  <header>
+    <h1 class="centered large">I E</h1>
+  </header>
+  <nav>
+    <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+    &nbsp;
+    &nbsp;
+    <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+    &nbsp;
+    &nbsp;
+    <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+  </nav>
 
   <section>
     $if(math)$
@@ -59,7 +69,39 @@
 
     $body$
   </section>
-  $partial("templates/footer.html")$
+
+  <footer>
+    <div class="footer-item">
+      <span>Isaac Elliott</span>
+    </div>
+
+    <div class="footer-item">
+      <a class="footer-link-icon" href="https://github.com/lightandlight">
+        <i class="footer-icon" data-feather="github"></i>
+      </a>
+      <a class="footer-link-name" href="https://github.com/lightandlight">
+        GitHub
+      </a>
+    </div>
+
+    <div class="footer-item">
+      <a class="footer-link-icon" href="mailto:blog@id.ielliott.io">
+        <i class="footer-icon" data-feather="mail"></i>
+      </a>
+      <a class="footer-link-name" href="mailto:blog@id.ielliott.io">
+        Email
+      </a>
+    </div>
+
+    <div class="footer-item">
+      <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+        <i class="footer-icon" data-feather="rss"></i>
+      </a>
+      <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+        Atom
+      </a>
+    </div>
+  </footer>
 
   <script>feather.replace()</script>
 
