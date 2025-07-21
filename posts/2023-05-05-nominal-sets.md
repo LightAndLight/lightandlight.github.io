@@ -4,8 +4,8 @@ author: ielliott95
 permalink: /nominal-sets
 date: 2023-07-04T06:41:00Z
 excerpt: |
-  Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
-  theory of nominal sets.
+  <p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
+  theory of nominal sets.</p>
 math: true
 tags:
   - programming

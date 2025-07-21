@@ -4,8 +4,8 @@ permalink: /sized-types-and-coinduction-in-safe-agda
 date: 2024-09-04
 math: true
 excerpt: |
-  Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
-  This post is about why I care and how I've worked around it.
+  <p>Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
+  This post is about why I care and how I've worked around it.</p>
 ---
 
 <div id="toc"><!-- generated --></div>

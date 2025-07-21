@@ -4,7 +4,7 @@ author: ielliott95
 permalink: /nominal-sets-proofs
 date: 2023-07-04T06:40:00Z
 excerpt: |
-  The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
+  <p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
 math: true
 tags:
   - mathematics
