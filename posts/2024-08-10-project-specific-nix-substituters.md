@@ -4,7 +4,7 @@ permalink: /per-project-nix-substituters
 date: 2024-08-10
 ---
 
-<div id="toc" style="float: right;"><!-- generated --></div>
+<div id="toc"><!-- generated --></div>
 
 A lot of Nix projects end up with their own binary cache (also known as a "substituter").
 Nix can be quite slow when it's configured to use many project-specific substituters[^slow],

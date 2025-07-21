@@ -4,7 +4,7 @@ permalink: /exploring-graphs-with-prolog
 date: 2025-08-02T07:00:00Z
 ---
 
-<div id="toc" style="float: right;"><!-- generated --></div>
+<div id="toc"><!-- generated --></div>
 
 I was working on my (currently private) [YouTube feed reader project](https://lectio.news/),
 watching the dependencies build after I upgraded the GHC version,

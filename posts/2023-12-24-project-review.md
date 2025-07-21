@@ -10,7 +10,7 @@ excerpt: <p>Reflections on 2023's hobby projects.</p>
 math: true
 ---
 
-<div id="toc" style="float: right; max-width: 15em; white-space: normal;"><!-- generated --></div>
+<div id="toc" style="white-space: normal;"><!-- generated --></div>
 
 ## Ipso
 

@@ -5,7 +5,7 @@ date: 2025-02-26T22:45:05Z
 excerpt: <p>Reflections on 2024's hobby projects.</p>
 ---
 
-<div id="toc" style="float: right; max-width: 15em; white-space: normal;"><!-- generated --></div>
+<div id="toc" style="white-space: normal;"><!-- generated --></div>
 
 ## Blog
 

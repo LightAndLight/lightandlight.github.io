@@ -4,7 +4,7 @@ permalink: /playing-with-ghc-package-databases
 date: 2025-07-01T04:30:00Z
 ---
 
-<div id="toc" style="float: right; max-width: 30ch; text-wrap: auto;"><!-- generated --></div>
+<div id="toc" style="text-wrap: auto;"><!-- generated --></div>
 
 I wanted to do some dependency analysis of a Haskell project,
 and I wanted to see what it was like without installing a Cabal-specific tool such as
