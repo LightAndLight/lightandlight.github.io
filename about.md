@@ -6,7 +6,7 @@ description: A little bit about me.
 
 <h1 class="centered">About Me</h1>
 
-<div id="toc" style="float: right;">
+<div id="toc">
 <h3>Links</h3>
 <ul>
 <li><a href="/cv">CV</a>

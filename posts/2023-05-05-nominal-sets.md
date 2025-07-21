@@ -32,7 +32,7 @@ like to use a variable binding library instead. I think
 like to explore an alternative way of tackling the problem, inspired by a formalism called "nominal sets".
 
 </div>
-<div id="toc" style="float: right;"><!-- generated --></div>
+<div id="toc"><!-- generated --></div>
 </div>
 
 ## Why did I write this?

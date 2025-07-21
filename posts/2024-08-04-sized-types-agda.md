@@ -8,7 +8,7 @@ excerpt: |
   This post is about why I care and how I've worked around it.
 ---
 
-<div id="toc" style="float: right;"><!-- generated --></div>
+<div id="toc"><!-- generated --></div>
 
 Agda's [sized types](https://agda.readthedocs.io/en/latest/language/sized-types.html) are inconsistent.
 This post is about why I care and how I've worked around it.

@@ -1,26 +1,18 @@
 $if(tag)$
-<header>
-    <h1 class="centered">Posts about $tag$:</h1>
-</header>
+<h1 class="centered">Posts about $tag$:</h1>
 $endif$
 
 $for(posts)$
-<article>
-    <header>
-        <h1><a href="$url$">$title$</a></h1>
-        <p class="date">$date$</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="$url$">$title$</a></h1>
+    <p class="post-metadata">
+      $date$
+      $if(has_tags)$
+      ⋅
+      $partial("templates/tags-list.html")$
+      $endif$
+    </p>
 
     $excerpt$
-
-    <footer style="text-align: center;">
-        <p>...
-            $if(has_tags)$
-            <br>
-            $partial("templates/tags-list.html")$
-            <br>
-            $endif$
-        </p>
-    </footer>
 </article>
 $endfor$

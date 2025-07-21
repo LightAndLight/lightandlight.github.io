@@ -5,21 +5,15 @@ tags:
 - programming
 ---
 
-<div class="intro-wrapper">
-  <div class="intro">
+<div id="toc"><!-- generated --></div>
 
-  I've just finished migrating this site from [Jekyll](https://jekyllrb.com/) to
-  [Hakyll](https://jaspervdj.be/hakyll/). The only noticeable changes are: *slightly* prettier page URLs, MathML support, and
-  tweaks to syntax highlighting to compensate for using [Pandoc](https://pandoc.org). I paid
-  special attention to preserving the [Atom feed](/feed.xml) identifiers so that feed readers aren't
-  impacted.
+I've just finished migrating this site from [Jekyll](https://jekyllrb.com/) to
+[Hakyll](https://jaspervdj.be/hakyll/). The only noticeable changes are: *slightly* prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using [Pandoc](https://pandoc.org). I paid
+special attention to preserving the [Atom feed](/feed.xml) identifiers so that feed readers aren't
+impacted.
 
-  You can find the source code at <https://github.com/LightAndLight/lightandlight.github.io/>.
-
-  </div>
-
-  <div id="toc"><!-- generated --></div>
-</div>
+You can find the source code at <https://github.com/LightAndLight/lightandlight.github.io/>.
 
 ## Background
 

@@ -11,7 +11,7 @@ asciinema: true
 Last year I improved my daily Git experience by writing a bunch of aliases.
 Here's a reference for what I've done so far ([Nix configs](https://github.com/LightAndLight/personal-configs/blob/3e340b4d93359386bdda492cb72dfcc8b0922e17/home/git.nix#L26)).
 
-<div id="toc" style="float: right; max-width: 15em; white-space: normal; column-count: 2;"><!-- generated --></div>
+<div id="toc" style="min-width: 15rem; white-space: normal; column-count: 2;"><!-- generated --></div>
 
 ## Meta
 
