@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-04K8QC3TXH');
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="/res/style.css">
+  <link rel="stylesheet" href="/res/syntax.css">
+
+  
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
+
+  
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="/res/script.js"></script>
+
+  
+
+  
+  <title>Exploring a dependency graph with Prolog - blog.ielliott.io</title>
+  
+
+  <meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<link rel="canonical" href="https://blog.ielliott.io/exploring-graphs-with-prolog">
+<meta property="og:url" content="https://blog.ielliott.io/exploring-graphs-with-prolog">
+<meta property="og:title" content="Exploring a dependency graph with Prolog">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Exploring a dependency graph with Prolog">
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="I was working on my (currently private) YouTube feed reader project,
+watching the dependencies build after I upgraded the GHC version,
+when I noticed an odd transitive dependency: happy.
+happy is a parser generator, and this project is a web app.
+Why does my web app depend on a parser generator?">
+<meta property="og:description" content="I was working on my (currently private) YouTube feed reader project,
+watching the dependencies build after I upgraded the GHC version,
+when I noticed an odd transitive dependency: happy.
+happy is a parser generator, and this project is a web app.
+Why does my web app depend on a parser generator?">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-08-02T07:00+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Exploring a dependency graph with Prolog",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2025-08-02T07:00+00:00",
+  "dateModified":"2025-08-02T07:00+00:00",
+  "description":"I was working on my (currently private) YouTube feed reader project,
+watching the dependencies build after I upgraded the GHC version,
+when I noticed an odd transitive dependency: happy.
+happy is a parser generator, and this project is a web app.
+Why does my web app depend on a parser generator?",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/exploring-graphs-with-prolog"
+  },
+  "url": "https://blog.ielliott.io/exploring-graphs-with-prolog"
+}
+</script>
+</head>
+
+<body>
+  <header>
+  <h1 class="centered large">I E</h1>
+</header>
+  <nav>
+  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
+  &nbsp;
+  &nbsp;
+  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
+  &nbsp;
+  &nbsp;
+  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
+</nav>
+
+  <section>
+    
+
+    <article>
+  <h1>Exploring a dependency graph with Prolog</h1>
+  <p class="date"> 2 August, 2025</p>
+  <div id="toc" style="float: right;">
+<h3>Contents</h3>
+<ul>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#exploration">Exploration</a></li>
+<li><a href="#thoughts-and-ideas">Thoughts and ideas</a></li>
+</ul>
+</div>
+<p>I was working on my (currently private) <a href="https://lectio.news/">YouTube feed reader project</a>,
+watching the dependencies build after I upgraded the GHC version,
+when I noticed an odd transitive dependency: <a href="https://hackage.haskell.org/package/happy"><code>happy</code></a>.
+<code>happy</code> is a parser generator, and this project is a web app.
+Why does my web app depend on a parser generator?</p>
+<p>This reminded me of my recent <a href="https://blog.ielliott.io/playing-with-ghc-package-databases">Haskell dependency graph exploration</a>,
+where I wondered whether there was a good way to query dependency graph.
+It then occurred to me that <a href="https://en.wikipedia.org/wiki/Datalog">Datalog</a> might be a good query language for this.
+I couldn’t find a canonical FOSS Datalog implementation, so I went with <a href="https://www.gprolog.org/">GNU Prolog</a> instead.
+Here’s how it turned out.</p>
+<h2 id="setup"><a href="#setup">Setup</a></h2>
+<p>We’re going to turn the output of <code>ghc-pkg dot</code> into a set of Prolog facts.
+An edge from <code>a</code> to <code>b</code> will be encoded as a fact <code>depends_on(a, b)</code>.</p>
+<details class="shell-command" open>
+<summary>
+<samp>$ <kbd>cat &gt; dot2pl.py &lt;&lt;EOF</kbd></samp>
+</summary>
+<pre><samp>$ <kbd>cat > dot2pl.py &lt;&lt;EOF
+import re
+import sys
+
+def dot_to_prolog(dot_content):
+    edges = re.findall(r'"(.+)"\s*->\s*"(.+)"', dot_content)
+
+    for source, target in edges:
+        print(f"depends_on('{source}', '{target}').")
+
+line = input()
+if line == "digraph {":
+    pass
+else:
+    raise Error(f"Expected {"digraph {"}, got {line}")
+
+while True:
+    line = input()
+    if line == "}":
+        break
+    else:
+        dot_to_prolog(line)
+EOF
+</kbd></samp></pre>
+</details>
+<details>
+<summary>
+(no output)
+</summary>
+</details>
+<p>Where are my package databases?</p>
+<samp>$ <kbd>cabal exec -- bash c 'cat $(printenv GHC_ENVIRONMENT) | head -n 20'</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+Configuration is affected by the following files:
+- cabal.project
+-- This is a GHC environment file written by cabal. This means you can
+-- run ghc or ghci and get the environment of the project as a whole.
+-- But you still need to use cabal repl $target to get the environment
+-- of specific components (libs, exes, tests etc) because each one can
+-- have its own source dirs, cpp flags etc.
+--
+clear-package-db
+global-package-db
+package-db /home/isaac/.local/state/cabal/store/ghc-9.8.4-4a67/package.db
+package-db /home/isaac/youtube-feeds/dist-newstyle/packagedb/ghc-9.8.4
+package-id youtube-feeds-atom-0.1.0.0-inplace
+package-id base-4.19.2.0-32b8
+package-id ghc-bignum-1.3-455a
+package-id ghc-prim-0.11.0-3f63
+package-id rts-1.0.2
+package-id bytestring-0.12.1.0-2a7c
+package-id deepseq-1.5.1.0-88f5
+package-id template-haskell-2.21.0.0-bbd9
+package-id ghc-boot-th-9.8.4-77b2
+package-id pretty-1.1.3.6-6e96
+</samp></pre>
+</details>
+<p>Generate the facts.</p>
+<samp>$ <kbd>ghc-pkg --package-db=/home/isaac/.local/state/cabal/store/ghc-9.8.4-4a67/package.db --package-db=/home/isaac/youtube-feeds/dist-newstyle/packagedb/ghc-9.8.4 dot | python3 dot2pl.py &gt; deps.pl</kbd></samp>
+<details>
+<summary>
+(no output)
+</summary>
+</details>
+<p>Now add some definitions for graph manipulation.</p>
+<p class="contains-snippet">
+<code>why_depends</code> is named after <a href="https://nix.dev/manual/nix/2.26/command-ref/new-cli/nix3-why-depends"><code>nix why-depends</code></a>,
+which is the canonical way to ask this question of installed Nix derivations.
+<a class="snippet" id="why-depends-inspiration" href="#why-depends-inspiration">Part of my inspiration for this investigation is the sense that a question like <code>why-depends</code> shouldn’t be baked into CLI of a tool like Nix.
+Instead, there should be a language in which it’s easy to ask that question and all the other questions that would never have been anticipated by the tool’s authors.</a>
+<a class="snippet-anchor" href="#why-depends-inspiration">#</a>
+</p>
+<details class="shell-command" open>
+<summary>
+<samp>$ <kbd>cat &gt; graph.pl &lt;&lt;EOF</kbd></samp>
+</summary>
+<pre><samp>$ <kbd>cat > graph.pl &lt;&lt;EOF
+% Identify nodes.
+node(X) :- depends_on(X, _).
+
+% Identify paths from one node to another.
+why_depends(X, Y, [X, Y]) :- depends_on(X, Y).
+why_depends(X, Z, [X, Y | P]) :- depends_on(X, Y), why_depends(Y, Z, [Y | P]).
+EOF
+</kbd></samp></pre>
+</details>
+<details>
+<summary>
+(no output)
+</summary>
+</details>
+<h2 id="exploration"><a href="#exploration">Exploration</a></h2>
+<samp>$ <kbd>gprolog</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>GNU Prolog 1.5.0 (64 bits)
+Compiled Jul  8 2021, 09:35:47 with gcc
+Copyright (C) 1999-2025 Daniel Diaz
+
+| ?-
+</samp></pre>
+</details>
+<samp>| ?- <kbd>[deps]. [graph].</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+compiling /home/isaac/youtube-feeds/deps.pl for byte code...
+/home/isaac/youtube-feeds/deps.pl compiled, 335 lines read - 53725 bytes written, 8 ms
+
+(2 ms) yes
+compiling /home/isaac/youtube-feeds/graph.pl for byte code...
+/home/isaac/youtube-feeds/graph.pl compiled, 4 lines read - 993 bytes written, 2 ms
+
+yes
+</samp></pre>
+</details>
+<p>What dependencies do we have?</p>
+<samp>| ?- <kbd>setof(N, node(N), Ns).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+Ns = ['MemoTrie-0.6.11','QuickCheck-2.15.0.1','aeson-2.2.3.0','ansi-terminal-1.1.2','ansi-terminal-types-1.1','asn1-encoding-0.9.6','asn1-parse-0.9.5','asn1-types-0.3.4','async-2.2.5','attoparsec-0.14.4','base64-1.0','bifunctors-5.6.2','blaze-textual-0.2.3.1','case-insensitive-1.2.1.0','cborg-0.2.10.0','comonad-5.0.9','contravariant-1.5.5','cookie-0.5.0','crypton-1.0.1','crypton-connection-0.4.3','crypton-x509-1.7.7','crypton-x509-store-1.6.9','crypton-x509-system-1.6.7','crypton-x509-validation-1.6.13','data-default-class-0.2.0.0','data-fix-0.3.4','distributive-0.6.2.1','generics-sop-0.5.1.4','graphviz-2999.20.2.0','happy-lib-2.1.3','hashable-1.5.0.0','http-client-0.7.18','http-client-tls-0.3.6.4','http-date-0.0.11','http-media-0.8.1.1','http-semantics-0.3.0','http-types-0.12.4','http2-5.3.9','indexed-traversable-instances-0.1.2','integer-conversion-0.1.1','iproute-1.7.15','memory-0.18.0','network-control-0.1.3','network-uri-2.6.4.2','old-time-1.1.0.4','pem-0.2.4','pretty-show-1.10','prettyprinter-ansi-terminal-1.1.3','psqueues-0.2.8.0','quickcheck-state-machine-0.10.1','random-1.2.1.3','recv-0.1.0','scientific-0.3.8.0','semialign-1.3.1','semigroupoids-6.0.1','serialise-0.2.6.1','simple-sendfile-0.2.32','socks-0.6.1','sqlite-simple-0.4.19.0','streaming-commons-0.2.2.6','strict-0.5.1','temporary-1.3','text-iso8601-0.1.1','text-short-0.1.6','these-1.2.1','time-compat-1.9.8','time-manager-0.2.2','tls-2.1.6','unix-time-0.4.16','unliftio-0.2.25.0','unordered-containers-0.2.20','uri-encode-1.5.0.7','uuid-types-1.0.6','vault-0.3.1.5','vector-0.13.2.0','wai-3.2.4','warp-3.4.7','witherable-0.5','wl-pprint-text-1.2.0.2','youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0','z-happy-lib-z-backend-glr-2.1.3','z-happy-lib-z-backend-lalr-2.1.3','z-happy-lib-z-frontend-2.1.3','z-happy-lib-z-tabular-2.1.3','z-quickcheck-state-machine-z-no-vendored-treediff-0.10.1']
+
+yes
+</samp></pre>
+</details>
+<p>Looks good.</p>
+<p>I can’t find <code>happy</code> in there at a glance.
+Is <code>happy</code> in here?</p>
+<samp>| ?- <kbd>setof(N, (node(N), atom_concat(happy, _, N)), Ns).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+Ns = ['happy-lib-2.1.3']
+
+yes
+</samp></pre>
+</details>
+<p>Cool. What are the names of my project’s packages again?</p>
+<samp>| ?- <kbd>setof(N, Suffix^(node(N), atom_concat('youtube-feeds', Suffix, N)), Ns).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+
+yes
+</samp></pre>
+</details>
+<p>Let’s see whether the first one depends on <code>happy</code>.</p>
+<samp>| ?- <kbd>why_depends('youtube-feeds-log-0.1.0.0', 'happy-lib-2.1.3', Path).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+no
+</samp></pre>
+</details>
+<p>It doesn’t. Let’s check them all.</p>
+<samp>| ?- <kbd>setof(N, Suffix^(node(N), atom_concat('youtube-feeds', Suffix, N)), Ns), member(Package, Ns), why_depends(Package, 'happy-lib-2.1.3', Path).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+no
+</samp></pre>
+</details>
+<p>Okay, that’s surprising. I definitely saw <code>happy</code> being built.</p>
+<p>Well, what depends on <code>happy-lib-2.1.3</code>?</p>
+<samp>| ?- <kbd>setof(P, depends_on(P, 'happy-lib-2.1.3'), Ps).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+no
+</samp></pre>
+</details>
+<p>Hm. Okay, I think that <code>happy</code> is an <em>executable</em> required for the build of another package.</p>
+<p>Since that didn’t work out, let’s play with this approach by looking for the ways I depend on <code>cborg-0.2.10.0</code>.</p>
+<samp>| ?- <kbd>setof(N, Suffix^(node(N), atom_concat('youtube-feeds', Suffix, N)), Ns), member(Package, Ns), why_depends(Package, 'cborg-0.2.10.0', Path).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-oauth2-0.1.0.0'
+Path = ['youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-oauth2-0.1.0.0'
+Path = ['youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-server-0.1.0.0'
+Path = ['youtube-feeds-server-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-server-0.1.0.0'
+Path = ['youtube-feeds-server-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-server-0.1.0.0'
+Path = ['youtube-feeds-server-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0','http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-server-0.1.0.0'
+Path = ['youtube-feeds-server-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0','http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-server-0.1.0.0'
+Path = ['youtube-feeds-server-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-server-0.1.0.0'
+Path = ['youtube-feeds-server-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-youtubev3-api-0.1.0.0'
+Path = ['youtube-feeds-youtubev3-api-0.1.0.0','http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-youtubev3-api-0.1.0.0'
+Path = ['youtube-feeds-youtubev3-api-0.1.0.0','http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-youtubev3-api-0.1.0.0'
+Path = ['youtube-feeds-youtubev3-api-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+Ns = ['youtube-feeds-log-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','youtube-feeds-server-0.1.0.0','youtube-feeds-sql-0.1.0.0','youtube-feeds-youtubev3-api-0.1.0.0']
+Package = 'youtube-feeds-youtubev3-api-0.1.0.0'
+Path = ['youtube-feeds-youtubev3-api-0.1.0.0','youtube-feeds-oauth2-0.1.0.0','http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'] ? ;
+
+(2 ms) no
+</samp></pre>
+</details>
+<p>There’s a lot of duplication because some of the project’s packages depend on each other.
+I think a better way to ask this question is to get all the project’s direct dependencies that transitively depend on the target.</p>
+<samp>| ?- <kbd>assertz((project_packages(X) :- setof(N, Suffix^(node(N), atom_concat('youtube-feeds', Suffix, N)), X))).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+yes
+</samp></pre>
+</details>
+<samp>| ?- <kbd>findall(Path, (project_packages(Packages), member(Package, Packages), depends_on(Package, Dep), \+ member(Dep, Packages), why_depends(Dep, 'cborg-0.2.10.0', Path)), Results).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+Results = [['http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'],['http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'],['http-client-tls-0.3.6.4','crypton-connection-0.4.3','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0'],['http-client-tls-0.3.6.4','tls-2.1.6','serialise-0.2.6.1','cborg-0.2.10.0']]
+
+yes
+</samp></pre>
+</details>
+<p>It looks like my project only depends on <code>cborg-0.2.10.0</code> via <code>http-client-tls-0.3.6.4</code>.
+Let’s verify that more concisely.</p>
+<samp>| ?- <kbd>assertz((transitively_depends_on(X, Y) :- depends_on(X, Y))).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+yes
+</samp></pre>
+</details>
+<samp>| ?- <kbd>assertz((transitively_depends_on(X, Z) :- depends_on(X, Y), transitively_depends_on(Y, Z))).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+yes
+</samp></pre>
+</details>
+<samp>| ?- <kbd>setof(Dep, Packages^Package^(project_packages(Packages), member(Package, Packages), depends_on(Package, Dep), \+ member(Dep, Packages), transitively_depends_on(Dep, 'cborg-0.2.10.0')), Results).</kbd></samp>
+<details open>
+<summary>
+(output)
+</summary>
+<pre><samp>
+Results = ['http-client-tls-0.3.6.4']
+
+yes
+</samp></pre>
+</details>
+<h2 id="thoughts-and-ideas"><a href="#thoughts-and-ideas">Thoughts and ideas</a></h2>
+<ul>
+<li><p>Include build tool dependencies in the graph.</p>
+<p>I didn’t manage to figure out how my project transitively depends on <code>happy</code> because it’s probably used as a build tool somewhere.
+The GHC package database doesn’t seem to store build tool information,
+so the next step would be to find all my dependencies’ Cabal files and include <a href="https://cabal.readthedocs.io/en/3.4/cabal-package.html#pkg-field-build-tool-depends"><code>build-tool-depends</code></a> information in my Prolog facts.</p></li>
+<li><p>Create a dependency graph for all of Hackage.</p>
+<p>To really test the performance of this sort of query language, build a facts database for the entirety of Hackage
+by extracting Cabal files from the Hackage index.</p></li>
+<li><p>Query the Nix store using this approach.</p>
+<p>The Nix store’s dependency graph was already <a href="#why-depends-inspiration">on my mind</a>, so why not try it out?</p></li>
+<li><p>Datalog &amp; Postgres?</p>
+<p>I really enjoyed writing these Prolog queries. They make SQL seem clunky in comparison.
+I’m be interested in trying Datalog for some typical <a href="https://en.wikipedia.org/wiki/Online_transaction_processing">“OLTP”</a> / “CRUD” applications,
+and it would be nice to avoid reinventing DBMS wheels.</p>
+<ul>
+<li>I’d love to try a Datalog frontend for Postgres.</li>
+<li>Failing that, a Datalog to SQL compiler would work.</li>
+</ul></li>
+<li><p>Standalone relational storage engines?</p>
+<p>It would be cool if relational databases like Postgres and SQLite had explicitly decoupled storage engines.
+My (lay) impression is that these are monolithic systems that aren’t intended to multiple frontends to the same underlying storage.</p>
+<p>A standalone relational storage engine would be a C library that efficiently stores and searches records on disk or in memory.
+This library can then be used by a DBMS for storage management.
+Because it’s a standalone library, you’re no longer locked in to that particular DBMS.
+If I want a Datalog frontend, I can write it using the same storage library and have something that’s compatible with existing databases.</p>
+<p>The pieces are probably all there to do this with something like Postgres;
+the storage format is <a href="https://www.postgresql.org/docs/current/storage.html">well-documented</a> and I wouldn’t be surprised if it was appropriately decoupled in the Postgres codebase.
+But I feel like the monolithic style of DBMSs discourage this kind of thinking.
+In contrast, imagine something like “<a href="https://zeromq.org/">ZeroMQ</a> for database storage”.</p></li>
+</ul>
+  <footer>
+    <p>
+      
+      <a href="/context-menus">Context menus - Previous</a>
+      
+      |
+      
+      <span>Newest</span>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </section>
+  <footer>
+  <div class="footer-item">
+    <span>Isaac Elliott</span>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="https://github.com/lightandlight">
+      <i class="footer-icon" data-feather="github"></i>
+    </a>
+    <a class="footer-link-name" href="https://github.com/lightandlight">
+      GitHub
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" href="mailto:blog@id.ielliott.io">
+      <i class="footer-icon" data-feather="mail"></i>
+    </a>
+    <a class="footer-link-name" href="mailto:blog@id.ielliott.io">
+      Email
+    </a>
+  </div>
+
+  <div class="footer-item">
+    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
+      <i class="footer-icon" data-feather="rss"></i>
+    </a>
+    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
+      Atom
+    </a>
+  </div>
+</footer>
+
+  <script>feather.replace()</script>
+
+  
+</body>
+
+</html>
