@@ -421,6 +421,7 @@ witherable-0.5-bd7f0d1e02c3180a6977cb316a3de72faf9fa6ec35511c54587f2ae6843f9d9a
   * Import into SQLite?
     * Is there a graph-first equivalent of SQLite?
   * Something based on Datalog?
+    * Follow up: [Exploring a dependency graph with Prolog](https://blog.ielliott.io/exploring-graphs-with-prolog)
   * [Glean](https://glean.software/docs/introduction/) and [Angle](https://glean.software/docs/angle/intro/)?
 
 * Wouldn't it be cool if this document was generated from a literate program?
