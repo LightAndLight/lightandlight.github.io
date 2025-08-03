@@ -19,7 +19,7 @@ html {
 }
 
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Source Sans 3", sans-serif;
   min-height: 100vh;
   margin: 0;
 
@@ -37,7 +37,7 @@ body > main {
 }
 
 body > header {
-  font-family: "Source Serif Pro", serif;
+  font-family: "Source Serif 4", serif;
 
   border-bottom: 1px solid var(--color-border);
   box-sizing: border-box;
@@ -144,12 +144,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1, h2 {
-  font-family: "Source Serif Pro", serif;
+  font-family: "Source Serif 4", serif;
   font-weight: 400;
 }
 
 h3, h4, h5, h6 {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Source Sans 4", sans-serif;
   font-weight: 400;
 }
 
@@ -217,7 +217,7 @@ h5:has(a):after,
 h6:has(a):after
 {
   content: ' #';
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Source Sans 3", sans-serif;
   font-weight: 600;
   opacity: 0.4;
 
