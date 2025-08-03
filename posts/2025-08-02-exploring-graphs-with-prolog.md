@@ -325,43 +325,45 @@ yes
 </samp></pre>
 </details>
 
-## Thoughts and ideas
+## Thoughts and ideas {toc:omit_children=true}
 
-* Include build tool dependencies in the graph.
+### Include build tool dependencies in the graph
 
-  I didn't manage to figure out how my project transitively depends on `happy` because it's probably used as a build tool somewhere.
-  The GHC package database doesn't seem to store build tool information,
-  so the next step would be to find all my dependencies' Cabal files and include [`build-tool-depends`](https://cabal.readthedocs.io/en/3.4/cabal-package.html#pkg-field-build-tool-depends) information in my Prolog facts.
+I didn't manage to figure out how my project transitively depends on `happy` because it's probably used as a build tool somewhere.
+The GHC package database doesn't seem to store build tool information,
+so the next step would be to find all my dependencies' Cabal files and include [`build-tool-depends`](https://cabal.readthedocs.io/en/3.4/cabal-package.html#pkg-field-build-tool-depends) information in my Prolog facts.
 
-* Create a dependency graph for all of Hackage.
+### Create a dependency graph for all of Hackage
 
-  To really test the performance of this sort of query language, build a facts database for the entirety of Hackage
-  by extracting Cabal files from the Hackage index.
+To really test the performance of this sort of query language, build a facts database for the entirety of Hackage
+by extracting Cabal files from the Hackage index.
 
-* Query the Nix store using this approach.
+### Use Datalog to query the Nix store
 
-  The Nix store's dependency graph was already [on my mind](#why-depends-inspiration), so why not try it out?
+The Nix store's dependency graph was already [on my mind](#why-depends-inspiration).
+What's it like to query with Datalog?
+It will probably be easier than Hackage, because Nix derivations are stored in JSON whereas Hackage uses the Cabal format.
 
-* Datalog & Postgres?
+### Datalog & Postgres?
 
-  I really enjoyed writing these Prolog queries. They make SQL seem clunky in comparison.
-  I'm be interested in trying Datalog for some typical ["OLTP"](https://en.wikipedia.org/wiki/Online_transaction_processing) / "CRUD" applications,
-  and it would be nice to avoid reinventing DBMS wheels.
+I really enjoyed writing these Prolog queries. They make SQL seem clunky in comparison.
+I'm be interested in trying Datalog for some typical ["OLTP"](https://en.wikipedia.org/wiki/Online_transaction_processing) / "CRUD" applications,
+and it would be nice to avoid reinventing DBMS wheels.
 
-  * I'd love to try a Datalog frontend for Postgres.
-  * Failing that, a Datalog to SQL compiler would work.
+* I'd love to try a Datalog frontend for Postgres.
+* Failing that, a Datalog to SQL compiler would work.
 
-* Standalone relational storage engines?
+### Standalone relational storage engines?
 
-  It would be cool if relational databases like Postgres and SQLite had explicitly decoupled storage engines.
-  My (lay) impression is that these are monolithic systems that aren't intended to multiple frontends to the same underlying storage.
+It would be cool if relational databases like Postgres and SQLite had explicitly decoupled storage engines.
+My (lay) impression is that these are monolithic systems that aren't intended to multiple frontends to the same underlying storage.
 
-  A standalone relational storage engine would be a C library that efficiently stores and searches records on disk or in memory.
-  This library can then be used by a DBMS for storage management.
-  Because it's a standalone library, you're no longer locked in to that particular DBMS.
-  If I want a Datalog frontend, I can write it using the same storage library and have something that's compatible with existing databases.
+A standalone relational storage engine would be a C library that efficiently stores and searches records on disk or in memory.
+This library can then be used by a DBMS for storage management.
+Because it's a standalone library, you're no longer locked in to that particular DBMS.
+If I want a Datalog frontend, I can write it using the same storage library and have something that's compatible with existing databases.
 
-  The pieces are probably all there to do this with something like Postgres;
-  the storage format is [well-documented](https://www.postgresql.org/docs/current/storage.html) and I wouldn't be surprised if it was appropriately decoupled in the Postgres codebase.
-  But I feel like the monolithic style of DBMSs discourage this kind of thinking.
-  In contrast, imagine something like "[ZeroMQ](https://zeromq.org/) for database storage".
+The pieces are probably all there to do this with something like Postgres;
+the storage format is [well-documented](https://www.postgresql.org/docs/current/storage.html) and I wouldn't be surprised if it was appropriately decoupled in the Postgres codebase.
+But I feel like the monolithic style of DBMSs discourage this kind of thinking.
+In contrast, imagine something like "[ZeroMQ](https://zeromq.org/) for database storage".
