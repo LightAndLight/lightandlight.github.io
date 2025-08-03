@@ -383,6 +383,22 @@ figcaption {
   font-size: 0.9rem;  
 }
 
+.text-with-figure {
+  display: flex;
+  column-gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.text-with-figure__text {
+  flex: 1 0 min-content;
+  min-width: 60%;
+}
+
+.text-with-figure__figure {
+  max-width: 100%;
+}
+
 details {
   margin-bottom: 1rem;
 }

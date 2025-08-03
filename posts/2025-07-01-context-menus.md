@@ -4,8 +4,8 @@ permalink: /context-menus
 date: 2025-07-01T05:25:00Z
 ---
 
-<div style="display: flex; column-gap: 1rem; flex-wrap: wrap; justify-content: center;">
-<div style="flex: 1 0 min-content; min-width: 60%;">
+<div class="text-with-figure">
+<div class="text-with-figure__text">
 I got an email that had an unfamiliar time zone in it.
 My intuition said that if I selected the text and right-clicked then I'd be closer to knowing what the corresponding local time was.
 When I did, the best option I found was to search the web.
@@ -16,8 +16,8 @@ Wouldn't it be cool if I could install a program that added this feature to rele
 And not only in Thunderbird, but in *every* program that has text and context menus?
 </div>
 
-<figure style="width: 12rem; max-width: 100vw;">
-<img src="./images/thunderbird-context-menu.png" alt="The text &quot;12pp PST&quot; selected. A context menu lists some possible actions, including searching the web for it.">
+<figure class="text-with-figure__figure" style="width: 12rem;">
+<img src="./images/thunderbird-context-menu.png" alt="The text &quot;12pm PST&quot; selected. A context menu lists some possible actions, including searching the web for it.">
 <figcaption>Thunderbird's context menu for a text selection</figcaption>
 </figure>
 </div>
