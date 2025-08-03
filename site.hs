@@ -100,8 +100,8 @@ main = do
       route $ gsubRoute "js/" (const "res/")
       compile copyFileCompiler
 
-    match "fonts/*" $ do
-      route $ gsubRoute "fonts/" (const "res/")
+    match "fonts/**" $ do
+      route idRoute
       compile copyFileCompiler
 
     match "talks/*" $ do

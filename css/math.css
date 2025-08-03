@@ -1,12 +1,12 @@
 @font-face {
-  font-family: 'Libertinus Math';
+  font-family: "Libertinus Math";
   font-style: normal;
   font-weight: 400;
-  src: local('Libertinus Math'), url('LibertinusMath-Regular.woff2') format('woff2');
+  src: url("/fonts/LibertinusMath/LibertinusMath-Regular.woff2") format("woff2");
 }
 
 math {
-  font-family: 'Libertinus Math';
+  font-family: "Libertinus Math";
   font-size-adjust: 0.48;
 }
 
