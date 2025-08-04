@@ -26,7 +26,7 @@ when I noticed an odd transitive dependency: <a href="https://hackage.haskell.or
 Why does my web app depend on a parser generator?</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/exploring-graphs-with-prolog">
-      <![CDATA[<div id="toc" style="float: right;">
+      <![CDATA[<div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#setup">Setup</a></li>
@@ -356,26 +356,27 @@ Results = ['http-client-tls-0.3.6.4']
 yes
 </samp></pre>
 </details>
-<h2 id="thoughts-and-ideas"><a href="#thoughts-and-ideas">Thoughts and ideas</a></h2>
-<ul>
-<li><p>Include build tool dependencies in the graph.</p>
+<h2 toc:omit_children="true" id="thoughts-and-ideas"><a href="#thoughts-and-ideas">Thoughts and ideas</a></h2>
+<h3 id="include-build-tool-dependencies-in-the-graph"><a href="#include-build-tool-dependencies-in-the-graph">Include build tool dependencies in the graph</a></h3>
 <p>I didn’t manage to figure out how my project transitively depends on <code>happy</code> because it’s probably used as a build tool somewhere.
 The GHC package database doesn’t seem to store build tool information,
-so the next step would be to find all my dependencies’ Cabal files and include <a href="https://cabal.readthedocs.io/en/3.4/cabal-package.html#pkg-field-build-tool-depends"><code>build-tool-depends</code></a> information in my Prolog facts.</p></li>
-<li><p>Create a dependency graph for all of Hackage.</p>
+so the next step would be to find all my dependencies’ Cabal files and include <a href="https://cabal.readthedocs.io/en/3.4/cabal-package.html#pkg-field-build-tool-depends"><code>build-tool-depends</code></a> information in my Prolog facts.</p>
+<h3 id="create-a-dependency-graph-for-all-of-hackage"><a href="#create-a-dependency-graph-for-all-of-hackage">Create a dependency graph for all of Hackage</a></h3>
 <p>To really test the performance of this sort of query language, build a facts database for the entirety of Hackage
-by extracting Cabal files from the Hackage index.</p></li>
-<li><p>Query the Nix store using this approach.</p>
-<p>The Nix store’s dependency graph was already <a href="#why-depends-inspiration">on my mind</a>, so why not try it out?</p></li>
-<li><p>Datalog &amp; Postgres?</p>
+by extracting Cabal files from the Hackage index.</p>
+<h3 id="use-datalog-to-query-the-nix-store"><a href="#use-datalog-to-query-the-nix-store">Use Datalog to query the Nix store</a></h3>
+<p>The Nix store’s dependency graph was already <a href="#why-depends-inspiration">on my mind</a>.
+What’s it like to query with Datalog?
+It will probably be easier than Hackage, because Nix derivations are stored in JSON whereas Hackage uses the Cabal format.</p>
+<h3 id="datalog--postgres"><a href="#datalog--postgres">Datalog &amp; Postgres?</a></h3>
 <p>I really enjoyed writing these Prolog queries. They make SQL seem clunky in comparison.
 I’m be interested in trying Datalog for some typical <a href="https://en.wikipedia.org/wiki/Online_transaction_processing">“OLTP”</a> / “CRUD” applications,
 and it would be nice to avoid reinventing DBMS wheels.</p>
 <ul>
 <li>I’d love to try a Datalog frontend for Postgres.</li>
 <li>Failing that, a Datalog to SQL compiler would work.</li>
-</ul></li>
-<li><p>Standalone relational storage engines?</p>
+</ul>
+<h3 id="standalone-relational-storage-engines"><a href="#standalone-relational-storage-engines">Standalone relational storage engines?</a></h3>
 <p>It would be cool if relational databases like Postgres and SQLite had explicitly decoupled storage engines.
 My (lay) impression is that these are monolithic systems that aren’t intended to multiple frontends to the same underlying storage.</p>
 <p>A standalone relational storage engine would be a C library that efficiently stores and searches records on disk or in memory.
@@ -385,8 +386,7 @@ If I want a Datalog frontend, I can write it using the same storage library and 
 <p>The pieces are probably all there to do this with something like Postgres;
 the storage format is <a href="https://www.postgresql.org/docs/current/storage.html">well-documented</a> and I wouldn’t be surprised if it was appropriately decoupled in the Postgres codebase.
 But I feel like the monolithic style of DBMSs discourage this kind of thinking.
-In contrast, imagine something like “<a href="https://zeromq.org/">ZeroMQ</a> for database storage”.</p></li>
-</ul>]]>
+In contrast, imagine something like “<a href="https://zeromq.org/">ZeroMQ</a> for database storage”.</p>]]>
     </content>
     
 </entry><entry>
@@ -402,8 +402,8 @@ My intuition said that if I selected the text and right-clicked then I’d be cl
 When I did, the best option I found was to search the web.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/context-menus">
-      <![CDATA[<div style="display: flex; column-gap: 1rem; flex-wrap: wrap; justify-content: center;">
-<div style="flex: 1 0 min-content; min-width: 60%;">
+      <![CDATA[<div class="text-with-figure">
+<div class="text-with-figure__text">
 <p>I got an email that had an unfamiliar time zone in it.
 My intuition said that if I selected the text and right-clicked then I’d be closer to knowing what the corresponding local time was.
 When I did, the best option I found was to search the web.</p>
@@ -411,8 +411,8 @@ When I did, the best option I found was to search the web.</p>
 <p>Wouldn’t it be cool if I could install a program that added this feature to relevant context menus?
 And not only in Thunderbird, but in <em>every</em> program that has text and context menus?</p>
 </div>
-<figure style="width: 12rem; max-width: 100vw;">
-<img src="./images/thunderbird-context-menu.png" alt="The text &quot;12pp PST&quot; selected. A context menu lists some possible actions, including searching the web for it.">
+<figure class="text-with-figure__figure" style="width: 12rem;">
+<img src="./images/thunderbird-context-menu.png" alt="The text &quot;12pm PST&quot; selected. A context menu lists some possible actions, including searching the web for it.">
 <figcaption>
 Thunderbird’s context menu for a text selection
 </figcaption>
@@ -434,7 +434,7 @@ and I wanted to see what it was like without installing a Cabal-specific tool su
 Here’s what I played around with.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/playing-with-ghc-package-databases">
-      <![CDATA[<div id="toc" style="float: right; max-width: 30ch; text-wrap: auto;">
+      <![CDATA[<div id="toc" style="text-wrap: auto;">
 <h3>Contents</h3>
 <ul>
 <li><a href="#finding-the-ghc-package-database-used-by-cabal">Finding the GHC package database used by Cabal</a></li>
@@ -876,7 +876,7 @@ I wonder if there’s a better way?</p>
     <summary type="html"><![CDATA[<p>Reflections on 2024's hobby projects.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/2024-project-review">
-      <![CDATA[<div id="toc" style="float: right; max-width: 15em; white-space: normal;">
+      <![CDATA[<div id="toc" style="white-space: normal;">
 <h3>Contents</h3>
 <ul>
 <li><a href="#blog">Blog</a></li>
@@ -1260,7 +1260,7 @@ so that it would skip <code>.direnv</code> and never even look at its contents.<
       <![CDATA[<p><em>I split this out of <a href="/2024-project-review">my 2024 project review</a> because it got too long.</em></p>
 <p>Last year I improved my daily Git experience by writing a bunch of aliases.
 Here’s a reference for what I’ve done so far (<a href="https://github.com/LightAndLight/personal-configs/blob/3e340b4d93359386bdda492cb72dfcc8b0922e17/home/git.nix#L26">Nix configs</a>).</p>
-<div id="toc" style="float: right; max-width: 15em; white-space: normal; column-count: 2;">
+<div id="toc" style="min-width: 15rem; white-space: normal; column-count: 2;">
 <h3>Contents</h3>
 <ul>
 <li><a href="#meta">Meta</a></li>
@@ -1447,7 +1447,7 @@ I like ZSA and hope they continue to be successful, so this short article is my 
 (here’s <a href="https://configure.zsa.io/ergodox-ez/layouts/60G6R/latest/0">my layout</a>)
 and then flash a keyboard using <a href="https://github.com/zsa/wally">wally</a>.
 The firmware has a lot of great features and has allowed me to turn my keyboard into a personalised programming tool.</p>
-<div style="display: flex; flex-direction: row">
+<div style="display: flex; flex-direction: row; gap: 1rem;">
 <figure>
 <a href="./images/zsa-1.png"><img src="./images/zsa-1.png"></a>
 <figcaption>
@@ -1533,11 +1533,11 @@ But I expect that if I keep thinking in this direction, I’ll come up with othe
     
     <published>2024-09-04T00:00:00Z</published>
     <updated>2024-09-04T00:00:00Z</updated>
-    <summary type="html"><![CDATA[Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
-This post is about why I care and how I've worked around it.]]></summary>
+    <summary type="html"><![CDATA[<p>Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
+This post is about why I care and how I've worked around it.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda">
-      <![CDATA[<div id="toc" style="float: right;">
+      <![CDATA[<div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#background">Background</a></li>
@@ -1933,7 +1933,7 @@ to selectively enable other substituters while I’m working on a project that n
 Here’s how I do it.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/per-project-nix-substituters">
-      <![CDATA[<div id="toc" style="float: right;">
+      <![CDATA[<div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#setup">Setup</a></li>
@@ -2039,7 +2039,7 @@ with <a href="https://github.com/canonical/lightdm">LightDM</a> as the display m
 all tied together using <a href="https://nixos.org/">NixOS</a> and <a href="https://github.com/nix-community/home-manager">home-manager</a>.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/troubleshooting-lightdms-test-mode">
-      <![CDATA[<div id="toc" style="float: right;">
+      <![CDATA[<div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#summary">Summary</a>
@@ -2188,7 +2188,7 @@ For now I’m content with having fixed my issue.</p>]]>
     <summary type="html"><![CDATA[<p>Reflections on 2023's hobby projects.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/2023-project-review">
-      <![CDATA[<div id="toc" style="float: right; max-width: 15em; white-space: normal;">
+      <![CDATA[<div id="toc" style="white-space: normal;">
 <h3>Contents</h3>
 <ul>
 <li><a href="#ipso">Ipso</a></li>
@@ -2710,10 +2710,10 @@ which is a pointer (pointer number 2) to a boxed (pointer number 3) value.<a hre
     
     <published>2023-07-14T00:00:00Z</published>
     <updated>2023-07-14T00:00:00Z</updated>
-    <summary type="html"><![CDATA[My experience playing the original Diablo for the first time.]]></summary>
+    <summary type="html"><![CDATA[<p>My experience playing the original Diablo for the first time.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/diablo-1-in-2023">
-      <![CDATA[<div id="toc" style="float: right;">
+      <![CDATA[<div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#music">Music</a></li>
@@ -2816,8 +2816,8 @@ If services like <a href="https://www.gog.com">Good Old Games</a> didn’t exist
     
     <published>2023-07-04T06:41:00Z</published>
     <updated>2023-07-04T06:41:00Z</updated>
-    <summary type="html"><![CDATA[Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
-theory of nominal sets.
+    <summary type="html"><![CDATA[<p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
+theory of nominal sets.</p>
 ]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/nominal-sets">
@@ -2838,7 +2838,7 @@ like to use a variable binding library instead. I think
 <a href="https://crates.io/">crates.io</a>, and I might yet use it. In the meantime, I’d
 like to explore an alternative way of tackling the problem, inspired by a formalism called “nominal sets”.</p>
 </div>
-<div id="toc" style="float: right;">
+<div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#why-did-i-write-this">Why did I write this?</a></li>
@@ -3598,7 +3598,7 @@ in Theoretical Computer Science, 228, 37-52.</p>
     
     <published>2023-07-04T06:40:00Z</published>
     <updated>2023-07-04T06:40:00Z</updated>
-    <summary type="html"><![CDATA[The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
+    <summary type="html"><![CDATA[<p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
 ]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/nominal-sets-proofs">
@@ -4709,16 +4709,7 @@ special attention to preserving the <a href="/feed.xml">Atom feed</a> identifier
 impacted.</p>]]></summary>
     
     <content type="html" xml:base="https://blog.ielliott.io/jekyll-to-hakyll">
-      <![CDATA[<div class="intro-wrapper">
-<div class="intro">
-<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
-<a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
-tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
-special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
-impacted.</p>
-<p>You can find the source code at <a href="https://github.com/LightAndLight/lightandlight.github.io/" class="uri">https://github.com/LightAndLight/lightandlight.github.io/</a>.</p>
-</div>
-<div id="toc">
+      <![CDATA[<div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#background">Background</a></li>
@@ -4731,7 +4722,12 @@ impacted.</p>
 <li><a href="#thoughts">Thoughts</a></li>
 </ul>
 </div>
-</div>
+<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
+<a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
+tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
+special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
+impacted.</p>
+<p>You can find the source code at <a href="https://github.com/LightAndLight/lightandlight.github.io/" class="uri">https://github.com/LightAndLight/lightandlight.github.io/</a>.</p>
 <h2 id="background"><a href="#background">Background</a></h2>
 <p>I’ve been using Jekyll to generate my blog because that’s what <a href="https://pages.github.com/">GitHub
 Pages</a> recommended when I first set things up. Recently I’ve been working

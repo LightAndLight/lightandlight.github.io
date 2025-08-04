@@ -3,31 +3,21 @@
 
 <head>
   <meta charset="UTF-8">
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-04K8QC3TXH');
-  </script>
-
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/fonts/SourceSerif4/SourceSerif4-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/SourceSans3/SourceSans3-Regular.woff2" as="font" type="font/woff2" crossorigin>
 
+  <link rel="stylesheet" href="/res/fonts.css">
   <link rel="stylesheet" href="/res/style.css">
-  <link rel="stylesheet" href="/res/syntax.css">
+
+  <!-- defer non-critical stylesheet -->
+  <link href="/res/syntax.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/res/syntax.css"></noscript>
 
   
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
-
   
-
-  <script src="https://unpkg.com/feather-icons"></script>
-  <script src="/res/script.js"></script>
 
   
 
@@ -35,13 +25,16 @@
   <title>Posts about mathematics - blog.ielliott.io</title>
   
 
-  <meta property="og:locale" content="en_US">
+  <link rel="canonical" href="https://blog.ielliott.io/tags/mathematics">
+<link rel="alternate" type="application/atom+xml" title="blog.ielliott.io" href="/feed.xml">
+
+<meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="blog.ielliott.io">
-<link rel="canonical" href="https://blog.ielliott.io/tags/mathematics">
 <meta property="og:url" content="https://blog.ielliott.io/tags/mathematics.html">
 <meta property="og:title" content="Posts about mathematics">
 <meta name="twitter:card" content="summary">
 <meta property="twitter:title" content="Posts about mathematics">
+
 
 <meta name="description" content="Posts about mathematics.">
 <meta property="og:description" content="Posts about mathematics.">
@@ -60,108 +53,95 @@
 
 <body>
   <header>
-  <h1 class="centered large">I E</h1>
-</header>
-  <nav>
-  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
-  &nbsp;
-  &nbsp;
-  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
-  &nbsp;
-  &nbsp;
-  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
-</nav>
+    <h1><a href="/">I E</a></h1>
+    <nav>
+      <ol>
+        <li><a href="/">Home</a>
+        <li><a href="/about">About</a>
+        <li><a href="/resources">Resources</a>
+      </ol>
+    </nav>
+  </header>
 
-  <section>
+  <main>
     
 
     
-<header>
-    <h1 class="centered">Posts about mathematics:</h1>
-</header>
+<h1 class="centered">Posts about mathematics:</h1>
 
 
 
-<article>
-    <header>
-        <h1><a href="/2023-project-review">2023 Project Review</a></h1>
-        <p class="date">17 January, 2024</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/2023-project-review">2023 Project Review</a></h1>
+    <p class="post-metadata">
+      17 January, 2024
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/music">music</a>
+
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
+
+
+      
+    </p>
 
     <p>Reflections on 2023's hobby projects.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/music">music</a>
-
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/nominal-sets">Nominal Sets</a></h1>
-        <p class="date"> 4 July, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/nominal-sets">Nominal Sets</a></h1>
+    <p class="post-metadata">
+       4 July, 2023
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
 
-    Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
-theory of nominal sets.
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
 
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
+      
+    </p>
 
-<a href="/tags/programming">programming</a>
+    <p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
+theory of nominal sets.</p>
 
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/nominal-sets-proofs">Nominal Sets: Appendix A (Proofs)</a></h1>
-        <p class="date"> 4 July, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/nominal-sets-proofs">Nominal Sets: Appendix A (Proofs)</a></h1>
+    <p class="post-metadata">
+       4 July, 2023
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
-    The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 
+      
+    </p>
 
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
+    <p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
 
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/conditional-probabilities-obnoxious-white-guys">Conditional Probabilities and Obnoxious White Guys</a></h1>
-        <p class="date"> 5 May, 2019</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/conditional-probabilities-obnoxious-white-guys">Conditional Probabilities and Obnoxious White Guys</a></h1>
+    <p class="post-metadata">
+       5 May, 2019
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/rationality">rationality</a>
+
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
+
+
+      
+    </p>
 
     <p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
@@ -169,59 +149,31 @@ confronted by a white guy who felt ‘called out’ by some of her anecdotes. Ap
 described interactions with obnoxious individuals in a professional setting, and noted that
 they were all white guys. Ironically, the guy raised the issue in such a way that he was added
 to the list of anecdotes.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/rationality">rationality</a>
-
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
 
-  </section>
+  </main>
+
   <footer>
-  <div class="footer-item">
     <span>Isaac Elliott</span>
-  </div>
 
-  <div class="footer-item">
-    <a class="footer-link-icon" href="https://github.com/lightandlight">
-      <i class="footer-icon" data-feather="github"></i>
-    </a>
-    <a class="footer-link-name" href="https://github.com/lightandlight">
-      GitHub
-    </a>
-  </div>
+    <ol>
+      <li><a class="footer-item-link" href="https://github.com/lightandlight">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28a8 8 0 0 0-6.93-4 59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32M200 112a40 40 0 0 1-40 40h-48a40 40 0 0 1-40-40v-8a41.74 41.74 0 0 1 6.9-22.48 8 8 0 0 0 1.1-7.69 43.8 43.8 0 0 1 .79-33.58 43.88 43.88 0 0 1 32.32 20.06 8 8 0 0 0 6.71 3.69h32.35a8 8 0 0 0 6.74-3.69 43.87 43.87 0 0 1 32.32-20.06 43.8 43.8 0 0 1 .77 33.58 8.09 8.09 0 0 0 1 7.65 41.7 41.7 0 0 1 7 22.52Z"></path></svg>
+        GitHub
+      </a>
 
-  <div class="footer-item">
-    <a class="footer-link-icon" href="mailto:blog@id.ielliott.io">
-      <i class="footer-icon" data-feather="mail"></i>
-    </a>
-    <a class="footer-link-name" href="mailto:blog@id.ielliott.io">
-      Email
-    </a>
-  </div>
+      <li><a class="footer-item-link" href="mailto:blog@id.ielliott.io">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8m-20.57 16L128 133.15 52.57 64ZM216 192H40V74.19l82.59 75.71a8 8 0 0 0 10.82 0L216 74.19z"></path></svg>
+        Email
+      </a>
 
-  <div class="footer-item">
-    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
-      <i class="footer-icon" data-feather="rss"></i>
-    </a>
-    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
-      Atom
-    </a>
-  </div>
-</footer>
-
-  <script>feather.replace()</script>
+      <li><a class="footer-item-link" href="https://blog.ielliott.io/feed.xml">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 192a8 8 0 0 1-16 0c0-79.4-64.6-144-144-144a8 8 0 0 1 0-16c88.22 0 160 71.78 160 160M64 104a8 8 0 0 0 0 16 72.08 72.08 0 0 1 72 72 8 8 0 0 0 16 0 88.1 88.1 0 0 0-88-88m4 72a12 12 0 1 0 12 12 12 12 0 0 0-12-12"></path></svg>
+        Feed
+      </a>
+    </ol>
+  </footer>
 
   
 </body>

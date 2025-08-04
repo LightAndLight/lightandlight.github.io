@@ -3,31 +3,21 @@
 
 <head>
   <meta charset="UTF-8">
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-04K8QC3TXH"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-04K8QC3TXH');
-  </script>
-
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/fonts/SourceSerif4/SourceSerif4-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/SourceSans3/SourceSans3-Regular.woff2" as="font" type="font/woff2" crossorigin>
 
+  <link rel="stylesheet" href="/res/fonts.css">
   <link rel="stylesheet" href="/res/style.css">
-  <link rel="stylesheet" href="/res/syntax.css">
+
+  <!-- defer non-critical stylesheet -->
+  <link href="/res/syntax.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/res/syntax.css"></noscript>
 
   
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic|Source+Serif+Pro|Source+Code+Pro:400" type="text/css">
-
   
-
-  <script src="https://unpkg.com/feather-icons"></script>
-  <script src="/res/script.js"></script>
 
   
 
@@ -35,13 +25,16 @@
   <title>blog.ielliott.io</title>
   
 
-  <meta property="og:locale" content="en_US">
+  <link rel="canonical" href="https://blog.ielliott.io/">
+<link rel="alternate" type="application/atom+xml" title="blog.ielliott.io" href="/feed.xml">
+
+<meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="blog.ielliott.io">
-<link rel="canonical" href="https://blog.ielliott.io/">
 <meta property="og:url" content="https://blog.ielliott.io/">
 <meta property="og:title" content="blog.ielliott.io">
 <meta name="twitter:card" content="summary">
 <meta property="twitter:title" content="blog.ielliott.io">
+
 
 <meta name="description" content="Isaac Elliott's personal blog.">
 <meta property="og:description" content="Isaac Elliott's personal blog.">
@@ -61,164 +54,123 @@
 
 <body>
   <header>
-  <h1 class="centered large">I E</h1>
-</header>
-  <nav>
-  <a href="/" onmouseover="navColor(true)" onmouseout="navColor(false)">Home</a>
-  &nbsp;
-  &nbsp;
-  <a href="/about" onmouseover="navColor(true)" onmouseout="navColor(false)">About</a>
-  &nbsp;
-  &nbsp;
-  <a href="/resources" onmouseover="navColor(true)" onmouseout="navColor(false)">Resources</a>
-</nav>
+    <h1><a href="/">I E</a></h1>
+    <nav>
+      <ol>
+        <li><a href="/">Home</a>
+        <li><a href="/about">About</a>
+        <li><a href="/resources">Resources</a>
+      </ol>
+    </nav>
+  </header>
 
-  <section>
+  <main>
     
 
     
 
 
-<article>
-    <header>
-        <h1><a href="/exploring-graphs-with-prolog">Exploring a dependency graph with Prolog</a></h1>
-        <p class="date"> 2 August, 2025</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/exploring-graphs-with-prolog">Exploring a dependency graph with Prolog</a></h1>
+    <p class="post-metadata">
+       2 August, 2025
+      
+    </p>
 
     <p>I was working on my (currently private) <a href="https://lectio.news/">YouTube feed reader project</a>,
 watching the dependencies build after I upgraded the GHC version,
 when I noticed an odd transitive dependency: <a href="https://hackage.haskell.org/package/happy"><code>happy</code></a>.
 <code>happy</code> is a parser generator, and this project is a web app.
 Why does my web app depend on a parser generator?</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/context-menus">Context menus</a></h1>
-        <p class="date"> 1 July, 2025</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/context-menus">Context menus</a></h1>
+    <p class="post-metadata">
+       1 July, 2025
+      
+    </p>
 
     <p>I got an email that had an unfamiliar time zone in it.
 My intuition said that if I selected the text and right-clicked then I’d be closer to knowing what the corresponding local time was.
 When I did, the best option I found was to search the web.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/playing-with-ghc-package-databases">Playing with GHC package databases</a></h1>
-        <p class="date"> 1 July, 2025</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/playing-with-ghc-package-databases">Playing with GHC package databases</a></h1>
+    <p class="post-metadata">
+       1 July, 2025
+      
+    </p>
 
     <p>I wanted to do some dependency analysis of a Haskell project,
 and I wanted to see what it was like without installing a Cabal-specific tool such as
 <a href="https://hackage.haskell.org/package/cabal-plan"><code>cabal-plan</code></a> (which works fine).
 Here’s what I played around with.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/2024-project-review">2024 Project Review</a></h1>
-        <p class="date">26 February, 2025</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/2024-project-review">2024 Project Review</a></h1>
+    <p class="post-metadata">
+      26 February, 2025
+      
+    </p>
 
     <p>Reflections on 2024's hobby projects.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/my-git-cli-overhaul">My Git CLI overhaul</a></h1>
-        <p class="date">26 February, 2025</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/my-git-cli-overhaul">My Git CLI overhaul</a></h1>
+    <p class="post-metadata">
+      26 February, 2025
+      
+    </p>
 
     <p>Showing off the Git aliases I use daily.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/in-praise-of-zsa">In Praise of ZSA</a></h1>
-        <p class="date">11 January, 2025</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/in-praise-of-zsa">In Praise of ZSA</a></h1>
+    <p class="post-metadata">
+      11 January, 2025
+      
+    </p>
 
     <p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
 I own two of their <a href="https://ergodox-ez.com/">Ergodox EZ</a>s (one for work, one for home) which I use every day.
 They also publish an <a href="https://www.zsa.io/the-ergo">email newsletter</a> that I subscribe to and happily read.
 In the <a href="https://mailchi.mp/zsa/the-ergo-75">December 2024 issue</a>, they noted that ZSA doesn’t advertise (see <a href="https://www.zsa.io/trust">Why trust us | zsa.io</a>), and essentially rely on recommendations from customers.
 I like ZSA and hope they continue to be successful, so this short article is my attempt to give something back to them without buying <em>another</em> keyboard.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/unfettering-the-imagination">Unfettering the imagination</a></h1>
-        <p class="date">22 September, 2024</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/unfettering-the-imagination">Unfettering the imagination</a></h1>
+    <p class="post-metadata">
+      22 September, 2024
+      
+    </p>
 
     <p><a href="https://github.com/LightAndLight/xeval"><code>xeval</code></a> is a small and not particularly useful program that arose from an important thought process.
 This post the result of exploring that thought process—trying to articulate it to myself—but without writing too much on the topic.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/sized-types-and-coinduction-in-safe-agda">Sized types and coinduction in Safe Agda</a></h1>
-        <p class="date"> 4 September, 2024</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/sized-types-and-coinduction-in-safe-agda">Sized types and coinduction in Safe Agda</a></h1>
+    <p class="post-metadata">
+       4 September, 2024
+      
+    </p>
 
-    Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
-This post is about why I care and how I've worked around it.
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
+    <p>Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
+This post is about why I care and how I've worked around it.</p>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/per-project-nix-substituters">Per-project Nix substituters</a></h1>
-        <p class="date">10 August, 2024</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/per-project-nix-substituters">Per-project Nix substituters</a></h1>
+    <p class="post-metadata">
+      10 August, 2024
+      
+    </p>
 
     <p>A lot of Nix projects end up with their own binary cache (also known as a “substituter”).
 Nix can be quite slow when it’s configured to use many project-specific substituters,
@@ -227,179 +179,134 @@ project, most of the other substituters Nix knows about are irrelevant, and quer
 is wasted effort. My solution is to only enable <a href="https://cache.nixos.org" class="uri">https://cache.nixos.org</a> globally, and
 to selectively enable other substituters while I’m working on a project that needs them.
 Here’s how I do it.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/troubleshooting-lightdms-test-mode">Troubleshooting LightDM's test mode</a></h1>
-        <p class="date"> 3 August, 2024</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/troubleshooting-lightdms-test-mode">Troubleshooting LightDM's test mode</a></h1>
+    <p class="post-metadata">
+       3 August, 2024
+      
+    </p>
 
     <p>Recently I’ve been tweaking the appearance of <a href="https://github.com/LightAndLight/personal-configs">my desktop environment</a>,
 which consists of <a href="https://xmonad.org/">XMonad</a> and <a href="https://github.com/taffybar/taffybar">Taffybar</a>,
 with <a href="https://github.com/canonical/lightdm">LightDM</a> as the display manager,
 all tied together using <a href="https://nixos.org/">NixOS</a> and <a href="https://github.com/nix-community/home-manager">home-manager</a>.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/2023-project-review">2023 Project Review</a></h1>
-        <p class="date">17 January, 2024</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/2023-project-review">2023 Project Review</a></h1>
+    <p class="post-metadata">
+      17 January, 2024
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/music">music</a>
+
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
+
+
+      
+    </p>
 
     <p>Reflections on 2023's hobby projects.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/music">music</a>
-
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/diablo-1-in-2023">Diablo 1 in 2023</a></h1>
-        <p class="date">14 July, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/diablo-1-in-2023">Diablo 1 in 2023</a></h1>
+    <p class="post-metadata">
+      14 July, 2023
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/games">games</a>
 
-    My experience playing the original Diablo for the first time.
 
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
+      
+    </p>
 
-<a href="/tags/games">games</a>
-
-            <br>
-            
-        </p>
-    </footer>
+    <p>My experience playing the original Diablo for the first time.</p>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/nominal-sets">Nominal Sets</a></h1>
-        <p class="date"> 4 July, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/nominal-sets">Nominal Sets</a></h1>
+    <p class="post-metadata">
+       4 July, 2023
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
 
-    Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
-theory of nominal sets.
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
 
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
+      
+    </p>
 
-<a href="/tags/programming">programming</a>
+    <p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
+theory of nominal sets.</p>
 
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/nominal-sets-proofs">Nominal Sets: Appendix A (Proofs)</a></h1>
-        <p class="date"> 4 July, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/nominal-sets-proofs">Nominal Sets: Appendix A (Proofs)</a></h1>
+    <p class="post-metadata">
+       4 July, 2023
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
-    The proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 
+      
+    </p>
 
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
+    <p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
 
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/gear-acquisition-syndrome">Gear Acquisition Syndrome</a></h1>
-        <p class="date">28 May, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/gear-acquisition-syndrome">Gear Acquisition Syndrome</a></h1>
+    <p class="post-metadata">
+      28 May, 2023
+      
+    </p>
 
     <p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
 like drawing and music production: the sense of excitement and “motivation” after I’ve acquired
 some new art-related material. It’s very easy to spend hours doodling with a new marker, writing
 in a fresh journal, or twiddling with a synth I’ve just bought. The next day, though, the new tool
 is a little less exciting, and so on, until it’s as normal as everything else.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/jekyll-to-hakyll">Migrating from Jekyll to Hakyll</a></h1>
-        <p class="date"> 4 May, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/jekyll-to-hakyll">Migrating from Jekyll to Hakyll</a></h1>
+    <p class="post-metadata">
+       4 May, 2023
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
 <a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
 tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
 special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
 impacted.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/web-resources-i-enjoy">Web Resources I Enjoy</a></h1>
-        <p class="date">10 January, 2023</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/web-resources-i-enjoy">Web Resources I Enjoy</a></h1>
+    <p class="post-metadata">
+      10 January, 2023
+      
+    </p>
 
     <p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
@@ -408,41 +315,36 @@ conversation</a>,
 how we use the world wide web, how it has become extremely centralised around a few social media
 platforms, and the role of recommendation algorithms in this system. Parts of this conversation are
 starting to influence the way I use the web.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/2022-project-review">2022 Project Review</a></h1>
-        <p class="date">27 December, 2022</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/2022-project-review">2022 Project Review</a></h1>
+    <p class="post-metadata">
+      27 December, 2022
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>Reflections this year's hobby projects.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/rip-dreamincode">RIP Dream.In.Code</a></h1>
-        <p class="date"> 6 July, 2022</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/rip-dreamincode">RIP Dream.In.Code</a></h1>
+    <p class="post-metadata">
+       6 July, 2022
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
@@ -450,97 +352,73 @@ down</a>
 due to hosting costs. My participation in Dream.In.Code, starting from 2009 and ending somewhere in
 2013, represents the beginning of my life as a programmer. Over the past 10 or so years, programming
 has become a <em>huge</em> part of my life. I’d like to acknowledge the role this forum played in my development.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/webgl-slower-than-canvas">WebGL Slower Than Canvas?</a></h1>
-        <p class="date">20 May, 2021</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/webgl-slower-than-canvas">WebGL Slower Than Canvas?</a></h1>
+    <p class="post-metadata">
+      20 May, 2021
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
 (in frames per second) than the Canvas version.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/rust-defun-example">An Example of Defunctionalisation in Rust</a></h1>
-        <p class="date"> 6 February, 2021</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/rust-defun-example">An Example of Defunctionalisation in Rust</a></h1>
+    <p class="post-metadata">
+       6 February, 2021
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/docker-cleanup-commands">Docker Cleanup Commands</a></h1>
-        <p class="date"> 7 November, 2020</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/docker-cleanup-commands">Docker Cleanup Commands</a></h1>
+    <p class="post-metadata">
+       7 November, 2020
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/sized-hkts">Statically Sized Higher-kinded Polymorphism</a></h1>
-        <p class="date"> 7 July, 2020</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/sized-hkts">Statically Sized Higher-kinded Polymorphism</a></h1>
+    <p class="post-metadata">
+       7 July, 2020
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
@@ -550,73 +428,57 @@ Rust. This article is a short description of my journey.</p>
   how to enable parameterisation over arbitrary type constructs, while still retaining compile-time calculation
   of datatype sizes.
 </p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/lambdas-are-codatatypes">Lambdas are Codatatypes</a></h1>
-        <p class="date"> 1 July, 2019</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/lambdas-are-codatatypes">Lambdas are Codatatypes</a></h1>
+    <p class="post-metadata">
+       1 July, 2019
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/agda-nixos">Configuring Agda's standard library on NixOS</a></h1>
-        <p class="date">17 May, 2019</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/agda-nixos">Configuring Agda's standard library on NixOS</a></h1>
+    <p class="post-metadata">
+      17 May, 2019
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/conditional-probabilities-obnoxious-white-guys">Conditional Probabilities and Obnoxious White Guys</a></h1>
-        <p class="date"> 5 May, 2019</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/conditional-probabilities-obnoxious-white-guys">Conditional Probabilities and Obnoxious White Guys</a></h1>
+    <p class="post-metadata">
+       5 May, 2019
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/rationality">rationality</a>
+
+<a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
+
+
+      
+    </p>
 
     <p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
@@ -624,28 +486,20 @@ confronted by a white guy who felt ‘called out’ by some of her anecdotes. Ap
 described interactions with obnoxious individuals in a professional setting, and noted that
 they were all white guys. Ironically, the guy raised the issue in such a way that he was added
 to the list of anecdotes.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/rationality">rationality</a>
-
-<a href="/tags/mathematics">mathematics</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/learning-a-craft">Learning a Craft</a></h1>
-        <p class="date">11 February, 2019</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/learning-a-craft">Learning a Craft</a></h1>
+    <p class="post-metadata">
+      11 February, 2019
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/self-improvement">self-improvement</a>
+
+
+      
+    </p>
 
     <p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
@@ -653,50 +507,40 @@ was way too hard, so I decided I wanted to create browser-based static HTML
 games and text-based roguelikes. Having learned that PHP and MySQL exist, I sat
 down and brainstormed a setting, classes and roles for characters, and all the
 other things that come with fantasy RPGs.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/self-improvement">self-improvement</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/writing">Writing</a></h1>
-        <p class="date">29 December, 2018</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/writing">Writing</a></h1>
+    <p class="post-metadata">
+      29 December, 2018
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/self-improvement">self-improvement</a>
+
+<a class="post-metadata-tag" href="/tags/philosophy">philosophy</a>
+
+
+      
+    </p>
 
     <p>I think writing can help us think better.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/self-improvement">self-improvement</a>
-
-<a href="/tags/philosophy">philosophy</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/on-programming-language-design">On Programming Language Design</a></h1>
-        <p class="date">21 November, 2018</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/on-programming-language-design">On Programming Language Design</a></h1>
+    <p class="post-metadata">
+      21 November, 2018
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/philosophy">philosophy</a>
+
+
+      
+    </p>
 
     <p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
@@ -707,28 +551,22 @@ how you feel about <a href="https://en.wikipedia.org/wiki/Philosophy_of_mathemat
 platonism</a>,
 I think Phil is pointing at a meaningful difference in the way certain ideas
 arise.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/philosophy">philosophy</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/topsy-turvy-reverse-state">Turning bottom-up into top-down with Reverse State</a></h1>
-        <p class="date">13 June, 2018</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/topsy-turvy-reverse-state">Turning bottom-up into top-down with Reverse State</a></h1>
+    <p class="post-metadata">
+      13 June, 2018
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/haskell">haskell</a>
+
+
+      
+    </p>
 
     <p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
@@ -736,140 +574,106 @@ Bruijn indices</a> mindlessly easy. I also love
 for all sorts of whole-program transformations. I think they’re two
 indispensible tools for working with programming languages.
 Unfortunately, they’re not compatible.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/haskell">haskell</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/comonad-transformers-in-the-wild">Comonad Transformers in the Wild</a></h1>
-        <p class="date">25 February, 2018</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/comonad-transformers-in-the-wild">Comonad Transformers in the Wild</a></h1>
+    <p class="post-metadata">
+      25 February, 2018
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/haskell">haskell</a>
+
+
+      
+    </p>
 
     <p>A certain algorithmic puzzle website has a problem that goes like this…</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/haskell">haskell</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/continuations-from-the-ground-up">Continuations From the Ground Up</a></h1>
-        <p class="date"> 6 June, 2017</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/continuations-from-the-ground-up">Continuations From the Ground Up</a></h1>
+    <p class="post-metadata">
+       6 June, 2017
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/haskell">haskell</a>
+
+
+      
+    </p>
 
     <p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/haskell">haskell</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/how-to-delete-old-nixos-boot-configurations">How to delete old NixOS boot configurations</a></h1>
-        <p class="date">24 March, 2017</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/how-to-delete-old-nixos-boot-configurations">How to delete old NixOS boot configurations</a></h1>
+    <p class="post-metadata">
+      24 March, 2017
+      
+    </p>
 
     <p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
 specification. A consequence of this is that your entire system
 configuration can be versioned.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/introduction-to-unification">Introduction to Unification</a></h1>
-        <p class="date"> 7 January, 2017</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/introduction-to-unification">Introduction to Unification</a></h1>
+    <p class="post-metadata">
+       7 January, 2017
+      
+    </p>
 
     <p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
 unification in with a little help from the HM type theory.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/why-LINQ-is-broken">Why LINQ (well, C#) is Broken</a></h1>
-        <p class="date">24 October, 2016</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/why-LINQ-is-broken">Why LINQ (well, C#) is Broken</a></h1>
+    <p class="post-metadata">
+      24 October, 2016
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/haskell">haskell</a>
+
+
+      
+    </p>
 
     <p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
 so any data structure that implements the correct methods can be used with LINQ.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/haskell">haskell</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/search-and-replace-in-multiple-files">Search and Replace in Multiple Files</a></h1>
-        <p class="date">25 July, 2015</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/search-and-replace-in-multiple-files">Search and Replace in Multiple Files</a></h1>
+    <p class="post-metadata">
+      25 July, 2015
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/tools">tools</a>
+
+
+      
+    </p>
 
     <p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
@@ -877,111 +681,71 @@ finished most of the project when I realised that the main page of the
 project should be named <code>index.html</code> instead of <code>home.html</code>. I renamed the
 file, but that left me with countless references to “home.html” that needed
 to be changed, and I wanted to change them all at once. Enter <code>sed</code>.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/tools">tools</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/the-programming-thought-process-fizzbuzz">The Programming Thought Process: Fizzbuzz</a></h1>
-        <p class="date"> 4 March, 2015</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/the-programming-thought-process-fizzbuzz">The Programming Thought Process: Fizzbuzz</a></h1>
+    <p class="post-metadata">
+       4 March, 2015
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
 
     <p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
 it isn’t the languages you know, but your ability to solve problems that
 defines you as a programmer.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
-<article>
-    <header>
-        <h1><a href="/a-practical-introduction-to-monad-transformers">A Practical Introduction to Monad Transformers</a></h1>
-        <p class="date"> 1 February, 2015</p>
-    </header>
+<article class="post-list-item">
+    <h1><a href="/a-practical-introduction-to-monad-transformers">A Practical Introduction to Monad Transformers</a></h1>
+    <p class="post-metadata">
+       1 February, 2015
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/haskell">haskell</a>
+
+
+      
+    </p>
 
     <p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>
-
-    <footer style="text-align: center;">
-        <p>...
-            
-            <br>
-            tags:
-
-<a href="/tags/programming">programming</a>
-
-<a href="/tags/haskell">haskell</a>
-
-            <br>
-            
-        </p>
-    </footer>
 </article>
 
 
-  </section>
+  </main>
+
   <footer>
-  <div class="footer-item">
     <span>Isaac Elliott</span>
-  </div>
 
-  <div class="footer-item">
-    <a class="footer-link-icon" href="https://github.com/lightandlight">
-      <i class="footer-icon" data-feather="github"></i>
-    </a>
-    <a class="footer-link-name" href="https://github.com/lightandlight">
-      GitHub
-    </a>
-  </div>
+    <ol>
+      <li><a class="footer-item-link" href="https://github.com/lightandlight">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28a8 8 0 0 0-6.93-4 59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32M200 112a40 40 0 0 1-40 40h-48a40 40 0 0 1-40-40v-8a41.74 41.74 0 0 1 6.9-22.48 8 8 0 0 0 1.1-7.69 43.8 43.8 0 0 1 .79-33.58 43.88 43.88 0 0 1 32.32 20.06 8 8 0 0 0 6.71 3.69h32.35a8 8 0 0 0 6.74-3.69 43.87 43.87 0 0 1 32.32-20.06 43.8 43.8 0 0 1 .77 33.58 8.09 8.09 0 0 0 1 7.65 41.7 41.7 0 0 1 7 22.52Z"></path></svg>
+        GitHub
+      </a>
 
-  <div class="footer-item">
-    <a class="footer-link-icon" href="mailto:blog@id.ielliott.io">
-      <i class="footer-icon" data-feather="mail"></i>
-    </a>
-    <a class="footer-link-name" href="mailto:blog@id.ielliott.io">
-      Email
-    </a>
-  </div>
+      <li><a class="footer-item-link" href="mailto:blog@id.ielliott.io">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8m-20.57 16L128 133.15 52.57 64ZM216 192H40V74.19l82.59 75.71a8 8 0 0 0 10.82 0L216 74.19z"></path></svg>
+        Email
+      </a>
 
-  <div class="footer-item">
-    <a class="footer-link-icon" style="text-decoration: none;" href="https://blog.ielliott.io/feed.xml">
-      <i class="footer-icon" data-feather="rss"></i>
-    </a>
-    <a class="footer-link-name" href="https://blog.ielliott.io/feed.xml">
-      Atom
-    </a>
-  </div>
-</footer>
-
-  <script>feather.replace()</script>
+      <li><a class="footer-item-link" href="https://blog.ielliott.io/feed.xml">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 192a8 8 0 0 1-16 0c0-79.4-64.6-144-144-144a8 8 0 0 1 0-16c88.22 0 160 71.78 160 160M64 104a8 8 0 0 0 0 16 72.08 72.08 0 0 1 72 72 8 8 0 0 0 16 0 88.1 88.1 0 0 0-88-88m4 72a12 12 0 1 0 12 12 12 12 0 0 0-12-12"></path></svg>
+        Feed
+      </a>
+    </ol>
+  </footer>
 
   
 </body>
