@@ -1,28 +1,28 @@
 <article>
-  <h1>$title$</h1>
-  <p class="date">$date$</p>
-  $body$
-  <footer>
-    <p>
-      $if(has_previous)$
-      <a href="$previous_url$">$previous_title$ - Previous</a>
-      $else$
-      <span>Oldest</span>
-      $endif$
-      |
-      $if(has_next)$
-      <a href="$next_url$">Next - $next_title$</a>
-      $else$
-      <span>Newest</span>
-      $endif$
+  <header>
+    <h1>$title$</h1>
+    <p class="post-metadata">
+      $date$
       $if(has_tags)$
-
-      <br><br>
-
+      ⋅
       $partial("templates/tags-list.html")$
       $endif$
     </p>
-  </footer>
+  </header>
+  $body$
+  <p class="post-navigation">
+    $if(has_previous)$
+    <a href="$previous_url$" title="Previous post: $previous_title$">← $previous_title$</a>
+    $else$
+    <span>Oldest</span>
+    $endif$
+
+    $if(has_next)$
+    <a href="$next_url$" title="Next post: $next_title$">$next_title$ →</a>
+    $else$
+    <span>Newest</span>
+    $endif$
+  </p>
 </article>
 
 <div id="disqus_thread"></div>

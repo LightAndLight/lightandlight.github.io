@@ -4,8 +4,8 @@ author: ielliott95
 permalink: /nominal-sets
 date: 2023-07-04T06:41:00Z
 excerpt: |
-  Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
-  theory of nominal sets.
+  <p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
+  theory of nominal sets.</p>
 math: true
 tags:
   - programming
@@ -32,7 +32,7 @@ like to use a variable binding library instead. I think
 like to explore an alternative way of tackling the problem, inspired by a formalism called "nominal sets".
 
 </div>
-<div id="toc" style="float: right;"><!-- generated --></div>
+<div id="toc"><!-- generated --></div>
 </div>
 
 ## Why did I write this?

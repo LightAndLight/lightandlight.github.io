@@ -4,7 +4,7 @@ permalink: /troubleshooting-lightdms-test-mode
 date: 2024-08-03
 ---
 
-<div id="toc" style="float: right;"><!-- generated --></div>
+<div id="toc"><!-- generated --></div>
 
 Recently I've been tweaking the appearance of [my desktop environment](https://github.com/LightAndLight/personal-configs),
 which consists of [XMonad](https://xmonad.org/) and [Taffybar](https://github.com/taffybar/taffybar),
