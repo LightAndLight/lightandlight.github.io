@@ -10,7 +10,10 @@
 
   <link rel="stylesheet" href="/res/fonts.css">
   <link rel="stylesheet" href="/res/style.css">
-  <link rel="stylesheet" href="/res/syntax.css">
+
+  <!-- defer non-critical stylesheet -->
+  <link href="/res/syntax.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/res/syntax.css"></noscript>
 
   $if(math)$
   <link rel="stylesheet" href="/res/math.css">
