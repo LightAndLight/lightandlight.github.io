@@ -10,8 +10,36 @@
         <email>blog@id.ielliott.io</email>
         
     </author>
-    <updated>2025-08-02T07:00:00Z</updated>
+    <updated>2025-08-05T21:46:00Z</updated>
     <entry>
+    <title>Reply to "Standalone relational storage engines?"</title>
+    <link href="https://blog.ielliott.io/reply/202508052146" />
+    
+    <id>https://blog.ielliott.io/reply/202508052146</id>
+    
+    <published>2025-08-05T21:46:00Z</published>
+    <updated>2025-08-05T21:46:00Z</updated>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/reply/202508052146"><![CDATA[
+      
+      
+      <p>Reply to <a href="/exploring-graphs-with-prolog#standalone-relational-storage-engines">Standalone relational storage engines?</a></p>
+      
+      <hr>
+      
+      <p><a href="https://vaibhavsagar.com/">Vaibhav</a> offered <a href="https://en.wikipedia.org/wiki/RocksDB">RocksDB</a> and <a href="https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database">LMDB</a>
+as candidates for “ZeroMQ for database storage”.</p>
+<p>Facebook has <a href="https://en.wikipedia.org/wiki/MyRocks">a MySQL storage backend that uses RocksDB</a>,
+and LMDB has been used as a storage backend for <a href="https://github.com/LMDB/sqlightning">(a fork of) SQLite</a>.</p>
+<p>I was surprised, because these databases describe themselves as key-value stores,
+which doesn’t seem like the right data structure for relational queries.
+I had missed the fact that these are <a href="https://en.wikipedia.org/wiki/Ordered_key%E2%80%93value_store"><em>ordered</em> key-value stores</a>,
+so they support range queries.</p>
+    ]]></content>
+    
+</entry>
+<entry>
     <title>Exploring a dependency graph with Prolog</title>
     <link href="https://blog.ielliott.io/exploring-graphs-with-prolog" />
     
@@ -19,14 +47,17 @@
     
     <published>2025-08-02T07:00:00Z</published>
     <updated>2025-08-02T07:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I was working on my (currently private) <a href="https://lectio.news/">YouTube feed reader project</a>,
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/exploring-graphs-with-prolog"><![CDATA[<p>I was working on my (currently private) <a href="https://lectio.news/">YouTube feed reader project</a>,
 watching the dependencies build after I upgraded the GHC version,
 when I noticed an odd transitive dependency: <a href="https://hackage.haskell.org/package/happy"><code>happy</code></a>.
 <code>happy</code> is a parser generator, and this project is a web app.
 Why does my web app depend on a parser generator?</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/exploring-graphs-with-prolog">
-      <![CDATA[<div id="toc">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/exploring-graphs-with-prolog"><![CDATA[
+      
+      <div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#setup">Setup</a></li>
@@ -386,10 +417,11 @@ If I want a Datalog frontend, I can write it using the same storage library and 
 <p>The pieces are probably all there to do this with something like Postgres;
 the storage format is <a href="https://www.postgresql.org/docs/current/storage.html">well-documented</a> and I wouldn’t be surprised if it was appropriately decoupled in the Postgres codebase.
 But I feel like the monolithic style of DBMSs discourage this kind of thinking.
-In contrast, imagine something like “<a href="https://zeromq.org/">ZeroMQ</a> for database storage”.</p>]]>
-    </content>
+In contrast, imagine something like “<a href="https://zeromq.org/">ZeroMQ</a> for database storage”.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Context menus</title>
     <link href="https://blog.ielliott.io/context-menus" />
     
@@ -397,12 +429,15 @@ In contrast, imagine something like “<a href="https://zeromq.org/">ZeroMQ</a> 
     
     <published>2025-07-01T05:25:00Z</published>
     <updated>2025-07-01T05:25:00Z</updated>
-    <summary type="html"><![CDATA[<p>I got an email that had an unfamiliar time zone in it.
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/context-menus"><![CDATA[<p>I got an email that had an unfamiliar time zone in it.
 My intuition said that if I selected the text and right-clicked then I’d be closer to knowing what the corresponding local time was.
 When I did, the best option I found was to search the web.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/context-menus">
-      <![CDATA[<div class="text-with-figure">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/context-menus"><![CDATA[
+      
+      <div class="text-with-figure">
 <div class="text-with-figure__text">
 <p>I got an email that had an unfamiliar time zone in it.
 My intuition said that if I selected the text and right-clicked then I’d be closer to knowing what the corresponding local time was.
@@ -417,10 +452,11 @@ And not only in Thunderbird, but in <em>every</em> program that has text and con
 Thunderbird’s context menu for a text selection
 </figcaption>
 </figure>
-</div>]]>
-    </content>
+</div>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Playing with GHC package databases</title>
     <link href="https://blog.ielliott.io/playing-with-ghc-package-databases" />
     
@@ -428,13 +464,16 @@ Thunderbird’s context menu for a text selection
     
     <published>2025-07-01T04:30:00Z</published>
     <updated>2025-07-01T04:30:00Z</updated>
-    <summary type="html"><![CDATA[<p>I wanted to do some dependency analysis of a Haskell project,
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/playing-with-ghc-package-databases"><![CDATA[<p>I wanted to do some dependency analysis of a Haskell project,
 and I wanted to see what it was like without installing a Cabal-specific tool such as
 <a href="https://hackage.haskell.org/package/cabal-plan"><code>cabal-plan</code></a> (which works fine).
 Here’s what I played around with.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/playing-with-ghc-package-databases">
-      <![CDATA[<div id="toc" style="text-wrap: auto;">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/playing-with-ghc-package-databases"><![CDATA[
+      
+      <div id="toc" style="text-wrap: auto;">
 <h3>Contents</h3>
 <ul>
 <li><a href="#finding-the-ghc-package-database-used-by-cabal">Finding the GHC package database used by Cabal</a></li>
@@ -862,10 +901,11 @@ I wonder if there’s a better way?</p>
 </ul></li>
 <li><p>Wouldn’t it be cool if this document was generated from a literate program?</p></li>
 </ul>
-<script src="/res/img-pan-zoom.js"></script>]]>
-    </content>
+<script src="/res/img-pan-zoom.js"></script>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>2024 Project Review</title>
     <link href="https://blog.ielliott.io/2024-project-review" />
     
@@ -873,10 +913,13 @@ I wonder if there’s a better way?</p>
     
     <published>2025-02-26T22:45:05Z</published>
     <updated>2025-02-26T22:45:05Z</updated>
-    <summary type="html"><![CDATA[<p>Reflections on 2024's hobby projects.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/2024-project-review">
-      <![CDATA[<div id="toc" style="white-space: normal;">
+    <summary type="html" xml:base="https://blog.ielliott.io/2024-project-review"><![CDATA[<p>Reflections on 2024's hobby projects.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/2024-project-review"><![CDATA[
+      
+      <div id="toc" style="white-space: normal;">
 <h3>Contents</h3>
 <ul>
 <li><a href="#blog">Blog</a></li>
@@ -1243,10 +1286,11 @@ The code created a full file tree in memory then filtered out entries such as hi
 I fixed it by applying the filepath filters while constructing the in-memory file tree,
 so that it would skip <code>.direnv</code> and never even look at its contents.</p>
 <p>I read a similar story recently:
-<a href="https://randomascii.wordpress.com/2022/09/29/why-modern-software-is-slow-windows-voice-recorder/">Why Modern Software is Slow–Windows Voice Recorder</a>.</p>]]>
-    </content>
+<a href="https://randomascii.wordpress.com/2022/09/29/why-modern-software-is-slow-windows-voice-recorder/">Why Modern Software is Slow–Windows Voice Recorder</a>.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>My Git CLI overhaul</title>
     <link href="https://blog.ielliott.io/my-git-cli-overhaul" />
     
@@ -1254,10 +1298,13 @@ so that it would skip <code>.direnv</code> and never even look at its contents.<
     
     <published>2025-02-26T22:45:00Z</published>
     <updated>2025-02-26T22:45:00Z</updated>
-    <summary type="html"><![CDATA[<p>Showing off the Git aliases I use daily.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/my-git-cli-overhaul">
-      <![CDATA[<p><em>I split this out of <a href="/2024-project-review">my 2024 project review</a> because it got too long.</em></p>
+    <summary type="html" xml:base="https://blog.ielliott.io/my-git-cli-overhaul"><![CDATA[<p>Showing off the Git aliases I use daily.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/my-git-cli-overhaul"><![CDATA[
+      
+      <p><em>I split this out of <a href="/2024-project-review">my 2024 project review</a> because it got too long.</em></p>
 <p>Last year I improved my daily Git experience by writing a bunch of aliases.
 Here’s a reference for what I’ve done so far (<a href="https://github.com/LightAndLight/personal-configs/blob/3e340b4d93359386bdda492cb72dfcc8b0922e17/home/git.nix#L26">Nix configs</a>).</p>
 <div id="toc" style="min-width: 15rem; white-space: normal; column-count: 2;">
@@ -1419,10 +1466,11 @@ The command also lists any unpushed commits.
 <p><code>git spush</code> - Alias for <code>git stash push</code>.</p>
 <h2 id="git-undo"><a href="#git-undo"><code>git undo</code></a></h2>
 <p><code>git undo</code> - Remove the most recent commit, staging its files.</p>
-<p>Inverse of <a href="#git-co"><code>git co</code></a>, <a href="#git-coe"><code>git coe</code></a>, <a href="#git-com"><code>git com</code></a>.</p>]]>
-    </content>
+<p>Inverse of <a href="#git-co"><code>git co</code></a>, <a href="#git-coe"><code>git coe</code></a>, <a href="#git-com"><code>git com</code></a>.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>In Praise of ZSA</title>
     <link href="https://blog.ielliott.io/in-praise-of-zsa" />
     
@@ -1430,14 +1478,17 @@ The command also lists any unpushed commits.
     
     <published>2025-01-11T00:00:00Z</published>
     <updated>2025-01-11T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/in-praise-of-zsa"><![CDATA[<p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
 I own two of their <a href="https://ergodox-ez.com/">Ergodox EZ</a>s (one for work, one for home) which I use every day.
 They also publish an <a href="https://www.zsa.io/the-ergo">email newsletter</a> that I subscribe to and happily read.
 In the <a href="https://mailchi.mp/zsa/the-ergo-75">December 2024 issue</a>, they noted that ZSA doesn’t advertise (see <a href="https://www.zsa.io/trust">Why trust us | zsa.io</a>), and essentially rely on recommendations from customers.
 I like ZSA and hope they continue to be successful, so this short article is my attempt to give something back to them without buying <em>another</em> keyboard.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/in-praise-of-zsa">
-      <![CDATA[<p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
+    
+    <content type="html" xml:base="https://blog.ielliott.io/in-praise-of-zsa"><![CDATA[
+      
+      <p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
 I own two of their <a href="https://ergodox-ez.com/">Ergodox EZ</a>s (one for work, one for home) which I use every day.
 They also publish an <a href="https://www.zsa.io/the-ergo">email newsletter</a> that I subscribe to and happily read.
 In the <a href="https://mailchi.mp/zsa/the-ergo-75">December 2024 issue</a>, they noted that ZSA doesn’t advertise (see <a href="https://www.zsa.io/trust">Why trust us | zsa.io</a>), and essentially rely on recommendations from customers.
@@ -1468,10 +1519,11 @@ Of course, the business metrics that improve as a result come at the expense of 
 <p>In contrast, ZSA really seems to be doing business right: existing to serve its customers, rather than existing to self-perpetuate.
 My Ergodox EZ is <em>for me</em> in a way that many other technology products I use are not.
 Every newsletter email I get from conveys sincerity and integrity that I find increasingly lacking in businesses, especially in the technology industry.
-I wish them all the best.</p>]]>
-    </content>
+I wish them all the best.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Unfettering the imagination</title>
     <link href="https://blog.ielliott.io/unfettering-the-imagination" />
     
@@ -1479,11 +1531,14 @@ I wish them all the best.</p>]]>
     
     <published>2024-09-22T00:00:00Z</published>
     <updated>2024-09-22T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p><a href="https://github.com/LightAndLight/xeval"><code>xeval</code></a> is a small and not particularly useful program that arose from an important thought process.
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/unfettering-the-imagination"><![CDATA[<p><a href="https://github.com/LightAndLight/xeval"><code>xeval</code></a> is a small and not particularly useful program that arose from an important thought process.
 This post the result of exploring that thought process—trying to articulate it to myself—but without writing too much on the topic.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/unfettering-the-imagination">
-      <![CDATA[<p><a href="https://github.com/LightAndLight/xeval"><code>xeval</code></a> is a small and not particularly useful program that arose from an important thought process.
+    
+    <content type="html" xml:base="https://blog.ielliott.io/unfettering-the-imagination"><![CDATA[
+      
+      <p><a href="https://github.com/LightAndLight/xeval"><code>xeval</code></a> is a small and not particularly useful program that arose from an important thought process.
 This post the result of exploring that thought process—trying to articulate it to myself—but without writing too much on the topic.</p>
 <p>I want to gesture at what I’ve been thinking via a concrete example: the evolution of mobile phone controls.
 We interacted with early mobile phones by pressing a fixed set of physical buttons, and in the mid-to-late 2000s switched to touch screens.
@@ -1522,10 +1577,11 @@ But zooming out, I saw that the “what” is much simpler: I want to evaluate t
 What if I could just point at any editable text and say “evaluate this”?
 It felt like a good idea regardless of what my system was capable of at the time.
 This time I was lucky; I was able to get pretty close to the original idea using standard tools.
-But I expect that if I keep thinking in this direction, I’ll come up with other good-feeling ideas that are less compatible with my current software paradigm, so I’ll have to do more work to make them real.</p>]]>
-    </content>
+But I expect that if I keep thinking in this direction, I’ll come up with other good-feeling ideas that are less compatible with my current software paradigm, so I’ll have to do more work to make them real.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Sized types and coinduction in Safe Agda</title>
     <link href="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda" />
     
@@ -1533,11 +1589,14 @@ But I expect that if I keep thinking in this direction, I’ll come up with othe
     
     <published>2024-09-04T00:00:00Z</published>
     <updated>2024-09-04T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda"><![CDATA[<p>Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
 This post is about why I care and how I've worked around it.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda">
-      <![CDATA[<div id="toc">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/sized-types-and-coinduction-in-safe-agda"><![CDATA[
+      
+      <div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#background">Background</a></li>
@@ -1913,10 +1972,11 @@ Proving the correctness of reactive systems using sized types. In Proceedings of
 <li id="fn7"><p><a href="https://ncatlab.org/nlab/show/HomePage">nLab</a> redirects Girard’s paradox to <a href="https://ncatlab.org/nlab/show/Burali-Forti%27s+paradox">Burali-Forti’s paradox</a>,
 which describes a paradox using ordinal numbers which has a very similar vibe to Agda’s sized types situation.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Per-project Nix substituters</title>
     <link href="https://blog.ielliott.io/per-project-nix-substituters" />
     
@@ -1924,7 +1984,8 @@ which describes a paradox using ordinal numbers which has a very similar vibe to
     
     <published>2024-08-10T00:00:00Z</published>
     <updated>2024-08-10T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>A lot of Nix projects end up with their own binary cache (also known as a “substituter”).
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/per-project-nix-substituters"><![CDATA[<p>A lot of Nix projects end up with their own binary cache (also known as a “substituter”).
 Nix can be quite slow when it’s configured to use many project-specific substituters,
 because it queries them all when checking if it needs to build a derivation. In a specific
 project, most of the other substituters Nix knows about are irrelevant, and querying them
@@ -1932,8 +1993,10 @@ is wasted effort. My solution is to only enable <a href="https://cache.nixos.org
 to selectively enable other substituters while I’m working on a project that needs them.
 Here’s how I do it.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/per-project-nix-substituters">
-      <![CDATA[<div id="toc">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/per-project-nix-substituters"><![CDATA[
+      
+      <div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#setup">Setup</a></li>
@@ -2022,10 +2085,11 @@ by <code>extra-</code> to append to the previous value.</p>
 <li id="fn4"><p><a href="https://nix.dev/manual/nix/2.18/command-ref/conf-file#conf-substituters"><code>substituters</code> — <code>nix.conf</code> reference</a><a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>See <code>nixConfig</code> in <a href="https://nix.dev/manual/nix/2.18/command-ref/new-cli/nix3-flake.html#flake-format%3E">Flake format — Nix Flake reference</a><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Troubleshooting LightDM's test mode</title>
     <link href="https://blog.ielliott.io/troubleshooting-lightdms-test-mode" />
     
@@ -2033,13 +2097,16 @@ by <code>extra-</code> to append to the previous value.</p>
     
     <published>2024-08-03T00:00:00Z</published>
     <updated>2024-08-03T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>Recently I’ve been tweaking the appearance of <a href="https://github.com/LightAndLight/personal-configs">my desktop environment</a>,
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/troubleshooting-lightdms-test-mode"><![CDATA[<p>Recently I’ve been tweaking the appearance of <a href="https://github.com/LightAndLight/personal-configs">my desktop environment</a>,
 which consists of <a href="https://xmonad.org/">XMonad</a> and <a href="https://github.com/taffybar/taffybar">Taffybar</a>,
 with <a href="https://github.com/canonical/lightdm">LightDM</a> as the display manager,
 all tied together using <a href="https://nixos.org/">NixOS</a> and <a href="https://github.com/nix-community/home-manager">home-manager</a>.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/troubleshooting-lightdms-test-mode">
-      <![CDATA[<div id="toc">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/troubleshooting-lightdms-test-mode"><![CDATA[
+      
+      <div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#summary">Summary</a>
@@ -2174,10 +2241,11 @@ localuser:lightdm being added to access control list</code></pre>
 <p>My greeter appeared in a small window.
 I don’t know what the fundamental problem was; I know basically nothing about this area of Linux.
 I’ll probably learn more about it one day.
-For now I’m content with having fixed my issue.</p>]]>
-    </content>
+For now I’m content with having fixed my issue.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>2023 Project Review</title>
     <link href="https://blog.ielliott.io/2023-project-review" />
     
@@ -2185,10 +2253,13 @@ For now I’m content with having fixed my issue.</p>]]>
     
     <published>2024-01-17T09:40:00Z</published>
     <updated>2024-01-17T09:40:00Z</updated>
-    <summary type="html"><![CDATA[<p>Reflections on 2023's hobby projects.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/2023-project-review">
-      <![CDATA[<div id="toc" style="white-space: normal;">
+    <summary type="html" xml:base="https://blog.ielliott.io/2023-project-review"><![CDATA[<p>Reflections on 2023's hobby projects.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/2023-project-review"><![CDATA[
+      
+      <div id="toc" style="white-space: normal;">
 <h3>Contents</h3>
 <ul>
 <li><a href="#ipso">Ipso</a></li>
@@ -2699,10 +2770,11 @@ For proper code reuse this “quote” operator needs access to all the source c
 <li id="fn1"><p><code>IORef</code> is a boxed (pointer number 1) <a href="https://hackage.haskell.org/package/base-4.16.3.0/docs/GHC-Exts.html#t:MutVar-35-">MutVar#</a>,
 which is a pointer (pointer number 2) to a boxed (pointer number 3) value.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Diablo 1 in 2023</title>
     <link href="https://blog.ielliott.io/diablo-1-in-2023" />
     
@@ -2710,10 +2782,13 @@ which is a pointer (pointer number 2) to a boxed (pointer number 3) value.<a hre
     
     <published>2023-07-14T00:00:00Z</published>
     <updated>2023-07-14T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>My experience playing the original Diablo for the first time.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/diablo-1-in-2023">
-      <![CDATA[<div id="toc">
+    <summary type="html" xml:base="https://blog.ielliott.io/diablo-1-in-2023"><![CDATA[<p>My experience playing the original Diablo for the first time.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/diablo-1-in-2023"><![CDATA[
+      
+      <div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#music">Music</a></li>
@@ -2805,10 +2880,11 @@ If services like <a href="https://www.gog.com">Good Old Games</a> didn’t exist
 <li id="fn1"><p>Aside: <a href="https://youtu.be/1faaOrtHJ-A?t=143">Here’s a fun video</a> of <a href="https://www.codeofhonor.com/">Patrick Wyatt</a> (one of ArenaNet’s founders) talking about network programming in Warcraft, Diablo, and Guild Wars.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>I bought the <a href="https://www.gog.com/en/game/diablo">DRM-free version of Diablo + Hellfire on Good Old Games</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Nominal Sets</title>
     <link href="https://blog.ielliott.io/nominal-sets" />
     
@@ -2816,12 +2892,15 @@ If services like <a href="https://www.gog.com">Good Old Games</a> didn’t exist
     
     <published>2023-07-04T06:41:00Z</published>
     <updated>2023-07-04T06:41:00Z</updated>
-    <summary type="html"><![CDATA[<p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/nominal-sets"><![CDATA[<p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
 theory of nominal sets.</p>
 ]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/nominal-sets">
-      <![CDATA[<div class="intro-wrapper">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/nominal-sets"><![CDATA[
+      
+      <div class="intro-wrapper">
 <div class="intro">
 <p>For years I’ve used <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a>, in part because
@@ -3587,10 +3666,11 @@ helpful for understanding quotients.<a href="#fnref6" class="footnote-back" role
 in Theoretical Computer Science, 228, 37-52.</p>
 <p><a href="https://doi.org/10.1016/j.entcs.2008.12.115" class="uri">https://doi.org/10.1016/j.entcs.2008.12.115</a><a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Nominal Sets: Appendix A (Proofs)</title>
     <link href="https://blog.ielliott.io/nominal-sets-proofs" />
     
@@ -3598,11 +3678,14 @@ in Theoretical Computer Science, 228, 37-52.</p>
     
     <published>2023-07-04T06:40:00Z</published>
     <updated>2023-07-04T06:40:00Z</updated>
-    <summary type="html"><![CDATA[<p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/nominal-sets-proofs"><![CDATA[<p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
 ]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/nominal-sets-proofs">
-      <![CDATA[<p>Here are the proofs for my <a href="nominal-sets">Nominal Sets article</a>.
+    
+    <content type="html" xml:base="https://blog.ielliott.io/nominal-sets-proofs"><![CDATA[
+      
+      <p>Here are the proofs for my <a href="nominal-sets">Nominal Sets article</a>.
 This was a personal exercise to improve my mathematical reasoning; I don’t expect anyone to read it.
 That said, if you do find any mistakes then please let me know!</p>
 <h2 id="proof-1"><a href="#proof-1">Proof 1</a></h2>
@@ -4578,10 +4661,11 @@ a \; \# \; f \; (f \text{ equivariant -- A.14}) \land a \; \# \; \langle a \rang
 \\
 = f(x) \; (\eta \text{-equivalence})
 \end{array}
-</annotation></semantics></math></p>]]>
-    </content>
+</annotation></semantics></math></p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Gear Acquisition Syndrome</title>
     <link href="https://blog.ielliott.io/gear-acquisition-syndrome" />
     
@@ -4589,14 +4673,17 @@ a \; \# \; f \; (f \text{ equivariant -- A.14}) \land a \; \# \; \langle a \rang
     
     <published>2023-05-28T06:36:00Z</published>
     <updated>2023-05-28T06:36:00Z</updated>
-    <summary type="html"><![CDATA[<p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/gear-acquisition-syndrome"><![CDATA[<p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
 like drawing and music production: the sense of excitement and “motivation” after I’ve acquired
 some new art-related material. It’s very easy to spend hours doodling with a new marker, writing
 in a fresh journal, or twiddling with a synth I’ve just bought. The next day, though, the new tool
 is a little less exciting, and so on, until it’s as normal as everything else.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/gear-acquisition-syndrome">
-      <![CDATA[<p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
+    
+    <content type="html" xml:base="https://blog.ielliott.io/gear-acquisition-syndrome"><![CDATA[
+      
+      <p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
 like drawing and music production: the sense of excitement and “motivation” after I’ve acquired
 some new art-related material. It’s very easy to spend hours doodling with a new marker, writing
 in a fresh journal, or twiddling with a synth I’ve just bought. The next day, though, the new tool
@@ -4691,10 +4778,11 @@ and we watched a few funny videos about gym-goers with too much fitness gear, ho
 <ol>
 <li id="fn1"><p>See also: <a href="https://www.lesswrong.com/posts/EFQ3F6kmt4WHXRqik/ugh-fields">“Ugh Fields”</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Migrating from Jekyll to Hakyll</title>
     <link href="https://blog.ielliott.io/jekyll-to-hakyll" />
     
@@ -4702,14 +4790,17 @@ and we watched a few funny videos about gym-goers with too much fitness gear, ho
     
     <published>2023-05-04T00:00:00Z</published>
     <updated>2023-05-04T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/jekyll-to-hakyll"><![CDATA[<p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
 <a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
 tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
 special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
 impacted.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/jekyll-to-hakyll">
-      <![CDATA[<div id="toc">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/jekyll-to-hakyll"><![CDATA[
+      
+      <div id="toc">
 <h3>Contents</h3>
 <ul>
 <li><a href="#background">Background</a></li>
@@ -4818,10 +4909,11 @@ development for me.</p>
 <ol>
 <li id="fn1"><p>Also, there were no satisfying search results for how to do this with Jekyll.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Web Resources I Enjoy</title>
     <link href="https://blog.ielliott.io/web-resources-i-enjoy" />
     
@@ -4829,7 +4921,8 @@ development for me.</p>
     
     <published>2023-01-10T00:00:00Z</published>
     <updated>2023-01-10T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>In
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/web-resources-i-enjoy"><![CDATA[<p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
 conversation</a>,
 <a href="https://www.samharris.org">Sam Harris</a> and <a href="https://www.calnewport.com">Cal Newport</a> talked about
@@ -4837,8 +4930,10 @@ how we use the world wide web, how it has become extremely centralised around a 
 platforms, and the role of recommendation algorithms in this system. Parts of this conversation are
 starting to influence the way I use the web.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/web-resources-i-enjoy">
-      <![CDATA[<p>In
+    
+    <content type="html" xml:base="https://blog.ielliott.io/web-resources-i-enjoy"><![CDATA[
+      
+      <p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
 conversation</a>,
 <a href="https://www.samharris.org">Sam Harris</a> and <a href="https://www.calnewport.com">Cal Newport</a> talked about
@@ -4856,10 +4951,11 @@ We can “optimise” our recommendations for things that are highly personal an
 measure, like curiosity, wonder, awe, learning, and insight.</p>
 <p>I’d like to contribute to a more distributed, personalised, and organic world wide web, so I’ve
 created a <a href="/resources">resources page</a>. I’ll continue to add various web resources that I find
-interesting, in the hope that others might use it to find something new.</p>]]>
-    </content>
+interesting, in the hope that others might use it to find something new.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>2022 Project Review</title>
     <link href="https://blog.ielliott.io/2022-project-review" />
     
@@ -4867,10 +4963,13 @@ interesting, in the hope that others might use it to find something new.</p>]]>
     
     <published>2022-12-27T04:25:00Z</published>
     <updated>2022-12-27T04:25:00Z</updated>
-    <summary type="html"><![CDATA[<p>Reflections this year's hobby projects.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/2022-project-review">
-      <![CDATA[<p>Here’s a review of all<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the programming projects I worked on in my spare time this year.
+    <summary type="html" xml:base="https://blog.ielliott.io/2022-project-review"><![CDATA[<p>Reflections this year's hobby projects.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/2022-project-review"><![CDATA[
+      
+      <p>Here’s a review of all<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the programming projects I worked on in my spare time this year.
 I’m quite satisfied with the work I did. I learned a lot
 and had some cool ideas that I will continue to build on. I’m glad I wrote this review, because
 there’s some stuff in here that I’m quite proud of that I had forgotten about. This year was a
@@ -5131,10 +5230,11 @@ language</a> with automated helpers.</p>
 <ol>
 <li id="fn1"><p>that made it onto GitHub<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>RIP Dream.In.Code</title>
     <link href="https://blog.ielliott.io/rip-dreamincode" />
     
@@ -5142,15 +5242,18 @@ language</a> with automated helpers.</p>
     
     <published>2022-07-06T00:00:00Z</published>
     <updated>2022-07-06T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/rip-dreamincode"><![CDATA[<p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
 down</a>
 due to hosting costs. My participation in Dream.In.Code, starting from 2009 and ending somewhere in
 2013, represents the beginning of my life as a programmer. Over the past 10 or so years, programming
 has become a <em>huge</em> part of my life. I’d like to acknowledge the role this forum played in my development.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/rip-dreamincode">
-      <![CDATA[<p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
+    
+    <content type="html" xml:base="https://blog.ielliott.io/rip-dreamincode"><![CDATA[
+      
+      <p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
 down</a>
 due to hosting costs. My participation in Dream.In.Code, starting from 2009 and ending somewhere in
@@ -5174,10 +5277,11 @@ someone would go in 2022 for the same experience. Probably not Reddit or StackOv
 <p>When I was learning to code, I had no one to turn to “in real life”. Posting a code snippet to a
 forum and asking, “pls halp” was all I could do. The members of Dream.In.Code turned that into a
 positive, constructive experience.</p>
-<p>Thanks, Dream.In.Code</p>]]>
-    </content>
+<p>Thanks, Dream.In.Code</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>WebGL Slower Than Canvas?</title>
     <link href="https://blog.ielliott.io/webgl-slower-than-canvas" />
     
@@ -5185,13 +5289,16 @@ positive, constructive experience.</p>
     
     <published>2021-05-20T00:00:00Z</published>
     <updated>2021-05-20T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/webgl-slower-than-canvas"><![CDATA[<p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
 (in frames per second) than the Canvas version.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/webgl-slower-than-canvas">
-      <![CDATA[<p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
+    
+    <content type="html" xml:base="https://blog.ielliott.io/webgl-slower-than-canvas"><![CDATA[
+      
+      <p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
 (in frames per second) than the Canvas version.</p>
@@ -5224,10 +5331,11 @@ restart Firefox. Confirm this change by checking <code>Compositing</code> row in
 lasted 14-15ms in my Canvas implementation, but the app was running well below 60fps. Each frame lasted ~10ms in my WebGL implementation,
 but the framerate was even worse than the Canvas version!</p>
 <p>After following these instructions, both my Canvas implementation and WebGL implementation run at 60fps. Canvas’ frame
-duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms. Yay!</p>]]>
-    </content>
+duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms. Yay!</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>An Example of Defunctionalisation in Rust</title>
     <link href="https://blog.ielliott.io/rust-defun-example" />
     
@@ -5235,12 +5343,15 @@ duration didn’t appear to change, but WebGL’s frame duration dropped to ~4ms
     
     <published>2021-02-06T00:00:00Z</published>
     <updated>2021-02-06T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/rust-defun-example"><![CDATA[<p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/rust-defun-example">
-      <![CDATA[<p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
+    
+    <content type="html" xml:base="https://blog.ielliott.io/rust-defun-example"><![CDATA[
+      
+      <p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>
 <hr />
@@ -5386,10 +5497,11 @@ Rust programs, preferably by function, then please let me know.</p>
 <li id="fn1"><p>This is a form of existential quantification. The Haskell equivalent looks something like
 <code>data Some (c :: Constraint) where; Some :: c a =&gt; a -&gt; Some c</code><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Docker Cleanup Commands</title>
     <link href="https://blog.ielliott.io/docker-cleanup-commands" />
     
@@ -5397,10 +5509,13 @@ Rust programs, preferably by function, then please let me know.</p>
     
     <published>2020-11-07T00:00:00Z</published>
     <updated>2020-11-07T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/docker-cleanup-commands">
-      <![CDATA[<p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>
+    <summary type="html" xml:base="https://blog.ielliott.io/docker-cleanup-commands"><![CDATA[<p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/docker-cleanup-commands"><![CDATA[
+      
+      <p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! /usr/bin/env bash</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># remove containers</span></span>
@@ -5413,10 +5528,11 @@ Rust programs, preferably by function, then please let me know.</p>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> volume prune</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># remove build cache</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> builder prune</span></code></pre></div>]]>
-    </content>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> builder prune</span></code></pre></div>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Statically Sized Higher-kinded Polymorphism</title>
     <link href="https://blog.ielliott.io/sized-hkts" />
     
@@ -5424,7 +5540,8 @@ Rust programs, preferably by function, then please let me know.</p>
     
     <published>2020-07-07T00:00:00Z</published>
     <updated>2020-07-07T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/sized-hkts"><![CDATA[<p>
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
   sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
   that improve runtime performance. Modern languages in this setting support generic types, but so far
@@ -5433,8 +5550,10 @@ Rust programs, preferably by function, then please let me know.</p>
   of datatype sizes.
 </p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/sized-hkts">
-      <![CDATA[<div class="intro-wrapper">
+    
+    <content type="html" xml:base="https://blog.ielliott.io/sized-hkts"><![CDATA[
+      
+      <div class="intro-wrapper">
 <div class="intro">
 <p>Memory-sensitive languages like C++ and Rust use compile-time information to calculate
 sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
@@ -5670,10 +5789,11 @@ overloading and implicit higher-order polymorphism. <em>Journal of functional pr
 <li><p><span id="reference-quantified-constraints">Bottu, G. J., Karachalias, G., Schrijvers, T.,
 Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <em>ACM SIGPLAN Notices</em>,
 52(10), 148-161.</span> <a href="#reference-quantified-constraints:1">↩︎</a></p></li>
-</ol>]]>
-    </content>
+</ol>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Lambdas are Codatatypes</title>
     <link href="https://blog.ielliott.io/lambdas-are-codatatypes" />
     
@@ -5681,11 +5801,14 @@ Oliveira, B. C. D. S., &amp; Wadler, P. (2017). Quantified class constraints. <e
     
     <published>2019-07-01T00:00:00Z</published>
     <updated>2019-07-01T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I was first clued into this a while ago by
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/lambdas-are-codatatypes"><![CDATA[<p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/lambdas-are-codatatypes">
-      <![CDATA[<p>I was first clued into this a while ago by
+    
+    <content type="html" xml:base="https://blog.ielliott.io/lambdas-are-codatatypes"><![CDATA[
+      
+      <p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>
 <h2 id="datatypes"><a href="#datatypes">Datatypes</a></h2>
 <h3 id="defining-them"><a href="#defining-them">Defining them</a></h3>
@@ -5820,10 +5943,11 @@ parameter. If <code>f</code> has type <code>Lambda a b</code>, and <code>x</code
 For example, <code>(cocase Lambda Int Int of { apply[x] -&gt; x + 1 }).apply[2]</code> selects the appropriate branch
 (there’s only one), and substitutes <code>2</code> for <code>x</code> to the right of the <code>-&gt;</code>. It steps to <code>2 + 1</code>.</p>
 <p>So lambdas can be defined as codatatypes. Their destructor corresponds to function application, and
-copattern matching corresponds to abstraction. This is awesome!</p>]]>
-    </content>
+copattern matching corresponds to abstraction. This is awesome!</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Configuring Agda's standard library on NixOS</title>
     <link href="https://blog.ielliott.io/agda-nixos" />
     
@@ -5831,12 +5955,15 @@ copattern matching corresponds to abstraction. This is awesome!</p>]]>
     
     <published>2019-05-17T23:49:00Z</published>
     <updated>2019-05-17T23:49:00Z</updated>
-    <summary type="html"><![CDATA[<p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/agda-nixos"><![CDATA[<p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/agda-nixos">
-      <![CDATA[<p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
+    
+    <content type="html" xml:base="https://blog.ielliott.io/agda-nixos"><![CDATA[
+      
+      <p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>
 <hr />
@@ -5895,10 +6022,11 @@ to getting it all set up quickly.</p>
 [isaac:~]$ agda Test.agda
 Checking Test (/home/isaac/Test.agda).
 </code></pre>
-<p>Let me know whether or not this works for you :)</p>]]>
-    </content>
+<p>Let me know whether or not this works for you :)</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Conditional Probabilities and Obnoxious White Guys</title>
     <link href="https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys" />
     
@@ -5906,15 +6034,18 @@ Checking Test (/home/isaac/Test.agda).
     
     <published>2019-05-05T00:00:00Z</published>
     <updated>2019-05-05T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys"><![CDATA[<p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
 confronted by a white guy who felt ‘called out’ by some of her anecdotes. Apparently, she
 described interactions with obnoxious individuals in a professional setting, and noted that
 they were all white guys. Ironically, the guy raised the issue in such a way that he was added
 to the list of anecdotes.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys">
-      <![CDATA[<p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
+    
+    <content type="html" xml:base="https://blog.ielliott.io/conditional-probabilities-obnoxious-white-guys"><![CDATA[
+      
+      <p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
 confronted by a white guy who felt ‘called out’ by some of her anecdotes. Apparently, she
 described interactions with obnoxious individuals in a professional setting, and noted that
@@ -5994,10 +6125,11 @@ my wires were crossed and I was subconsciously interpreting the conversation as 
 For example in <a href="https://www.youtube.com/watch?v=BrK7X_XlGB8">Julia Galef’s video about Bayes’ Theorem</a>, she says that before
 students learn Bayes’ Theorem, they often give <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="false" form="prefix">|</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P(B | A)</annotation></semantics></math> when asked for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>A</mi><mo stretchy="false" form="prefix">|</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P(A | B)</annotation></semantics></math>. I
 don’t know how exactly this sort of thing happens — maybe I’ll explore that some other time.</p>
-<p>Anyway, I’m glad that my feelings and beliefs are now in sync on this issue.</p>]]>
-    </content>
+<p>Anyway, I’m glad that my feelings and beliefs are now in sync on this issue.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Learning a Craft</title>
     <link href="https://blog.ielliott.io/learning-a-craft" />
     
@@ -6005,15 +6137,18 @@ don’t know how exactly this sort of thing happens — maybe I’ll explore tha
     
     <published>2019-02-11T00:00:00Z</published>
     <updated>2019-02-11T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I remember when I first learned about computer programming, around 2008 or 2009.
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/learning-a-craft"><![CDATA[<p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
 was way too hard, so I decided I wanted to create browser-based static HTML
 games and text-based roguelikes. Having learned that PHP and MySQL exist, I sat
 down and brainstormed a setting, classes and roles for characters, and all the
 other things that come with fantasy RPGs.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/learning-a-craft">
-      <![CDATA[<p>I remember when I first learned about computer programming, around 2008 or 2009.
+    
+    <content type="html" xml:base="https://blog.ielliott.io/learning-a-craft"><![CDATA[
+      
+      <p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
 was way too hard, so I decided I wanted to create browser-based static HTML
 games and text-based roguelikes. Having learned that PHP and MySQL exist, I sat
@@ -6105,10 +6240,11 @@ I write (not on here) will likely be the literary equivalent of a command-line
 calculator program — and that’s okay.</p>
 <p><em>All this ‘advice’ may seem obvious to some, or lacking in original insight, and
 I’m</em> sure <em>other people have written about these things to greater effect than me.
-But that’s beside the point, isn’t it?</em></p>]]>
-    </content>
+But that’s beside the point, isn’t it?</em></p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Writing</title>
     <link href="https://blog.ielliott.io/writing" />
     
@@ -6116,10 +6252,13 @@ But that’s beside the point, isn’t it?</em></p>]]>
     
     <published>2018-12-29T00:00:00Z</published>
     <updated>2018-12-29T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I think writing can help us think better.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/writing">
-      <![CDATA[<p>I think writing can help us think better.</p>
+    <summary type="html" xml:base="https://blog.ielliott.io/writing"><![CDATA[<p>I think writing can help us think better.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/writing"><![CDATA[
+      
+      <p>I think writing can help us think better.</p>
 <p>Not the act of writing itself, but a particular writing process where you take
 an idea, think deeply about exactly how you want to express it, and then write
 it down. I think the process itself provides part of the value, as a form of
@@ -6175,10 +6314,11 @@ ceiling on what we can achieve.</p>
 practise</a>
 of organising thought, critical thinking, and effective communication. Writing
 serves dual purposes: as a tool it enables us to better explore ideas, and treating it
-as an end in itself requires us to better understand those ideas.</p>]]>
-    </content>
+as an end in itself requires us to better understand those ideas.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>On Programming Language Design</title>
     <link href="https://blog.ielliott.io/on-programming-language-design" />
     
@@ -6186,7 +6326,8 @@ as an end in itself requires us to better understand those ideas.</p>]]>
     
     <published>2018-11-21T00:00:00Z</published>
     <updated>2018-11-21T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/on-programming-language-design"><![CDATA[<p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
 programming languages that have been ‘invented’ with those that have been
 ‘discovered’. <a href="https://www.youtube.com/watch?v=IOiZatlZtGU&amp;t=28m12s">“And you can tell!” he exclaims, receiving giggles from the
@@ -6196,8 +6337,10 @@ platonism</a>,
 I think Phil is pointing at a meaningful difference in the way certain ideas
 arise.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/on-programming-language-design">
-      <![CDATA[<p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
+    
+    <content type="html" xml:base="https://blog.ielliott.io/on-programming-language-design"><![CDATA[
+      
+      <p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
 programming languages that have been ‘invented’ with those that have been
 ‘discovered’. <a href="https://www.youtube.com/watch?v=IOiZatlZtGU&amp;t=28m12s">“And you can tell!” he exclaims, receiving giggles from the
@@ -6248,10 +6391,11 @@ them for granted, but are not present in certain systems by design.</p>
 ‘Discovered’-seeming languages have more internal consistency and fewer
 ‘quirks’, because they’re not meant to <em>just</em> ‘turn descriptions of computations
 into binary’. They have to do this in a way that adheres to a consistent,
-coherent structure of computation.</p>]]>
-    </content>
+coherent structure of computation.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Turning bottom-up into top-down with Reverse State</title>
     <link href="https://blog.ielliott.io/topsy-turvy-reverse-state" />
     
@@ -6259,15 +6403,18 @@ coherent structure of computation.</p>]]>
     
     <published>2018-06-13T00:00:00Z</published>
     <updated>2018-06-13T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/topsy-turvy-reverse-state"><![CDATA[<p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
 <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
 for all sorts of whole-program transformations. I think they’re two
 indispensible tools for working with programming languages.
 Unfortunately, they’re not compatible.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/topsy-turvy-reverse-state">
-      <![CDATA[<p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
+    
+    <content type="html" xml:base="https://blog.ielliott.io/topsy-turvy-reverse-state"><![CDATA[
+      
+      <p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
 <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
 for all sorts of whole-program transformations. I think they’re two
@@ -6409,10 +6556,11 @@ once, whereas we haven’t presented any means for generalisation of the
 <code>Plated</code> approach.</p>
 <p>This is easily fixed: in a follow-up post, I’ll
 write about how we can use Backpacky Prisms to provide <code>abstract</code>
-and <code>instantiate</code> as library functions.</p>]]>
-    </content>
+and <code>instantiate</code> as library functions.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Comonad Transformers in the Wild</title>
     <link href="https://blog.ielliott.io/comonad-transformers-in-the-wild" />
     
@@ -6420,10 +6568,13 @@ and <code>instantiate</code> as library functions.</p>]]>
     
     <published>2018-02-25T00:00:00Z</published>
     <updated>2018-02-25T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>A certain algorithmic puzzle website has a problem that goes like this…</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/comonad-transformers-in-the-wild">
-      <![CDATA[<p>A certain algorithmic puzzle website has a problem that goes like this…</p>
+    <summary type="html" xml:base="https://blog.ielliott.io/comonad-transformers-in-the-wild"><![CDATA[<p>A certain algorithmic puzzle website has a problem that goes like this…</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/comonad-transformers-in-the-wild"><![CDATA[
+      
+      <p>A certain algorithmic puzzle website has a problem that goes like this…</p>
 <pre><code>Given a grid of integers, find the largest product of n numbers which are
 adjacent in the same direction (left, right, up, down, or diagonally)</code></pre>
 <p>In this diagram, <code>A</code>, <code>B</code>, and <code>C</code> are diagonally adjacent:</p>
@@ -6560,10 +6711,11 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">maximum</span> [g1, g2, g3, g4]</span></code></pre></div>
 <p>I’m still getting an intuition for comonads, but they seem to embody some kind of “environment”, and comonad transformers are like a “composition of environments”. In this example, there are two environments: the grid’s dimensions, and its content.</p>
 <p>For more information about comonads, check out Bartosz Milewski’s <a href="https://bartoszmilewski.com/2017/01/02/comonads/">comonads post</a> and Dan Piponi’s article about <a href="http://blog.sigfpe.com/2006/12/evaluating-cellular-automata-is.html">comonadic cellular automata</a>.</p>
-<p>Footnote: I feel like <code>largestProduct</code> could be simplified if <code>Grid</code> were <code>ComonadApply</code>, but I haven’t tried to figure it out yet.</p>]]>
-    </content>
+<p>Footnote: I feel like <code>largestProduct</code> could be simplified if <code>Grid</code> were <code>ComonadApply</code>, but I haven’t tried to figure it out yet.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Continuations From the Ground Up</title>
     <link href="https://blog.ielliott.io/continuations-from-the-ground-up" />
     
@@ -6571,10 +6723,13 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     
     <published>2017-06-06T00:00:00Z</published>
     <updated>2017-06-06T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/continuations-from-the-ground-up">
-      <![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
+    <summary type="html" xml:base="https://blog.ielliott.io/continuations-from-the-ground-up"><![CDATA[<p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/continuations-from-the-ground-up"><![CDATA[
+      
+      <p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
 <p>This post was generated from a <a href="../files/continuations.lhs">Literate Haskell file</a> using Pandoc, so you can load it up into GHCI and play around if you want.</p>
 <h2 id="continuation-passing-style"><a href="#continuation-passing-style">Continuation Passing Style</a></h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">CPS</span> <span class="kw">where</span></span>
@@ -6859,10 +7014,11 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
 <span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Not</span> a <span class="ot">-&gt;</span> go a try_next_ref exit</span>
 <span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>        _ <span class="ot">-&gt;</span> go (eval M.empty expr) try_next_ref exit</span></code></pre></div>
-<p>The solver sets all the variables to <code>True</code>, and if the full expression evaluates to <code>False</code> it flips one to <code>False</code> and automatically re-evaluates the expression, repeating the process untill either it finally evaluates to <code>True</code> or all possible combinations of boolean values have been tested. It’s not efficient, but it’s a wonderful illustration of the elegance that CPS enables.</p>]]>
-    </content>
+<p>The solver sets all the variables to <code>True</code>, and if the full expression evaluates to <code>False</code> it flips one to <code>False</code> and automatically re-evaluates the expression, repeating the process untill either it finally evaluates to <code>True</code> or all possible combinations of boolean values have been tested. It’s not efficient, but it’s a wonderful illustration of the elegance that CPS enables.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>How to delete old NixOS boot configurations</title>
     <link href="https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations" />
     
@@ -6870,14 +7026,17 @@ adjacent in the same direction (left, right, up, down, or diagonally)</code></pr
     
     <published>2017-03-24T00:00:00Z</published>
     <updated>2017-03-24T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations"><![CDATA[<p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
 specification. A consequence of this is that your entire system
 configuration can be versioned.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations">
-      <![CDATA[<p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
+    
+    <content type="html" xml:base="https://blog.ielliott.io/how-to-delete-old-nixos-boot-configurations"><![CDATA[
+      
+      <p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
 specification. A consequence of this is that your entire system
@@ -6906,10 +7065,11 @@ NixOS system <code>sudo nix-env -p /nix/var/nix/profiles/system    --delete-gene
 my entries are located in <code>/boot/loader/entries</code>. To remove all the
 old entries, run <code>sudo bash -c "cd /boot/loader/entries; ls | grep    -v &lt;current-generation-name&gt; | xargs rm"</code> (you might want to back up
 the entries somewhere to be safe)</del></p></li>
-</ol>]]>
-    </content>
+</ol>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Introduction to Unification</title>
     <link href="https://blog.ielliott.io/introduction-to-unification" />
     
@@ -6917,13 +7077,16 @@ the entries somewhere to be safe)</del></p></li>
     
     <published>2017-01-07T00:00:00Z</published>
     <updated>2017-01-07T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>Unification is a vital process in the implementation of Hindley-Damas-Milner
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/introduction-to-unification"><![CDATA[<p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
 unification in with a little help from the HM type theory.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/introduction-to-unification">
-      <![CDATA[<p>Unification is a vital process in the implementation of Hindley-Damas-Milner
+    
+    <content type="html" xml:base="https://blog.ielliott.io/introduction-to-unification"><![CDATA[
+      
+      <p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
 unification in with a little help from the HM type theory.</p>
@@ -7048,10 +7211,11 @@ no matter how many times we do this the equation will never be solved...</code><
 <p>Omitting the occurs check does <em>not</em> unify the equations according our definition.</p>
 <h2 id="resources"><a href="#resources">Resources</a></h2>
 <p>The <a href="https://en.wikipedia.org/wiki/Unification_(computer_science)">Wikipedia entry for Unification</a>
-is amazing and goes into much more depth.</p>]]>
-    </content>
+is amazing and goes into much more depth.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Why LINQ (well, C#) is Broken</title>
     <link href="https://blog.ielliott.io/why-LINQ-is-broken" />
     
@@ -7059,13 +7223,16 @@ is amazing and goes into much more depth.</p>]]>
     
     <published>2016-10-24T00:00:00Z</published>
     <updated>2016-10-24T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>LINQ is a system that provides a flexible query interface for .NET languages.
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/why-LINQ-is-broken"><![CDATA[<p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
 so any data structure that implements the correct methods can be used with LINQ.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/why-LINQ-is-broken">
-      <![CDATA[<p>LINQ is a system that provides a flexible query interface for .NET languages.
+    
+    <content type="html" xml:base="https://blog.ielliott.io/why-LINQ-is-broken"><![CDATA[
+      
+      <p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
 so any data structure that implements the correct methods can be used with LINQ.</p>
@@ -7191,10 +7358,11 @@ of a group of functions has gone from O(n^m) to O(1).</p>
 language saying “Well, I don’t use Sort like that. I only sort lists of
 integers”. It is agreed that a language without generics is counter to
 productivity. It follows that a language without higher-kinded types is also
-counter to productivity.</p>]]>
-    </content>
+counter to productivity.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>Search and Replace in Multiple Files</title>
     <link href="https://blog.ielliott.io/search-and-replace-in-multiple-files" />
     
@@ -7202,15 +7370,18 @@ counter to productivity.</p>]]>
     
     <published>2015-07-25T00:00:00Z</published>
     <updated>2015-07-25T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>Last semester I had to write a static website by hand with no templating
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/search-and-replace-in-multiple-files"><![CDATA[<p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
 finished most of the project when I realised that the main page of the
 project should be named <code>index.html</code> instead of <code>home.html</code>. I renamed the
 file, but that left me with countless references to “home.html” that needed
 to be changed, and I wanted to change them all at once. Enter <code>sed</code>.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/search-and-replace-in-multiple-files">
-      <![CDATA[<pre><code>$ sed -i &quot;s/pattern/replacement/g&quot; FILES</code></pre>
+    
+    <content type="html" xml:base="https://blog.ielliott.io/search-and-replace-in-multiple-files"><![CDATA[
+      
+      <pre><code>$ sed -i &quot;s/pattern/replacement/g&quot; FILES</code></pre>
 <h2 id="the-story"><a href="#the-story">The Story</a></h2>
 <p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
@@ -7230,10 +7401,11 @@ of the pattern, instead of just the first.</p>
 use the <code>-i</code> flag to make the alterations inside the source file.</p>
 <p>The final command is now</p>
 <pre><code>$ sed -i &quot;s/home\.html/index.html/g&quot; *.html</code></pre>
-<p>which will apply the sed program to all the HTML files in the directory. Easy!</p>]]>
-    </content>
+<p>which will apply the sed program to all the HTML files in the directory. Easy!</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>The Programming Thought Process: Fizzbuzz</title>
     <link href="https://blog.ielliott.io/the-programming-thought-process-fizzbuzz" />
     
@@ -7241,14 +7413,17 @@ use the <code>-i</code> flag to make the alterations inside the source file.</p>
     
     <published>2015-03-04T00:00:00Z</published>
     <updated>2015-03-04T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>With so many programming languages and frameworks at our disposal, it is
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/the-programming-thought-process-fizzbuzz"><![CDATA[<p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
 it isn’t the languages you know, but your ability to solve problems that
 defines you as a programmer.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/the-programming-thought-process-fizzbuzz">
-      <![CDATA[<p>With so many programming languages and frameworks at our disposal, it is
+    
+    <content type="html" xml:base="https://blog.ielliott.io/the-programming-thought-process-fizzbuzz"><![CDATA[
+      
+      <p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
 it isn’t the languages you know, but your ability to solve problems that
@@ -7409,10 +7584,11 @@ heart then you will never improve.</p></li>
 </ul>
 <p>Learn your tools, use the tools and get feedback on your work to ensure contant
 improvement.</p>
-<p>Good luck.</p>]]>
-    </content>
+<p>Good luck.</p>
+    ]]></content>
     
-</entry><entry>
+</entry>
+<entry>
     <title>A Practical Introduction to Monad Transformers</title>
     <link href="https://blog.ielliott.io/a-practical-introduction-to-monad-transformers" />
     
@@ -7420,12 +7596,15 @@ improvement.</p>
     
     <published>2015-02-01T00:00:00Z</published>
     <updated>2015-02-01T00:00:00Z</updated>
-    <summary type="html"><![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/a-practical-introduction-to-monad-transformers"><![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>]]></summary>
     
-    <content type="html" xml:base="https://blog.ielliott.io/a-practical-introduction-to-monad-transformers">
-      <![CDATA[<p>Monad transformers combine the functionality of two monads into one. They are often used
+    
+    <content type="html" xml:base="https://blog.ielliott.io/a-practical-introduction-to-monad-transformers"><![CDATA[
+      
+      <p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>
 <h2 id="the-task"><a href="#the-task">The Task</a></h2>
@@ -7508,8 +7687,9 @@ monad:</p>
 <ol>
 <li id="fn1"><p><code>newtype</code> creates a strict, isomorphic type with a single value constructor. If all that was too much, just imagine that <code>newtype</code> rearranges an existing type into a more pleasant one.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section>]]>
-    </content>
+</section>
+    ]]></content>
     
 </entry>
+
 </feed>

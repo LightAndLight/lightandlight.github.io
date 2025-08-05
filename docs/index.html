@@ -71,136 +71,188 @@
 
 
 <article class="post-list-item">
-    <h1><a href="/exploring-graphs-with-prolog">Exploring a dependency graph with Prolog</a></h1>
-    <p class="post-metadata">
-       2 August, 2025
-      
-    </p>
+  
+  
+  <p class="reply-metadata">
+     5 August, 2025
+    <a class="reply-metadata-permalink" href="/reply/202508052146">permalink</a>
+  </p>
+  
+  <p class="reply-metadata-reference">↳ <a href="/exploring-graphs-with-prolog#standalone-relational-storage-engines">Standalone relational storage engines?</a></p>
+  
+  <p><a href="https://vaibhavsagar.com/">Vaibhav</a> offered <a href="https://en.wikipedia.org/wiki/RocksDB">RocksDB</a> and <a href="https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database">LMDB</a>
+as candidates for “ZeroMQ for database storage”.</p>
+<p>Facebook has <a href="https://en.wikipedia.org/wiki/MyRocks">a MySQL storage backend that uses RocksDB</a>,
+and LMDB has been used as a storage backend for <a href="https://github.com/LMDB/sqlightning">(a fork of) SQLite</a>.</p>
+<p>I was surprised, because these databases describe themselves as key-value stores,
+which doesn’t seem like the right data structure for relational queries.
+I had missed the fact that these are <a href="https://en.wikipedia.org/wiki/Ordered_key%E2%80%93value_store"><em>ordered</em> key-value stores</a>,
+so they support range queries.</p>
+  
+</article>
 
-    <p>I was working on my (currently private) <a href="https://lectio.news/">YouTube feed reader project</a>,
+<article class="post-list-item">
+  
+  <h1><a href="/exploring-graphs-with-prolog">Exploring a dependency graph with Prolog</a></h1>
+  <p class="post-metadata">
+     2 August, 2025
+    
+  </p>
+  <p>I was working on my (currently private) <a href="https://lectio.news/">YouTube feed reader project</a>,
 watching the dependencies build after I upgraded the GHC version,
 when I noticed an odd transitive dependency: <a href="https://hackage.haskell.org/package/happy"><code>happy</code></a>.
 <code>happy</code> is a parser generator, and this project is a web app.
 Why does my web app depend on a parser generator?</p>
+  <a href="/exploring-graphs-with-prolog">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/context-menus">Context menus</a></h1>
-    <p class="post-metadata">
-       1 July, 2025
-      
-    </p>
-
-    <p>I got an email that had an unfamiliar time zone in it.
+  
+  <h1><a href="/context-menus">Context menus</a></h1>
+  <p class="post-metadata">
+     1 July, 2025
+    
+  </p>
+  <p>I got an email that had an unfamiliar time zone in it.
 My intuition said that if I selected the text and right-clicked then I’d be closer to knowing what the corresponding local time was.
 When I did, the best option I found was to search the web.</p>
+  <a href="/context-menus">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/playing-with-ghc-package-databases">Playing with GHC package databases</a></h1>
-    <p class="post-metadata">
-       1 July, 2025
-      
-    </p>
-
-    <p>I wanted to do some dependency analysis of a Haskell project,
+  
+  <h1><a href="/playing-with-ghc-package-databases">Playing with GHC package databases</a></h1>
+  <p class="post-metadata">
+     1 July, 2025
+    
+  </p>
+  <p>I wanted to do some dependency analysis of a Haskell project,
 and I wanted to see what it was like without installing a Cabal-specific tool such as
 <a href="https://hackage.haskell.org/package/cabal-plan"><code>cabal-plan</code></a> (which works fine).
 Here’s what I played around with.</p>
+  <a href="/playing-with-ghc-package-databases">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/2024-project-review">2024 Project Review</a></h1>
-    <p class="post-metadata">
-      26 February, 2025
-      
-    </p>
-
-    <p>Reflections on 2024's hobby projects.</p>
+  
+  <h1><a href="/2024-project-review">2024 Project Review</a></h1>
+  <p class="post-metadata">
+    26 February, 2025
+    
+  </p>
+  <p>Reflections on 2024's hobby projects.</p>
+  <a href="/2024-project-review">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/my-git-cli-overhaul">My Git CLI overhaul</a></h1>
-    <p class="post-metadata">
-      26 February, 2025
-      
-    </p>
-
-    <p>Showing off the Git aliases I use daily.</p>
+  
+  <h1><a href="/my-git-cli-overhaul">My Git CLI overhaul</a></h1>
+  <p class="post-metadata">
+    26 February, 2025
+    
+  </p>
+  <p>Showing off the Git aliases I use daily.</p>
+  <a href="/my-git-cli-overhaul">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/in-praise-of-zsa">In Praise of ZSA</a></h1>
-    <p class="post-metadata">
-      11 January, 2025
-      
-    </p>
-
-    <p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
+  
+  <h1><a href="/in-praise-of-zsa">In Praise of ZSA</a></h1>
+  <p class="post-metadata">
+    11 January, 2025
+    
+  </p>
+  <p><a href="https://www.zsa.io">ZSA</a> makes ergonomic keyboards.
 I own two of their <a href="https://ergodox-ez.com/">Ergodox EZ</a>s (one for work, one for home) which I use every day.
 They also publish an <a href="https://www.zsa.io/the-ergo">email newsletter</a> that I subscribe to and happily read.
 In the <a href="https://mailchi.mp/zsa/the-ergo-75">December 2024 issue</a>, they noted that ZSA doesn’t advertise (see <a href="https://www.zsa.io/trust">Why trust us | zsa.io</a>), and essentially rely on recommendations from customers.
 I like ZSA and hope they continue to be successful, so this short article is my attempt to give something back to them without buying <em>another</em> keyboard.</p>
+  <a href="/in-praise-of-zsa">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/unfettering-the-imagination">Unfettering the imagination</a></h1>
-    <p class="post-metadata">
-      22 September, 2024
-      
-    </p>
-
-    <p><a href="https://github.com/LightAndLight/xeval"><code>xeval</code></a> is a small and not particularly useful program that arose from an important thought process.
+  
+  <h1><a href="/unfettering-the-imagination">Unfettering the imagination</a></h1>
+  <p class="post-metadata">
+    22 September, 2024
+    
+  </p>
+  <p><a href="https://github.com/LightAndLight/xeval"><code>xeval</code></a> is a small and not particularly useful program that arose from an important thought process.
 This post the result of exploring that thought process—trying to articulate it to myself—but without writing too much on the topic.</p>
+  <a href="/unfettering-the-imagination">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/sized-types-and-coinduction-in-safe-agda">Sized types and coinduction in Safe Agda</a></h1>
-    <p class="post-metadata">
-       4 September, 2024
-      
-    </p>
-
-    <p>Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
+  
+  <h1><a href="/sized-types-and-coinduction-in-safe-agda">Sized types and coinduction in Safe Agda</a></h1>
+  <p class="post-metadata">
+     4 September, 2024
+    
+  </p>
+  <p>Agda's <a href="https://agda.readthedocs.io/en/latest/language/sized-types.html">sized types</a> are inconsistent.
 This post is about why I care and how I've worked around it.</p>
+  <a href="/sized-types-and-coinduction-in-safe-agda">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/per-project-nix-substituters">Per-project Nix substituters</a></h1>
-    <p class="post-metadata">
-      10 August, 2024
-      
-    </p>
-
-    <p>A lot of Nix projects end up with their own binary cache (also known as a “substituter”).
+  
+  <h1><a href="/per-project-nix-substituters">Per-project Nix substituters</a></h1>
+  <p class="post-metadata">
+    10 August, 2024
+    
+  </p>
+  <p>A lot of Nix projects end up with their own binary cache (also known as a “substituter”).
 Nix can be quite slow when it’s configured to use many project-specific substituters,
 because it queries them all when checking if it needs to build a derivation. In a specific
 project, most of the other substituters Nix knows about are irrelevant, and querying them
 is wasted effort. My solution is to only enable <a href="https://cache.nixos.org" class="uri">https://cache.nixos.org</a> globally, and
 to selectively enable other substituters while I’m working on a project that needs them.
 Here’s how I do it.</p>
+  <a href="/per-project-nix-substituters">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/troubleshooting-lightdms-test-mode">Troubleshooting LightDM's test mode</a></h1>
-    <p class="post-metadata">
-       3 August, 2024
-      
-    </p>
-
-    <p>Recently I’ve been tweaking the appearance of <a href="https://github.com/LightAndLight/personal-configs">my desktop environment</a>,
+  
+  <h1><a href="/troubleshooting-lightdms-test-mode">Troubleshooting LightDM's test mode</a></h1>
+  <p class="post-metadata">
+     3 August, 2024
+    
+  </p>
+  <p>Recently I’ve been tweaking the appearance of <a href="https://github.com/LightAndLight/personal-configs">my desktop environment</a>,
 which consists of <a href="https://xmonad.org/">XMonad</a> and <a href="https://github.com/taffybar/taffybar">Taffybar</a>,
 with <a href="https://github.com/canonical/lightdm">LightDM</a> as the display manager,
 all tied together using <a href="https://nixos.org/">NixOS</a> and <a href="https://github.com/nix-community/home-manager">home-manager</a>.</p>
+  <a href="/troubleshooting-lightdms-test-mode">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/2023-project-review">2023 Project Review</a></h1>
-    <p class="post-metadata">
-      17 January, 2024
-      
-      ⋅
-      
+  
+  <h1><a href="/2023-project-review">2023 Project Review</a></h1>
+  <p class="post-metadata">
+    17 January, 2024
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/music">music</a>
@@ -208,219 +260,254 @@ all tied together using <a href="https://nixos.org/">NixOS</a> and <a href="http
 <a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
 
-      
-    </p>
-
-    <p>Reflections on 2023's hobby projects.</p>
+    
+  </p>
+  <p>Reflections on 2023's hobby projects.</p>
+  <a href="/2023-project-review">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/diablo-1-in-2023">Diablo 1 in 2023</a></h1>
-    <p class="post-metadata">
-      14 July, 2023
-      
-      ⋅
-      
+  
+  <h1><a href="/diablo-1-in-2023">Diablo 1 in 2023</a></h1>
+  <p class="post-metadata">
+    14 July, 2023
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/games">games</a>
 
 
-      
-    </p>
-
-    <p>My experience playing the original Diablo for the first time.</p>
+    
+  </p>
+  <p>My experience playing the original Diablo for the first time.</p>
+  <a href="/diablo-1-in-2023">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/nominal-sets">Nominal Sets</a></h1>
-    <p class="post-metadata">
-       4 July, 2023
-      
-      ⋅
-      
+  
+  <h1><a href="/nominal-sets">Nominal Sets</a></h1>
+  <p class="post-metadata">
+     4 July, 2023
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
 
-      
-    </p>
-
-    <p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
+    
+  </p>
+  <p>Developing a <a href="https://github.com/LightAndLight/binders.rs">variable binding library</a> for Rust, based on the
 theory of nominal sets.</p>
 
+  <a href="/nominal-sets">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/nominal-sets-proofs">Nominal Sets: Appendix A (Proofs)</a></h1>
-    <p class="post-metadata">
-       4 July, 2023
-      
-      ⋅
-      
+  
+  <h1><a href="/nominal-sets-proofs">Nominal Sets: Appendix A (Proofs)</a></h1>
+  <p class="post-metadata">
+     4 July, 2023
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
 
-      
-    </p>
+    
+  </p>
+  <p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
 
-    <p>The proofs for my <a href="nominal-sets">Nominal Sets article</a>.</p>
-
+  <a href="/nominal-sets-proofs">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/gear-acquisition-syndrome">Gear Acquisition Syndrome</a></h1>
-    <p class="post-metadata">
-      28 May, 2023
-      
-    </p>
-
-    <p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
+  
+  <h1><a href="/gear-acquisition-syndrome">Gear Acquisition Syndrome</a></h1>
+  <p class="post-metadata">
+    28 May, 2023
+    
+  </p>
+  <p>Over the past few years I’ve become wary of a certain feeling related to my artistic hobbies
 like drawing and music production: the sense of excitement and “motivation” after I’ve acquired
 some new art-related material. It’s very easy to spend hours doodling with a new marker, writing
 in a fresh journal, or twiddling with a synth I’ve just bought. The next day, though, the new tool
 is a little less exciting, and so on, until it’s as normal as everything else.</p>
+  <a href="/gear-acquisition-syndrome">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/jekyll-to-hakyll">Migrating from Jekyll to Hakyll</a></h1>
-    <p class="post-metadata">
-       4 May, 2023
-      
-      ⋅
-      
+  
+  <h1><a href="/jekyll-to-hakyll">Migrating from Jekyll to Hakyll</a></h1>
+  <p class="post-metadata">
+     4 May, 2023
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
+    
+  </p>
+  <p>I’ve just finished migrating this site from <a href="https://jekyllrb.com/">Jekyll</a> to
 <a href="https://jaspervdj.be/hakyll/">Hakyll</a>. The only noticeable changes are: <em>slightly</em> prettier page URLs, MathML support, and
 tweaks to syntax highlighting to compensate for using <a href="https://pandoc.org">Pandoc</a>. I paid
 special attention to preserving the <a href="/feed.xml">Atom feed</a> identifiers so that feed readers aren’t
 impacted.</p>
+  <a href="/jekyll-to-hakyll">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/web-resources-i-enjoy">Web Resources I Enjoy</a></h1>
-    <p class="post-metadata">
-      10 January, 2023
-      
-    </p>
-
-    <p>In
+  
+  <h1><a href="/web-resources-i-enjoy">Web Resources I Enjoy</a></h1>
+  <p class="post-metadata">
+    10 January, 2023
+    
+  </p>
+  <p>In
 <a href="https://www.samharris.org/podcasts/making-sense-episodes/304-why-i-left-twitter">this
 conversation</a>,
 <a href="https://www.samharris.org">Sam Harris</a> and <a href="https://www.calnewport.com">Cal Newport</a> talked about
 how we use the world wide web, how it has become extremely centralised around a few social media
 platforms, and the role of recommendation algorithms in this system. Parts of this conversation are
 starting to influence the way I use the web.</p>
+  <a href="/web-resources-i-enjoy">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/2022-project-review">2022 Project Review</a></h1>
-    <p class="post-metadata">
-      27 December, 2022
-      
-      ⋅
-      
+  
+  <h1><a href="/2022-project-review">2022 Project Review</a></h1>
+  <p class="post-metadata">
+    27 December, 2022
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>Reflections this year's hobby projects.</p>
+    
+  </p>
+  <p>Reflections this year's hobby projects.</p>
+  <a href="/2022-project-review">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/rip-dreamincode">RIP Dream.In.Code</a></h1>
-    <p class="post-metadata">
-       6 July, 2022
-      
-      ⋅
-      
+  
+  <h1><a href="/rip-dreamincode">RIP Dream.In.Code</a></h1>
+  <p class="post-metadata">
+     6 July, 2022
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
+    
+  </p>
+  <p><a href="https://web.archive.org/web/20220105235917/https://www.dreamincode.net/">Dream.In.Code</a> was a
 programming help forum that ran from 2001 to the beginning of 2022. It was recently <a href="https://web.archive.org/web/20220116161045/https://www.dreamincode.net/forums/topic/421898-dreamincode-shutting-down/">shut
 down</a>
 due to hosting costs. My participation in Dream.In.Code, starting from 2009 and ending somewhere in
 2013, represents the beginning of my life as a programmer. Over the past 10 or so years, programming
 has become a <em>huge</em> part of my life. I’d like to acknowledge the role this forum played in my development.</p>
+  <a href="/rip-dreamincode">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/webgl-slower-than-canvas">WebGL Slower Than Canvas?</a></h1>
-    <p class="post-metadata">
-      20 May, 2021
-      
-      ⋅
-      
+  
+  <h1><a href="/webgl-slower-than-canvas">WebGL Slower Than Canvas?</a></h1>
+  <p class="post-metadata">
+    20 May, 2021
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
+    
+  </p>
+  <p>I’ve recently been working on <a href="https://github.com/LightAndLight/rust-wasm-gol/">web a graphics project</a>
 where I played a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">Canvas API</a> implementation
 against a <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a> implementation. When running the app in Firefox on Linux, I was surprised to find that the WebGL version was 10-30% <em>slower</em>
 (in frames per second) than the Canvas version.</p>
+  <a href="/webgl-slower-than-canvas">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/rust-defun-example">An Example of Defunctionalisation in Rust</a></h1>
-    <p class="post-metadata">
-       6 February, 2021
-      
-      ⋅
-      
+  
+  <h1><a href="/rust-defun-example">An Example of Defunctionalisation in Rust</a></h1>
+  <p class="post-metadata">
+     6 February, 2021
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
+    
+  </p>
+  <p>I’m an experienced Haskell programmer, and I’ve been writing a lot of Rust lately.
 I recently ran into a little trouble when porting a simple function from Haskell to
 Rust. This article is a short description of my journey.</p>
+  <a href="/rust-defun-example">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/docker-cleanup-commands">Docker Cleanup Commands</a></h1>
-    <p class="post-metadata">
-       7 November, 2020
-      
-      ⋅
-      
+  
+  <h1><a href="/docker-cleanup-commands">Docker Cleanup Commands</a></h1>
+  <p class="post-metadata">
+     7 November, 2020
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>
+    
+  </p>
+  <p>I’ve Googled this one too many times, so I’m writing it here for future reference.</p>
+  <a href="/docker-cleanup-commands">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/sized-hkts">Statically Sized Higher-kinded Polymorphism</a></h1>
-    <p class="post-metadata">
-       7 July, 2020
-      
-      ⋅
-      
+  
+  <h1><a href="/sized-hkts">Statically Sized Higher-kinded Polymorphism</a></h1>
+  <p class="post-metadata">
+     7 July, 2020
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>
+    
+  </p>
+  <p>
   Memory-sensitive languages like C++ and Rust use compile-time information to calculate
   sizes of datatypes. These sizes are used to inform alignment, allocation, and calling conventions in ways
   that improve runtime performance. Modern languages in this setting support generic types, but so far
@@ -428,121 +515,139 @@ Rust. This article is a short description of my journey.</p>
   how to enable parameterisation over arbitrary type constructs, while still retaining compile-time calculation
   of datatype sizes.
 </p>
+  <a href="/sized-hkts">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/lambdas-are-codatatypes">Lambdas are Codatatypes</a></h1>
-    <p class="post-metadata">
-       1 July, 2019
-      
-      ⋅
-      
+  
+  <h1><a href="/lambdas-are-codatatypes">Lambdas are Codatatypes</a></h1>
+  <p class="post-metadata">
+     1 July, 2019
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>I was first clued into this a while ago by
+    
+  </p>
+  <p>I was first clued into this a while ago by
 <a href="https://existentialtype.wordpress.com/2011/04/24/the-real-point-of-laziness/">a comment on Bob Harper’s blog</a> that “exponentials are coinductive”, but it only really clicked for me today. Let’s get into it.</p>
+  <a href="/lambdas-are-codatatypes">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/agda-nixos">Configuring Agda's standard library on NixOS</a></h1>
-    <p class="post-metadata">
-      17 May, 2019
-      
-      ⋅
-      
+  
+  <h1><a href="/agda-nixos">Configuring Agda's standard library on NixOS</a></h1>
+  <p class="post-metadata">
+    17 May, 2019
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
+    
+  </p>
+  <p>I’ve been using Agda on NixOS for a while (mostly via <code>agda-mode</code> in Emacs), but I remember it was a bit
 difficult to get going the very first time. Hopefully this becomes a searchable reference
 to getting it all set up quickly.</p>
+  <a href="/agda-nixos">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/conditional-probabilities-obnoxious-white-guys">Conditional Probabilities and Obnoxious White Guys</a></h1>
-    <p class="post-metadata">
-       5 May, 2019
-      
-      ⋅
-      
+  
+  <h1><a href="/conditional-probabilities-obnoxious-white-guys">Conditional Probabilities and Obnoxious White Guys</a></h1>
+  <p class="post-metadata">
+     5 May, 2019
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/rationality">rationality</a>
 
 <a class="post-metadata-tag" href="/tags/mathematics">mathematics</a>
 
 
-      
-    </p>
-
-    <p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
+    
+  </p>
+  <p>In <a href="https://twitter.com/DrEugeniaCheng/status/1124795257814691841">this Twitter thread</a>,
 Eugenia Cheng talks about how she presented at a conference for women in STEM, and was
 confronted by a white guy who felt ‘called out’ by some of her anecdotes. Apparently, she
 described interactions with obnoxious individuals in a professional setting, and noted that
 they were all white guys. Ironically, the guy raised the issue in such a way that he was added
 to the list of anecdotes.</p>
+  <a href="/conditional-probabilities-obnoxious-white-guys">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/learning-a-craft">Learning a Craft</a></h1>
-    <p class="post-metadata">
-      11 February, 2019
-      
-      ⋅
-      
+  
+  <h1><a href="/learning-a-craft">Learning a Craft</a></h1>
+  <p class="post-metadata">
+    11 February, 2019
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/self-improvement">self-improvement</a>
 
 
-      
-    </p>
-
-    <p>I remember when I first learned about computer programming, around 2008 or 2009.
+    
+  </p>
+  <p>I remember when I first learned about computer programming, around 2008 or 2009.
 I wanted to make games, and asked a search engine. Apparently computer graphics
 was way too hard, so I decided I wanted to create browser-based static HTML
 games and text-based roguelikes. Having learned that PHP and MySQL exist, I sat
 down and brainstormed a setting, classes and roles for characters, and all the
 other things that come with fantasy RPGs.</p>
+  <a href="/learning-a-craft">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/writing">Writing</a></h1>
-    <p class="post-metadata">
-      29 December, 2018
-      
-      ⋅
-      
+  
+  <h1><a href="/writing">Writing</a></h1>
+  <p class="post-metadata">
+    29 December, 2018
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/self-improvement">self-improvement</a>
 
 <a class="post-metadata-tag" href="/tags/philosophy">philosophy</a>
 
 
-      
-    </p>
-
-    <p>I think writing can help us think better.</p>
+    
+  </p>
+  <p>I think writing can help us think better.</p>
+  <a href="/writing">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/on-programming-language-design">On Programming Language Design</a></h1>
-    <p class="post-metadata">
-      21 November, 2018
-      
-      ⋅
-      
+  
+  <h1><a href="/on-programming-language-design">On Programming Language Design</a></h1>
+  <p class="post-metadata">
+    21 November, 2018
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/philosophy">philosophy</a>
 
 
-      
-    </p>
-
-    <p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
+    
+  </p>
+  <p>In his <a href="https://www.youtube.com/watch?v=IOiZatlZtGU">propositions as types
 talk</a>, Philip Wadler contrasts
 programming languages that have been ‘invented’ with those that have been
 ‘discovered’. <a href="https://www.youtube.com/watch?v=IOiZatlZtGU&amp;t=28m12s">“And you can tell!” he exclaims, receiving giggles from the
@@ -551,176 +656,206 @@ how you feel about <a href="https://en.wikipedia.org/wiki/Philosophy_of_mathemat
 platonism</a>,
 I think Phil is pointing at a meaningful difference in the way certain ideas
 arise.</p>
+  <a href="/on-programming-language-design">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/topsy-turvy-reverse-state">Turning bottom-up into top-down with Reverse State</a></h1>
-    <p class="post-metadata">
-      13 June, 2018
-      
-      ⋅
-      
+  
+  <h1><a href="/topsy-turvy-reverse-state">Turning bottom-up into top-down with Reverse State</a></h1>
+  <p class="post-metadata">
+    13 June, 2018
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/haskell">haskell</a>
 
 
-      
-    </p>
-
-    <p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
+    
+  </p>
+  <p>I love <a href="https://hackage.haskell.org/package/bound">bound</a> - it makes <a href="https://en.wikipedia.org/wiki/De_Bruijn_index">De
 Bruijn indices</a> mindlessly easy. I also love
 <a href="https://hackage.haskell.org/package/lens/docs/Control-Lens-Plated.html">Plated</a>
 for all sorts of whole-program transformations. I think they’re two
 indispensible tools for working with programming languages.
 Unfortunately, they’re not compatible.</p>
+  <a href="/topsy-turvy-reverse-state">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/comonad-transformers-in-the-wild">Comonad Transformers in the Wild</a></h1>
-    <p class="post-metadata">
-      25 February, 2018
-      
-      ⋅
-      
+  
+  <h1><a href="/comonad-transformers-in-the-wild">Comonad Transformers in the Wild</a></h1>
+  <p class="post-metadata">
+    25 February, 2018
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/haskell">haskell</a>
 
 
-      
-    </p>
-
-    <p>A certain algorithmic puzzle website has a problem that goes like this…</p>
+    
+  </p>
+  <p>A certain algorithmic puzzle website has a problem that goes like this…</p>
+  <a href="/comonad-transformers-in-the-wild">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/continuations-from-the-ground-up">Continuations From the Ground Up</a></h1>
-    <p class="post-metadata">
-       6 June, 2017
-      
-      ⋅
-      
+  
+  <h1><a href="/continuations-from-the-ground-up">Continuations From the Ground Up</a></h1>
+  <p class="post-metadata">
+     6 June, 2017
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/haskell">haskell</a>
 
 
-      
-    </p>
-
-    <p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
+    
+  </p>
+  <p>It’s difficult to learn functional programming without hearing about continuations. Often they’re mentioned while talking about boosting the performance of pure functional code, sometimes there’s talk of control flow, and occasionally with ‘time-travel’ thrown in there to make it all seem more obscure. It’s all true, but let’s start from the beginning.</p>
+  <a href="/continuations-from-the-ground-up">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/how-to-delete-old-nixos-boot-configurations">How to delete old NixOS boot configurations</a></h1>
-    <p class="post-metadata">
-      24 March, 2017
-      
-    </p>
-
-    <p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
+  
+  <h1><a href="/how-to-delete-old-nixos-boot-configurations">How to delete old NixOS boot configurations</a></h1>
+  <p class="post-metadata">
+    24 March, 2017
+    
+  </p>
+  <p><a href="https://nixos.org/">NixOS</a> is a Linux distribution with declarative
 configuration management. Your system configuration is specified in a
 set of files, and can run a command to update your system to the current
 specification. A consequence of this is that your entire system
 configuration can be versioned.</p>
+  <a href="/how-to-delete-old-nixos-boot-configurations">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/introduction-to-unification">Introduction to Unification</a></h1>
-    <p class="post-metadata">
-       7 January, 2017
-      
-    </p>
-
-    <p>Unification is a vital process in the implementation of Hindley-Damas-Milner
+  
+  <h1><a href="/introduction-to-unification">Introduction to Unification</a></h1>
+  <p class="post-metadata">
+     7 January, 2017
+    
+  </p>
+  <p>Unification is a vital process in the implementation of Hindley-Damas-Milner
 type inference. In the <a href="http://web.cs.wpi.edu/~cs4536/c12/milner-damas_principal_types.pdf">original paper</a>
 it is mentioned in passing as assumed knowledge, so here is an explanation of
 unification in with a little help from the HM type theory.</p>
+  <a href="/introduction-to-unification">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/why-LINQ-is-broken">Why LINQ (well, C#) is Broken</a></h1>
-    <p class="post-metadata">
-      24 October, 2016
-      
-      ⋅
-      
+  
+  <h1><a href="/why-LINQ-is-broken">Why LINQ (well, C#) is Broken</a></h1>
+  <p class="post-metadata">
+    24 October, 2016
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/haskell">haskell</a>
 
 
-      
-    </p>
-
-    <p>LINQ is a system that provides a flexible query interface for .NET languages.
+    
+  </p>
+  <p>LINQ is a system that provides a flexible query interface for .NET languages.
 It allows a user to write queries over arbitrary data using an in-built
 SQL-like syntax. This syntactic sugar is mapped to method calls at compile time,
 so any data structure that implements the correct methods can be used with LINQ.</p>
+  <a href="/why-LINQ-is-broken">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/search-and-replace-in-multiple-files">Search and Replace in Multiple Files</a></h1>
-    <p class="post-metadata">
-      25 July, 2015
-      
-      ⋅
-      
+  
+  <h1><a href="/search-and-replace-in-multiple-files">Search and Replace in Multiple Files</a></h1>
+  <p class="post-metadata">
+    25 July, 2015
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/tools">tools</a>
 
 
-      
-    </p>
-
-    <p>Last semester I had to write a static website by hand with no templating
+    
+  </p>
+  <p>Last semester I had to write a static website by hand with no templating
 resulting in a lot of duplicated code across multiple pages. I had already
 finished most of the project when I realised that the main page of the
 project should be named <code>index.html</code> instead of <code>home.html</code>. I renamed the
 file, but that left me with countless references to “home.html” that needed
 to be changed, and I wanted to change them all at once. Enter <code>sed</code>.</p>
+  <a href="/search-and-replace-in-multiple-files">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/the-programming-thought-process-fizzbuzz">The Programming Thought Process: Fizzbuzz</a></h1>
-    <p class="post-metadata">
-       4 March, 2015
-      
-      ⋅
-      
+  
+  <h1><a href="/the-programming-thought-process-fizzbuzz">The Programming Thought Process: Fizzbuzz</a></h1>
+  <p class="post-metadata">
+     4 March, 2015
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 
-      
-    </p>
-
-    <p>With so many programming languages and frameworks at our disposal, it is
+    
+  </p>
+  <p>With so many programming languages and frameworks at our disposal, it is
 too easy to believe that knowledge of many tools is the defining characteristic
 of a good programmer. However, many experienced programmers will assert that
 it isn’t the languages you know, but your ability to solve problems that
 defines you as a programmer.</p>
+  <a href="/the-programming-thought-process-fizzbuzz">Read more</a>
+  
+  
 </article>
 
 <article class="post-list-item">
-    <h1><a href="/a-practical-introduction-to-monad-transformers">A Practical Introduction to Monad Transformers</a></h1>
-    <p class="post-metadata">
-       1 February, 2015
-      
-      ⋅
-      
+  
+  <h1><a href="/a-practical-introduction-to-monad-transformers">A Practical Introduction to Monad Transformers</a></h1>
+  <p class="post-metadata">
+     1 February, 2015
+    
+    ⋅
+    
 <a class="post-metadata-tag" href="/tags/programming">programming</a>
 
 <a class="post-metadata-tag" href="/tags/haskell">haskell</a>
 
 
-      
-    </p>
-
-    <p>Monad transformers combine the functionality of two monads into one. They are often used
+    
+  </p>
+  <p>Monad transformers combine the functionality of two monads into one. They are often used
 as a way to “flatten” nested monads, but are also used to enable interactions between
 monads that, when used seperately, would be incredibly difficult to implement.</p>
+  <a href="/a-practical-introduction-to-monad-transformers">Read more</a>
+  
+  
 </article>
 
 
