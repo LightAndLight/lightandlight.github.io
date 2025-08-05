@@ -7,8 +7,8 @@
   --color-highlight: #4f86c6;
   --color-border: #e0e0e0;
   --width-max-content: 45rem;
+  --content-padding-x: 1rem;
   --width-main-padding: calc(max(var(--content-padding-x), (100vw - var(--width-max-content)) / 2));
-  --content-padding-x: 2rem;
   --text-underline-offset: 0.2rem;
   --border-radius: 0.25rem;
 }
@@ -118,6 +118,7 @@ body > footer > ol {
   gap: 1rem;
 
   margin-bottom: 0;
+  padding-left: 0;
 }
 
 .footer-item-link {
@@ -247,6 +248,10 @@ blockquote {
 
 blockquote > *:last-child {
   margin-bottom: 0;
+}
+
+kbd {
+  word-break: break-all;
 }
 
 code, pre, samp, samp > kbd {
@@ -467,7 +472,7 @@ a.snippet-anchor:visited {
   padding: 0 0.25rem;
   position: absolute;
   opacity: 0.4;
-  right: -1.5rem;
+  left: calc(100% - 0.25rem);
   text-decoration: none;
 }
 
