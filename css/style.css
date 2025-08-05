@@ -189,6 +189,17 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   text-decoration: none;
 }
 
+h1:target,
+h2:target,
+h3:target,
+h4:target,
+h5:target,
+h6:target
+{
+  text-decoration: underline;
+  text-underline-offset: var(--text-underline-offset);
+}
+
 h1 a:visited,
 h2 a:visited,
 h3 a:visited,
@@ -217,9 +228,11 @@ h4:has(a):after,
 h5:has(a):after,
 h6:has(a):after
 {
-  content: ' #';
+  content: '#';
+  display: inline-block;
   font-family: "Source Sans 3", sans-serif;
   font-weight: 600;
+  margin-left: 0.4rem;
   opacity: 0.4;
 
   position: relative;
@@ -232,6 +245,16 @@ h4:has(a:hover):after,
 h5:has(a:hover):after,
 h6:has(a:hover):after {
   color: var(--color-active);
+}
+
+h1:has(a):target:after,
+h2:has(a):target:after,
+h3:has(a):target:after,
+h4:has(a):target:after,
+h5:has(a):target:after,
+h6:has(a):target:after
+{
+  text-decoration: none;
 }
 
 p {
