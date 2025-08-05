@@ -1,13 +1,9 @@
 <article>
   <header>
-    <h1>$title$</h1>
-    <p class="post-metadata">
-      $date$
-      $if(has_tags)$
-      ⋅
-      $partial("templates/tags-list.html")$
-      $endif$
-    </p>
+    <p class="reply-metadata">$date$</p>
+    $for(references)$
+    <p class="reply-metadata-reference">↳ <a href="$url$">$title$</a></p>
+    $endfor$
   </header>
   $body$
   $partial("templates/item-navigation.html")$

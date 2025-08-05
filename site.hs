@@ -7,14 +7,11 @@
 {-# LANGUAGE TypeApplications #-}
 
 import Control.Applicative (empty)
-import Control.Monad ((<=<))
+import Control.Monad ((<=<), guard)
 import Data.List (isInfixOf, isPrefixOf, nub)
-import Data.Maybe (mapMaybe)
+import Data.Maybe (fromMaybe, mapMaybe)
 import Data.Monoid (First (..))
 import qualified Data.Text as Text
-
--- use the "With" variants of these functions instead
-
 import Data.Text (Text)
 import Hakyll hiding (pandocCompiler, readPandoc, writePandoc)
 import Network.Wai.Application.Static (StaticSettings (..))
@@ -26,6 +23,10 @@ import Text.Pandoc.Options
 import Text.Pandoc.Walk (Walkable, query, walk)
 import Text.Pandoc.Writers (writePlain)
 import WaiAppStatic.Types (File (..), fromPiece, unsafeToPiece)
+import qualified Data.Aeson.KeyMap as KeyMap
+import qualified Data.Aeson as Json
+import Data.Foldable (toList)
+import Data.String (fromString)
 
 root :: String
 root = "https://blog.ielliott.io"
@@ -163,43 +164,59 @@ main = do
       compile $ do
         identifier <- getUnderlying
 
-        postPandocItem <- do
-          document <- readPandocWith pandocReaderOptions =<< getResourceBody
-          pure $ linkHeaders . tableOfContents <$> document
+        mType <- getMetadataField identifier "type"
+        case mType of
+          Just "reply" -> do
+            let replyCtx = mkReplyCtx identifier postInfos
 
-        post <- saveSnapshot "content" $ writePandocWith pandocWriterOptions postPandocItem
+            replyPandocItem <- do
+              document <- readPandocWith pandocReaderOptions =<< getResourceString
+              pure $ linkHeaders . tableOfContents <$> document
+            reply <- saveSnapshot "content" $ writePandocWith pandocWriterOptions replyPandocItem
+            _reply <- saveSnapshot "excerpt" reply
 
-        excerpt <- saveSnapshot "excerpt" =<< getExcerpt identifier postPandocItem
-        _tags <- saveSnapshot "tags" =<< makeItem =<< getTags post.itemIdentifier
+            let metadata = ""
+            loadAndApplyTemplate "templates/reply.html" replyCtx reply
+              >>= loadAndApplyTemplate "templates/page.html" (pageCtx <> constField "metadata" metadata)
+              >>= prettifyUrls
+          _ -> do
+            postPandocItem <- do
+              document <- readPandocWith pandocReaderOptions =<< getResourceBody
+              pure $ linkHeaders . tableOfContents <$> document
 
-        let postCtx = mkPostCtx identifier postInfos
+            post <- saveSnapshot "content" $ writePandocWith pandocWriterOptions postPandocItem
 
-        metadata <-
-          loadAndApplyTemplate
-            "templates/post-metadata.html"
-            ( dateField "date" "%0Y-%m-%dT%H:%M%Ez"
-                <> constField "root" root
-                <> constField "excerpt" excerpt.itemBody
-                <> functionField
-                  "plaintext"
-                  ( \args item -> do
-                      case args of
-                        [arg] ->
-                          case runPure $ writePlain pandocWriterOptions =<< readHtml pandocReaderOptions (Text.pack arg) of
-                            Left err -> error $ "error in function \"plaintext\" in " <> toFilePath item.itemIdentifier <> ": " <> show err
-                            Right string -> pure . Text.unpack $ Text.strip string
-                        _ ->
-                          error $
-                            "incorrect number of arguments to function \"plaintext\" in "
-                              <> toFilePath item.itemIdentifier
-                  )
-                <> postCtx
-            )
-            =<< makeItem ""
+            excerpt <- saveSnapshot "excerpt" =<< getExcerpt identifier postPandocItem
+            _tags <- saveSnapshot "tags" =<< makeItem =<< getTags post.itemIdentifier
 
-        loadAndApplyTemplate "templates/post.html" postCtx post
-          >>= loadAndApplyTemplate "templates/page.html" (pageCtx <> constField "metadata" metadata.itemBody)
-          >>= prettifyUrls
+            let postCtx = mkPostCtx identifier postInfos
+
+            metadata <-
+              loadAndApplyTemplate
+                "templates/post-metadata.html"
+                ( dateField "date" "%0Y-%m-%dT%H:%M%Ez"
+                    <> constField "root" root
+                    <> constField "excerpt" excerpt.itemBody
+                    <> functionField
+                      "plaintext"
+                      ( \args item -> do
+                          case args of
+                            [arg] ->
+                              case runPure $ writePlain pandocWriterOptions =<< readHtml pandocReaderOptions (Text.pack arg) of
+                                Left err -> error $ "error in function \"plaintext\" in " <> toFilePath item.itemIdentifier <> ": " <> show err
+                                Right string -> pure . Text.unpack $ Text.strip string
+                            _ ->
+                              error $
+                                "incorrect number of arguments to function \"plaintext\" in "
+                                  <> toFilePath item.itemIdentifier
+                      )
+                    <> postCtx
+                )
+                =<< makeItem ""
+
+            loadAndApplyTemplate "templates/post.html" postCtx post
+              >>= loadAndApplyTemplate "templates/page.html" (pageCtx <> constField "metadata" metadata.itemBody)
+              >>= prettifyUrls
 
     tags :: [String] <- getAllTags "posts/*"
     create (fmap (\tag -> fromFilePath $ "tags" </> tag <.> "html") tags) $ do
@@ -399,16 +416,83 @@ mkPostCtx identifier postInfos =
       )
       (lookup identifier postInfos)
 
+replyReferencesField :: Context a
+replyReferencesField =
+  listFieldWith
+    "references"
+    (field "title" (stringFromObject "title" . itemBody) <> field "url" (stringFromObject "url" . itemBody))
+    (traverse makeItem <=< fmap (fromMaybe [] . lookupValueList "references") . getMetadata . itemIdentifier)
+  where
+    lookupValueList key metadata = do
+      value <- KeyMap.lookup (fromString key) metadata
+      case value of
+        Json.Array xs -> pure $ toList xs
+        _ -> Nothing
+
+    stringFromObject key (Json.Object obj) =
+      case KeyMap.lookup (fromString key) obj of
+        Nothing -> fail $ "object missing key " ++ show key
+        Just value ->
+          case value of
+            Json.String str -> pure $ Text.unpack str
+            _ -> fail $ "expected string at key " ++ show key ++ ", got " ++ show value
+    stringFromObject _key value =
+      fail $ "expected object, got " ++ show value
+
+mkReplyCtx :: Identifier -> [(Identifier, PostInfo)] -> Context String
+mkReplyCtx identifier postInfos =
+  bodyField "body"
+    <> postInfoCtx
+    <> maybe
+      (boolField "has_previous" (const False) <> boolField "has_previous" (const False))
+      ( \postInfo ->
+          maybe
+            (boolField "has_previous" (const False))
+            ( \previousId ->
+                boolField "has_previous" (const True)
+                  <> prettyUrlFromField "previous_url" previousId
+                  <> field "previous_title" (\_ -> getMetadataField' previousId "title")
+            )
+            postInfo.previous
+            <> maybe
+              (boolField "has_next" (const False))
+              ( \nextId ->
+                  boolField "has_next" (const True)
+                    <> prettyUrlFromField "next_url" nextId
+                    <> field "next_title" (\_ -> getMetadataField' nextId "title")
+              )
+              postInfo.next
+      )
+      (lookup identifier postInfos) <>
+  replyReferencesField
+
 pageCtx :: Context String
 pageCtx =
   metadataField <> bodyField "body"
+
+mediaTypeCtx :: Context a
+mediaTypeCtx =
+  field "is_post" (\post -> do
+    mType <- getMetadataField post.itemIdentifier "type"
+    guard $ mType == Just "post" || mType == Nothing
+    pure "true"
+    )
+  <> field "is_reply" (\post -> do
+    mType <- getMetadataField post.itemIdentifier "type"
+    guard $ mType == Just "reply"
+    pure "true"
+    )
 
 postListCtx :: [Item String] -> Maybe String -> Context String
 postListCtx posts mTag =
   listField
     "posts"
     ( postInfoCtx
-        <> field "excerpt" (\post -> (.itemBody) <$> loadSnapshot post.itemIdentifier "excerpt")
+        <> mediaTypeCtx
+        <> field "excerpt" (\post ->
+          (.itemBody) <$> loadSnapshot post.itemIdentifier "excerpt"
+          )
+        <> replyReferencesField
     )
     (return posts)
     <> foldMap (constField "tag") mTag
@@ -543,3 +627,5 @@ feedCtx =
     <> prettyUrlField "url"
     <> field "description" (\item -> (.itemBody) <$> loadSnapshot @String item.itemIdentifier "excerpt")
     <> bodyField "body"
+    <> mediaTypeCtx
+    <> replyReferencesField

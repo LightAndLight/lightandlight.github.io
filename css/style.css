@@ -287,23 +287,34 @@ a:visited {
   color: var(--color-inactive);
 }
 
-h1:has(+ .post-metadata) {
+h1:has(+ .post-metadata),
+.post-metadata:has(+ .post-metadata),
+.reply-metadata:has(+ .reply-metadata-reference)
+{
   margin-bottom: 0;
 }
 
-.post-metadata {
+.post-metadata, .reply-metadata, .reply-metadata-reference {
   color: var(--color-fg-muted);
   font-size: 0.9rem;
 }
 
-.post-metadata a {
+.post-metadata a, .reply-metadata a {
   color: inherit;
+}
+
+.reply-metadata {
+  display: flex;
+}
+
+.reply-metadata-permalink {
+  margin-left: auto;
 }
 
 p sup {
   vertical-align: top;
   position: relative;
-  top: -0.4rem;  
+  top: -0.4rem;
 }
 
 a:has(sup:only-child) {
@@ -385,7 +396,7 @@ figure {
 }
 
 figcaption {
-  font-size: 0.9rem;  
+  font-size: 0.9rem;
 }
 
 .text-with-figure {

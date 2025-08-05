@@ -4,15 +4,27 @@ $endif$
 
 $for(posts)$
 <article class="post-list-item">
-    <h1><a href="$url$">$title$</a></h1>
-    <p class="post-metadata">
-      $date$
-      $if(has_tags)$
-      ⋅
-      $partial("templates/tags-list.html")$
-      $endif$
-    </p>
-
-    $excerpt$
+  $if(is_post)$
+  <h1><a href="$url$">$title$</a></h1>
+  <p class="post-metadata">
+    $date$
+    $if(has_tags)$
+    ⋅
+    $partial("templates/tags-list.html")$
+    $endif$
+  </p>
+  $excerpt$
+  <a href="$url$">Read more</a>
+  $endif$
+  $if(is_reply)$
+  <p class="reply-metadata">
+    $date$
+    <a class="reply-metadata-permalink" href="$url$">permalink</a>
+  </p>
+  $for(references)$
+  <p class="reply-metadata-reference">↳ <a href="$url$">$title$</a></p>
+  $endfor$
+  $excerpt$
+  $endif$
 </article>
 $endfor$

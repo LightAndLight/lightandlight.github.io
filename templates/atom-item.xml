@@ -8,10 +8,18 @@
     $endif$
     <published>$published$</published>
     <updated>$updated$</updated>
-    <summary type="html"><![CDATA[$description$]]></summary>
+    $if(is_post)$
+    <summary type="html" xml:base="$root$$url$"><![CDATA[$description$]]></summary>
+    $endif$
     $if(body)$
-    <content type="html" xml:base="$root$$url$">
-      <![CDATA[$body$]]>
-    </content>
+    <content type="html" xml:base="$root$$url$"><![CDATA[
+      $if(is_reply)$
+      $for(references)$
+      <p>Reply to <a href="$url$">$title$</a></p>
+      $endfor$
+      <hr>
+      $endif$
+      $body$
+    ]]></content>
     $endif$
 </entry>
