@@ -17,13 +17,19 @@ after pushing for the changes to show up on the blog.
 
 ## Features
 
-* [Post front-matter](#post-front-matter)
+* [Content types](#content-types)
 * [Tag pages](#tag-pages)
 * [Math support](#math-support)
 * [Table of contents generation](#table-of-contents-generation)
 * [Asciinema](#asciinema)
 
-### Post front-matter
+### Content types
+
+Content is configured through YAML front-matter.
+
+#### Posts
+
+`type: post` or *omitted*
 
 | Field | Required? | Type | Comments |
 |---|---|---|---|
@@ -37,14 +43,25 @@ after pushing for the changes to show up on the blog.
 | `asciinema` | no | bool | Enable [Asciinema](#asciinema) |
 | `feed_id` | no | string | Used for feed compatibility. A post's feed ID is based on its `permalink`, so if you change the permalink then feed readers will think you wrote a new post. If you change a `permalink`, set the post's `feed_id` to whatever it was when it was originally published. |
 
+#### Replies
+
+`type: reply`
+
+| Field | Required? | Type | Comments |
+|---|---|---|---|
+| `title` | yes | string | Used in the HTML `<title>`, and displayed as the post's heading. |
+| `permalink` | yes | string | The post's absolute path on the site. |
+| `date` | yes | string (format: YYYY-mm-dd) | The published date. |
+| `references` | no | list { title : string, url : string } | Resources that are being replied to. |
+
 ### Tag pages
 
-Every tag named in a `tags` [front-matter](#post-front-matter) field gets its own tags page at `/tag/{tagName}`.
+Every tag named in a `tags` [front-matter](#posts) field gets its own tags page at `/tag/{tagName}`.
 Each tags page lists all the posts with that tag. 
 
 ### Math support
 
-When the [post front-matter](#post-front-matter) has `math: true`, the following is enabled for a post's page:
+When the [post front-matter](#posts) has `math: true`, the following is enabled for a post's page:
 
 * Better MathML font ([Libertinus Math](https://github.com/alerque/libertinus))
 * MathML-specific CSS
@@ -105,7 +122,7 @@ The above subheading is included, because its parent hasn't set `toc:omit_childr
 
 ### Asciinema
 
-When the [post front-matter](#post-front-matter) has `asciinema: true`,
+When the [post front-matter](#posts) has `asciinema: true`,
 [Asciinema](https://asciinema.org) casts can be embedded using the `<x-asciinema-cast>` element.
 
 Example:

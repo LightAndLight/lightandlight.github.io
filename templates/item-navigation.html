@@ -1,0 +1,13 @@
+<p class="post-navigation">
+  $if(has_previous)$
+  <a href="$previous_url$" title="Previous post: $previous_title$">← $previous_title$</a>
+  $else$
+  <span>Oldest</span>
+  $endif$
+
+  $if(has_next)$
+  <a href="$next_url$" title="Next post: $next_title$">$next_title$ →</a>
+  $else$
+  <span>Newest</span>
+  $endif$
+</p>
