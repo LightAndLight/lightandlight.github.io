@@ -285,7 +285,7 @@ code, pre, samp, samp > kbd {
 code, pre, samp {
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
-  padding: 0.15rem 0.3rem;
+  padding: 0 0.15rem;
   background: linear-gradient(135deg, #f7f8f9, #f1f7ff);
 }
 
