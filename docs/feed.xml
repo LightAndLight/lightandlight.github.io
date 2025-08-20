@@ -10,8 +10,71 @@
         <email>blog@id.ielliott.io</email>
         
     </author>
-    <updated>2025-08-17T04:25:00Z</updated>
+    <updated>2025-08-21T00:00:00Z</updated>
     <entry>
+    <title>A Haskell "Foldable" quiz</title>
+    <link href="https://blog.ielliott.io/haskell-foldable-quiz" />
+    
+    <id>https://blog.ielliott.io/haskell-foldable-quiz</id>
+    
+    <published>2025-08-21T00:00:00Z</published>
+    <updated>2025-08-21T00:00:00Z</updated>
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/haskell-foldable-quiz"><![CDATA[<p>How does GHCi respond to <code>fold [] 42</code>?</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/haskell-foldable-quiz"><![CDATA[
+      
+      <p>How does GHCi respond to <code>fold [] 42</code>?</p>
+<details>
+<summary>
+Answer
+</summary>
+<pre><code>ghci&gt; fold [] 42
+()</code></pre>
+</details>
+<p>How does GHCi respond to <code>fold [] 42 == []</code>?</p>
+<details>
+<summary>
+Answer
+</summary>
+<pre><code>ghci&gt; fold [] 42 == []
+True</code></pre>
+</details>
+<p>What is the type of <code>fold [] 42</code>?</p>
+<details>
+<summary>
+Answer
+</summary>
+<pre><code>ghci&gt; :t fold [] 42
+fold [] 42 :: Monoid t =&gt; t</code></pre>
+</details>
+<p>What the hell is going on!?</p>
+<details>
+<summary>
+Answer
+</summary>
+<p><code>fold</code> has type <code>(Foldable t, Monoid a) =&gt; t a -&gt; a</code>, so <code>fold []</code> has type <code>Monoid a =&gt; a</code>.</p>
+<p><code>fold []</code> is <code>mempty</code>, which means <code>fold [] 42</code> is equal to <code>mempty 42</code>.
+This is well-typed because <em>functions</em> have a Monoid instance.</p>
+<p><code>mempty</code> for functions is <code>const mempty</code>.
+So <code>mempty 42</code> is <code>const mempty 42</code> is <code>mempty :: Monoid b =&gt; b</code>.</p>
+<p>In GHCi, <code>b</code> is defaulted to <code>()</code>, which is why the first question prints <code>()</code>.</p>
+When we evaluate <code>fold [] 42 == []</code>, the list monoid is chosen instead, reducing to <code>[] == []</code>.
+</details>
+<p>Why am I even thinking about this?</p>
+<details>
+<summary>
+Answer
+</summary>
+<p>I just found a bug due to replacing <code>fromMaybe Set.empty</code> (which has type <code>Maybe (Set a) -&gt; Set a</code>) with <code>fold Set.empty</code> (which has type <code>Monoid b =&gt; a -&gt; b</code> and is equivalent to <code>const mempty</code>).
+This meant that all my <code>Just</code>s containing non-empty sets were being ignored.</p>
+I meant to replace <code>fromMaybe Set.empty</code> with <code>fold</code>, which really are the same.
+</details>
+    ]]></content>
+    
+</entry>
+<entry>
     <title>Paying for KeePassXC</title>
     <link href="https://blog.ielliott.io/paying-for-keepassxc" />
     
