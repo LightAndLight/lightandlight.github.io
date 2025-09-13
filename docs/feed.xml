@@ -10,8 +10,108 @@
         <email>blog@id.ielliott.io</email>
         
     </author>
-    <updated>2025-08-21T00:00:00Z</updated>
+    <updated>2025-09-13T00:00:00Z</updated>
     <entry>
+    <title>Smalltalk and Lambda Calculus</title>
+    <link href="https://blog.ielliott.io/smalltalk-and-lambda-calculus" />
+    
+    <id>https://blog.ielliott.io/smalltalk-and-lambda-calculus</id>
+    
+    <published>2025-09-13T00:00:00Z</published>
+    <updated>2025-09-13T00:00:00Z</updated>
+    
+    <summary type="html" xml:base="https://blog.ielliott.io/smalltalk-and-lambda-calculus"><![CDATA[<p>In <a href="https://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a>, everything is an “object”.
+An “object” is a thing that receives and processes “messages”.
+A “message” has a name and zero or more arguments.
+How do you build express common datatypes, such as booleans and numbers, using only objects?</p>]]></summary>
+    
+    
+    <content type="html" xml:base="https://blog.ielliott.io/smalltalk-and-lambda-calculus"><![CDATA[
+      
+      <div id="toc">
+<h3>Contents</h3>
+<ul>
+<li><a href="#boolean-objects">Boolean objects</a></li>
+<li><a href="#natural-number-objects">(Natural) number objects</a></li>
+<li><a href="#lambda-calculus">Lambda calculus</a></li>
+<li><a href="#objects--lambas">Objects ↔︎ lambas</a></li>
+<li><a href="#thoughts">Thoughts</a></li>
+</ul>
+</div>
+<p>In <a href="https://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a>, everything is an “object”.
+An “object” is a thing that receives and processes “messages”.
+A “message” has a name and zero or more arguments.
+How do you build express common datatypes, such as booleans and numbers, using only objects?</p>
+<h2 id="boolean-objects"><a href="#boolean-objects">Boolean objects</a></h2>
+<p>A Smalltalk boolean is an object that understands a message named <code>ifTrue:ifFalse:</code>.
+<code>ifTrue:ifFalse:</code> takes two arguments, which should both be <a href="https://en.wikipedia.org/wiki/Smalltalk#Code_blocks">“code blocks”</a>.
+<code>true</code> is the boolean that, when it receives <code>ifTrue: firstArgument ifFalse: secondArgument</code>, runs <code>firstArgument</code>.
+On the other hand, <code>false</code> is the boolean that runs <code>secondArgument</code>.
+This can be concisely specified by two equations:</p>
+<ol type="1">
+<li><code>true ifTrue: a ifFalse b = a value</code></li>
+<li><code>false ifTrue: a ifFalse: b = b value</code></li>
+</ol>
+<h2 id="natural-number-objects"><a href="#natural-number-objects">(Natural) number objects</a></h2>
+<p>What about numbers?
+The introductions to Smalltalk that I’ve skimmed don’t talk about constructing numbers.
+One message to integers stands out, though: <code>timesRepeat:</code>.
+<code>timesRepeat:</code> takes one argument, a code block.
+An integer object <code>n</code> processes <code>timesRepeat:</code> by running the code block <code>n</code> times (and zero times if the integer is negative).
+The caveat for negative integers suggests that <code>timesRepeat:</code> is better suited for natural numbers, but Smalltalk doesn’t have them in its numeric hierarchy.</p>
+<p><code>timesRepeat:</code> almost characterises natural numbers, but not quite.
+Here’s my characterisation.
+A natural number is an object that understands a message named <code>from:iterate:</code> (I made this up so I don’t know if there’s a standard Smalltalk equivalent).
+The message takes two arguments, an arbitrary object and a single-argument code block.
+<code>0</code> is the natural number that, when it receives <code>from: initial iterate: next</code>, just returns <code>initial</code>.
+A natural number <code>n</code> (where <code>n &gt; 0</code>) is an object that contains a reference to its predecessor (called <code>pred</code>).
+<code>from: initial iterate: next</code> is implemented as follows:</p>
+<pre class="smalltalk"><code>from: initial iterate: next [
+  ^next value: (pred from: initial iterate: next)
+]</code></pre>
+<p><code>timesRepeat:</code> can be implemented in terms of <code>from:iterate:</code>:</p>
+<pre class="smalltalk"><code>timesRepeat: block [
+  from: nil iterate: [ :ignored | block value ]
+]</code></pre>
+<p>The specification is:</p>
+<ol type="1">
+<li><code>0 from: initial iterate: next = initial</code></li>
+<li><code>n succ from: initial iterate: next = n from: (next value: initial) iterate: next</code></li>
+</ol>
+<h2 id="lambda-calculus"><a href="#lambda-calculus">Lambda calculus</a></h2>
+<p>Where objects are the fundamental building blocks of Smalltalk, (single-argument) functions are the fundamental building blocks of <a href="https://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus</a>.
+Datatypes like booleans and (natural) numbers can also be expressed using only functions.</p>
+<p>A boolean is a function that takes two arguments; the <code>true</code> boolean chooses the first argument and the <code>false</code> boolean chooses the second:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>true <span class="ot">=</span> \x y <span class="ot">-&gt;</span> x</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>false <span class="ot">=</span> \x y <span class="ot">-&gt;</span> y</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ifTrueIfFalse cond x y <span class="ot">=</span> cond x y</span></code></pre></div>
+<p>A natural number <code>n</code> is a function that takes two arguments, and applies the second argument to the first <code>n</code> times:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>zero <span class="ot">=</span> \x f <span class="ot">-&gt;</span> x</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">succ</span> n <span class="ot">=</span> \x f <span class="ot">-&gt;</span> f (n x f)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fromIterate n x f <span class="ot">=</span> n x f</span></code></pre></div>
+<p>These definitions (known as <a href="https://en.wikipedia.org/wiki/Church_encoding">Church encodings</a>) express exactly the same intent as the Smalltalk equivalents.
+This is not a coincidence: Smalltalk’s objects and lambda calculus’ functions are actually the same sort of thing.</p>
+<h2 id="objects--lambas"><a href="#objects--lambas">Objects ↔︎ lambas</a></h2>
+<p>A lambda is an object that understands a single-argument message called <code>value:</code>.
+The object responds to the <code>value:</code> message by transforming the argument and returning a result.</p>
+<p>An object is a lambda that takes two arguments: a message name, and the message payload.
+When then lambda is applied to a message name and payload, it uses the message name to look up a handler function and applies that function to the payload.</p>
+<p>Variables captured by the lambda are the object’s instance variables, and vice versa.
+In both cases, these variables aren’t detectable from the outside.</p>
+<p>While I haven’t mentioned types thus far, in the end type theory explains the connection between objects and lambdas:
+they’re both <a href="https://en.wikipedia.org/wiki/Coinduction">coinductive types</a> (see also: <a href="https://blog.ielliott.io/lambdas-are-codatatypes">Lambdas are Codatatypes</a>).</p>
+<h2 id="thoughts"><a href="#thoughts">Thoughts</a></h2>
+<ul>
+<li><p>In general, Smalltalk feels like a nicer syntax for church encoding. I like it.</p></li>
+<li><p>I wonder why Smalltalk doesn’t have anonymous objects?</p>
+<p>The language already has a small conceptual footprint, but because objects can only be created by messaging a class (which is itself an object),
+classes and objects need to be defined in terms of each other.
+Maybe classless, anonymous objects could serve as the foundation for a classy object system.</p></li>
+</ul>
+    ]]></content>
+    
+</entry>
+<entry>
     <title>A Haskell "Foldable" quiz</title>
     <link href="https://blog.ielliott.io/haskell-foldable-quiz" />
     

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preload" href="/fonts/SourceSerif4/SourceSerif4-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/SourceSans3/SourceSans3-Regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="/res/fonts.css">
+  <link rel="stylesheet" href="/res/style.css">
+
+  <!-- defer non-critical stylesheet -->
+  <link href="/res/syntax.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/res/syntax.css"></noscript>
+
+  
+
+  
+
+  
+
+  
+  <title>Smalltalk and Lambda Calculus - blog.ielliott.io</title>
+  
+
+  <link rel="canonical" href="https://blog.ielliott.io/smalltalk-and-lambda-calculus">
+<link rel="alternate" type="application/atom+xml" title="blog.ielliott.io" href="/feed.xml">
+
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<meta property="og:url" content="https://blog.ielliott.io/smalltalk-and-lambda-calculus">
+<meta property="og:title" content="Smalltalk and Lambda Calculus">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Smalltalk and Lambda Calculus">
+
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="In Smalltalk, everything is an " object". An "object" is a thing that receives and processes "messages". A "message" has a name and zero or more arguments. How do you build express common datatypes, such as booleans and numbers, using only objects?">
+<meta property="og:description" content="In Smalltalk, everything is an " object". An "object" is a thing that receives and processes "messages". A "message" has a name and zero or more arguments. How do you build express common datatypes, such as booleans and numbers, using only objects?">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-09-13T00:00+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Smalltalk and Lambda Calculus",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2025-09-13T00:00+00:00",
+  "dateModified":"2025-09-13T00:00+00:00",
+  "description":"In Smalltalk, everything is an "object".
+An "object" is a thing that receives and processes "messages".
+A "message" has a name and zero or more arguments.
+How do you build express common datatypes, such as booleans and numbers, using only objects?",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/smalltalk-and-lambda-calculus"
+  },
+  "url": "https://blog.ielliott.io/smalltalk-and-lambda-calculus"
+}
+</script>
+</head>
+
+<body>
+  <header>
+    <h1><a href="/">I E</a></h1>
+    <nav>
+      <ol>
+        <li><a href="/">Home</a>
+        <li><a href="/about">About</a>
+        <li><a href="/resources">Resources</a>
+      </ol>
+    </nav>
+  </header>
+
+  <main>
+    
+
+    <article>
+  <header>
+    <h1>Smalltalk and Lambda Calculus</h1>
+    <p class="post-metadata">
+      13 September, 2025
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+
+      
+    </p>
+  </header>
+  <div id="toc">
+<h3>Contents</h3>
+<ul>
+<li><a href="#boolean-objects">Boolean objects</a></li>
+<li><a href="#natural-number-objects">(Natural) number objects</a></li>
+<li><a href="#lambda-calculus">Lambda calculus</a></li>
+<li><a href="#objects--lambas">Objects ↔︎ lambas</a></li>
+<li><a href="#thoughts">Thoughts</a></li>
+</ul>
+</div>
+<p>In <a href="https://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a>, everything is an “object”.
+An “object” is a thing that receives and processes “messages”.
+A “message” has a name and zero or more arguments.
+How do you build express common datatypes, such as booleans and numbers, using only objects?</p>
+<h2 id="boolean-objects"><a href="#boolean-objects">Boolean objects</a></h2>
+<p>A Smalltalk boolean is an object that understands a message named <code>ifTrue:ifFalse:</code>.
+<code>ifTrue:ifFalse:</code> takes two arguments, which should both be <a href="https://en.wikipedia.org/wiki/Smalltalk#Code_blocks">“code blocks”</a>.
+<code>true</code> is the boolean that, when it receives <code>ifTrue: firstArgument ifFalse: secondArgument</code>, runs <code>firstArgument</code>.
+On the other hand, <code>false</code> is the boolean that runs <code>secondArgument</code>.
+This can be concisely specified by two equations:</p>
+<ol type="1">
+<li><code>true ifTrue: a ifFalse b = a value</code></li>
+<li><code>false ifTrue: a ifFalse: b = b value</code></li>
+</ol>
+<h2 id="natural-number-objects"><a href="#natural-number-objects">(Natural) number objects</a></h2>
+<p>What about numbers?
+The introductions to Smalltalk that I’ve skimmed don’t talk about constructing numbers.
+One message to integers stands out, though: <code>timesRepeat:</code>.
+<code>timesRepeat:</code> takes one argument, a code block.
+An integer object <code>n</code> processes <code>timesRepeat:</code> by running the code block <code>n</code> times (and zero times if the integer is negative).
+The caveat for negative integers suggests that <code>timesRepeat:</code> is better suited for natural numbers, but Smalltalk doesn’t have them in its numeric hierarchy.</p>
+<p><code>timesRepeat:</code> almost characterises natural numbers, but not quite.
+Here’s my characterisation.
+A natural number is an object that understands a message named <code>from:iterate:</code> (I made this up so I don’t know if there’s a standard Smalltalk equivalent).
+The message takes two arguments, an arbitrary object and a single-argument code block.
+<code>0</code> is the natural number that, when it receives <code>from: initial iterate: next</code>, just returns <code>initial</code>.
+A natural number <code>n</code> (where <code>n &gt; 0</code>) is an object that contains a reference to its predecessor (called <code>pred</code>).
+<code>from: initial iterate: next</code> is implemented as follows:</p>
+<pre class="smalltalk"><code>from: initial iterate: next [
+  ^next value: (pred from: initial iterate: next)
+]</code></pre>
+<p><code>timesRepeat:</code> can be implemented in terms of <code>from:iterate:</code>:</p>
+<pre class="smalltalk"><code>timesRepeat: block [
+  from: nil iterate: [ :ignored | block value ]
+]</code></pre>
+<p>The specification is:</p>
+<ol type="1">
+<li><code>0 from: initial iterate: next = initial</code></li>
+<li><code>n succ from: initial iterate: next = n from: (next value: initial) iterate: next</code></li>
+</ol>
+<h2 id="lambda-calculus"><a href="#lambda-calculus">Lambda calculus</a></h2>
+<p>Where objects are the fundamental building blocks of Smalltalk, (single-argument) functions are the fundamental building blocks of <a href="https://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus</a>.
+Datatypes like booleans and (natural) numbers can also be expressed using only functions.</p>
+<p>A boolean is a function that takes two arguments; the <code>true</code> boolean chooses the first argument and the <code>false</code> boolean chooses the second:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>true <span class="ot">=</span> \x y <span class="ot">-&gt;</span> x</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>false <span class="ot">=</span> \x y <span class="ot">-&gt;</span> y</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ifTrueIfFalse cond x y <span class="ot">=</span> cond x y</span></code></pre></div>
+<p>A natural number <code>n</code> is a function that takes two arguments, and applies the second argument to the first <code>n</code> times:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>zero <span class="ot">=</span> \x f <span class="ot">-&gt;</span> x</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">succ</span> n <span class="ot">=</span> \x f <span class="ot">-&gt;</span> f (n x f)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fromIterate n x f <span class="ot">=</span> n x f</span></code></pre></div>
+<p>These definitions (known as <a href="https://en.wikipedia.org/wiki/Church_encoding">Church encodings</a>) express exactly the same intent as the Smalltalk equivalents.
+This is not a coincidence: Smalltalk’s objects and lambda calculus’ functions are actually the same sort of thing.</p>
+<h2 id="objects--lambas"><a href="#objects--lambas">Objects ↔︎ lambas</a></h2>
+<p>A lambda is an object that understands a single-argument message called <code>value:</code>.
+The object responds to the <code>value:</code> message by transforming the argument and returning a result.</p>
+<p>An object is a lambda that takes two arguments: a message name, and the message payload.
+When then lambda is applied to a message name and payload, it uses the message name to look up a handler function and applies that function to the payload.</p>
+<p>Variables captured by the lambda are the object’s instance variables, and vice versa.
+In both cases, these variables aren’t detectable from the outside.</p>
+<p>While I haven’t mentioned types thus far, in the end type theory explains the connection between objects and lambdas:
+they’re both <a href="https://en.wikipedia.org/wiki/Coinduction">coinductive types</a> (see also: <a href="https://blog.ielliott.io/lambdas-are-codatatypes">Lambdas are Codatatypes</a>).</p>
+<h2 id="thoughts"><a href="#thoughts">Thoughts</a></h2>
+<ul>
+<li><p>In general, Smalltalk feels like a nicer syntax for church encoding. I like it.</p></li>
+<li><p>I wonder why Smalltalk doesn’t have anonymous objects?</p>
+<p>The language already has a small conceptual footprint, but because objects can only be created by messaging a class (which is itself an object),
+classes and objects need to be defined in terms of each other.
+Maybe classless, anonymous objects could serve as the foundation for a classy object system.</p></li>
+</ul>
+  <p class="post-navigation">
+  
+  <a href="/haskell-foldable-quiz" title="Previous post: A Haskell " Foldable" quiz">← A Haskell "Foldable" quiz</a>
+  
+
+  
+  <span>Newest</span>
+  
+</p>
+
+</article>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  var disqus_shortname = 'ielliott'; // required: replace example with your forum shortname
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function () {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>
+  Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+  </main>
+
+  <footer>
+    <span>Isaac Elliott</span>
+
+    <ol>
+      <li><a class="footer-item-link" href="https://github.com/lightandlight">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28a8 8 0 0 0-6.93-4 59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32M200 112a40 40 0 0 1-40 40h-48a40 40 0 0 1-40-40v-8a41.74 41.74 0 0 1 6.9-22.48 8 8 0 0 0 1.1-7.69 43.8 43.8 0 0 1 .79-33.58 43.88 43.88 0 0 1 32.32 20.06 8 8 0 0 0 6.71 3.69h32.35a8 8 0 0 0 6.74-3.69 43.87 43.87 0 0 1 32.32-20.06 43.8 43.8 0 0 1 .77 33.58 8.09 8.09 0 0 0 1 7.65 41.7 41.7 0 0 1 7 22.52Z"></path></svg>
+        GitHub
+      </a>
+
+      <li><a class="footer-item-link" href="mailto:blog@id.ielliott.io">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8m-20.57 16L128 133.15 52.57 64ZM216 192H40V74.19l82.59 75.71a8 8 0 0 0 10.82 0L216 74.19z"></path></svg>
+        Email
+      </a>
+
+      <li><a class="footer-item-link" href="/feed.xml">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 192a8 8 0 0 1-16 0c0-79.4-64.6-144-144-144a8 8 0 0 1 0-16c88.22 0 160 71.78 160 160M64 104a8 8 0 0 0 0 16 72.08 72.08 0 0 1 72 72 8 8 0 0 0 16 0 88.1 88.1 0 0 0-88-88m4 72a12 12 0 1 0 12 12 12 12 0 0 0-12-12"></path></svg>
+        Feed
+      </a>
+    </ol>
+  </footer>
+
+  
+</body>
+
+</html>
