@@ -10,6 +10,18 @@ I recently finished playing Bioshock. It only took two years.
 
 <img src="./images/2025-10-26-bioshock-screenshot.png" alt="A screenshot from the game">
 
+One reason I'm interested in Bioshock is its pedigree in the gaming industry.
+Bioshock (2007) was co-developed by [Irrational Games / 2K Boston](https://en.wikipedia.org/wiki/Irrational_Games) and [Irrational Games Australia / 2K Australia](https://en.wikipedia.org/wiki/2K_Australia).
+
+Irrational Games was founded by a few ex-employees of [Looking Glass Studios](https://en.wikipedia.org/wiki/Looking_Glass_Studios).
+Looking Glass Studios was a pioneer in the art of video games, and I think a large part of Bioshock's success can be traced to work done at Looking Glass.
+Looking Glass is also [linked](https://en.wikipedia.org/wiki/Ion_Storm#Deus_Ex) to the formation of Ion Storm Austin (Ion Storm itself being founded by [id Software](https://en.wikipedia.org/wiki/Id_Software) founders, but that's a rabbit hole for another time) and the development of [Deus Ex](https://en.wikipedia.org/wiki/Deus_Ex_(video_game)),
+another critically acclaimed game of the era.
+
+As an Australian, I was excited to learn about Australian involvement in such a famous game.
+When it was shut down in 2015, 2K Australia was [the last AAA studio in Australia](https://web.archive.org/web/20180219031310/https://www.kotaku.com.au/2015/04/the-heartwarming-response-to-the-closure-of-2k-australia/).
+It was also the primary developer of the somewhat entertaining [Borderlands: The Pre-Sequel](https://en.wikipedia.org/wiki/Borderlands:_The_Pre-Sequel), a Borderlands (❤) spin-off set on [Pandora's](https://borderlands.fandom.com/wiki/Pandora) moon, which is apparently inhabited by Australians.
+
 ## Outline
 
 * Game development lineage
@@ -21,6 +33,11 @@ I recently finished playing Bioshock. It only took two years.
     * Codeveloped Bioshock
 * Game design
   * Relationship to the ["immersive sim"](https://en.wikipedia.org/wiki/Immersive_sim) genre
+    * [Introduction to immersive sims by Game Maker's Toolkit](https://www.youtube.com/watch?v=kbyTOAlhRHk)
+      * "Agency"
+    * Game design thinking at Looking Glass
+      * Marc LeBlanc with "MDA" and [the 8 kinds of fun](http://algorithmancy.8kindsoffun.com/)
+      * Doug Church with [Formal Abstract Design Tools](https://www.gamedeveloper.com/design/formal-abstract-design-tools)
   * [Puzzles are problems with a single solution](https://www.raphkoster.com/2025/11/03/game-design-is-simple-actually/#:~:text=If%20a%20problem%20basically%20has%20one%20answer,%20we%20often%20call%20it%20a%20puzzle.)
     * We end up finding algorithms to solve the puzzle
     * Once you know the algorithm, executing it is straightforward
@@ -35,9 +52,44 @@ I recently finished playing Bioshock. It only took two years.
     * The game provides you highly general systems, and challenges you to acheive a particular outcome.
       You get to figure out how to use these systems to reach the goal.
     * More realistic, more relevant to the rest of life, which I find more fun
+      * This is not an *objective* benefit
+
+        <https://www.pcgamer.com/the-uncertain-future-of-games-like-deus-ex-and-dishonored/>
+
+        > it's clear that there hasn't been a huge immersive sim hit on par with some of the other video games out there.
+        > I mean, we're still waiting for the game that sells a gazillion copies!
+        > I think part of the reason for that is that immersive sims require—or at least encourage—people to think before they act.
+        > They tend not to be games where you just move forward like a shark and inevitably succeed.
+        > In the best immersive sims, you have to assess the situation you're in, make a plan and then execute that plan, dealing with any consequences that follow.
+        > That's asking a lot of players who basically have to do that every moment of their waking lives—in the real world, I mean.
+
     * Encourages creativity
       * What are some plausible ways I could achieve that goal?
         Which of those are available to me given the rules of the game?
+* I feel inspired looking at old Looking Glass / Irrational Games web pages
+  * Web archive gems
+    * [Thief dev blog](http://www.thief-thecircle.com/darkproj/darkdiary.html)
+
+      [Design manifesto](http://www.thief-thecircle.com/darkproj/manifesto.html)
+
+    * <https://web.archive.org/web/19970203172654/http://www2.lglass.com:80/employee.html>
+      * <https://web.archive.org/web/19990128131802/http://brigit.lglass.com/%7Emahk/>
+
+        "Why the hell are you reading this?"
+
+      * <https://web.archive.org/web/19970314211921/http://www2.lglass.com/~tjs/>
+
+        "How am I like the Demiurge?"
+
+      * <https://web.archive.org/web/19990220072253/http://www.folded.com/jeff/>
+
+        "Not a desert mouse" (?!)
+
+      * Optimised f(n)or(d) pineal web
+        * <a href="http://www.cs.cmu.edu/~tilt/principia/"><img src="./images/pineal.gif"></a>
+        * <https://web.archive.org/web/19990129033550/http://brigit.lglass.com/%7Emahk/who.html>
+        * <https://web.archive.org/web/19990504185146/http://www.folded.com/jeff/jeff.html>
+        * <https://www.cs.cmu.edu/~tilt/pinealweb/>
 * It took me so long to finish because it was scary and stressful
   * The sound design had me on edge
   * Creepy enemies
