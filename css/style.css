@@ -269,6 +269,10 @@ blockquote {
   padding: 0 1rem;
 }
 
+blockquote em {
+  font-style: normal;
+}
+
 blockquote > *:last-child {
   margin-bottom: 0;
 }

@@ -10,17 +10,57 @@ I recently finished playing Bioshock. It only took two years.
 
 <img src="./images/2025-10-26-bioshock-screenshot.png" alt="A screenshot from the game">
 
+<div id="toc"><!-- generated --></div>
+
 One reason I'm interested in Bioshock is its pedigree in the gaming industry.
 Bioshock (2007) was co-developed by [Irrational Games / 2K Boston](https://en.wikipedia.org/wiki/Irrational_Games) and [Irrational Games Australia / 2K Australia](https://en.wikipedia.org/wiki/2K_Australia).
+As an Australian, I was excited to learn about Australian involvement in such a famous game.
+When it was shut down in 2015, 2K Australia was [the last AAA studio in Australia](https://web.archive.org/web/20180219031310/https://www.kotaku.com.au/2015/04/the-heartwarming-response-to-the-closure-of-2k-australia/).
+It was also the primary developer of the somewhat entertaining [Borderlands: The Pre-Sequel](https://en.wikipedia.org/wiki/Borderlands:_The_Pre-Sequel), a Borderlands (❤) spin-off set on [Pandora](https://borderlands.fandom.com/wiki/Pandora)'s moon, which is apparently inhabited by Australians.
 
-Irrational Games was founded by a few ex-employees of [Looking Glass Studios](https://en.wikipedia.org/wiki/Looking_Glass_Studios).
-Looking Glass Studios was a pioneer in the art of video games, and I think a large part of Bioshock's success can be traced to work done at Looking Glass.
+Irrational Games was founded by a few ex-employees of [Looking Glass Studios](https://en.wikipedia.org/wiki/Looking_Glass_Studios),
+which was a pioneer in the art of video games.
+I think a large part of Bioshock's success can be traced to work done at Looking Glass.
 Looking Glass is also [linked](https://en.wikipedia.org/wiki/Ion_Storm#Deus_Ex) to the formation of Ion Storm Austin (Ion Storm itself being founded by [id Software](https://en.wikipedia.org/wiki/Id_Software) founders, but that's a rabbit hole for another time) and the development of [Deus Ex](https://en.wikipedia.org/wiki/Deus_Ex_(video_game)),
 another critically acclaimed game of the era.
 
-As an Australian, I was excited to learn about Australian involvement in such a famous game.
-When it was shut down in 2015, 2K Australia was [the last AAA studio in Australia](https://web.archive.org/web/20180219031310/https://www.kotaku.com.au/2015/04/the-heartwarming-response-to-the-closure-of-2k-australia/).
-It was also the primary developer of the somewhat entertaining [Borderlands: The Pre-Sequel](https://en.wikipedia.org/wiki/Borderlands:_The_Pre-Sequel), a Borderlands (❤) spin-off set on [Pandora's](https://borderlands.fandom.com/wiki/Pandora) moon, which is apparently inhabited by Australians.
+## Looking Glass Studios' approach to game design
+
+Looking Glass Studios produced three particularly influential games (plus sequels):
+[Ultima Underworld (1992)](https://en.wikipedia.org/wiki/Ultima_Underworld:_The_Stygian_Abyss),
+[System Shock (1994)](https://en.wikipedia.org/wiki/System_Shock),
+and [Thief (1998)](https://en.wikipedia.org/wiki/Thief:_The_Dark_Project).
+A big part of what makes these games great is the thought and effort that went into the game design behind them.
+
+These games increasingly emphasise player agency and creativity.
+Instead of relying on scripted sequences of events, the games have many independent systems that dynamically interact.
+All the entities in the game are subject to the same set of rules, and the player is just one participant in this virtual world.
+Challenges presented to the player don't have a pre-determined solution, rather,
+it's up to the player to figure out how to use the systems at their disposal to overcome the challenge.
+With enough independent but interacting systems,
+there end up being many solutions that the game developer never anticipated.
+This style of game is now called an ["immersive sim"](https://en.wikipedia.org/wiki/Immersive_sim),
+of which [Game Maker's Toolkit  has an entertaining overview](https://www.youtube.com/watch?v=kbyTOAlhRHk).
+
+> Aside: some of the people at Looking Glass thought *hard* about game design.
+[Doug Church](https://en.wikipedia.org/wiki/Doug_Church) published [this interesting article](https://www.gamedeveloper.com/design/formal-abstract-design-tools) about making game design more technical.
+> And [Marc LeBlanc](https://en.wikipedia.org/wiki/Marc_LeBlanc) coined the [8 kinds of fun](https://en.wikipedia.org/wiki/Marc_LeBlanc#8_Kinds_of_Fun) and has created a [wealth of materials on game design](http://8kindsoffun.com/).
+
+The principles behind immersive sims appeal to me because of how they reflect real life.
+Growing up I played a lot of RPG-style video games: fight enemies, gain experience points and items, level up, unlock skills, etc.
+Looking back, I see that a big reason I was drawn to this sort of game was its simulation of progress.
+Leveling up or crafting a rare item felt like an achievement at the time, but in hindsight they feel hollow.
+The levels I gained in some MMORPG are mostly just bits on a server somewhere; little evidence of them remains in me as a whole human being.
+Growth of a virtual video game character was a cheap and low-risk way to get a sense of personal growth,
+but without the lasting rewards.
+After realising this, I started looking for games that reinforce skills I actually value,
+thereby leaving a positive impression on *me*, rather than just increasing some numbers on a computer.
+Immersive sims create opportunities for agency and creativity: behaviours which matter to me in general.
+
+I'm also intrigued by the way the immersive sim approach creates depth.
+To me, depth is one of the components of art:
+when you can continually go back to a work and experience it in new ways,
+gradually uncovering more of what's already there.
 
 ## Outline
 
