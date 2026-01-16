@@ -156,32 +156,30 @@ h3, h4, h5, h6 {
 
 h1 {
   font-size: 2rem;
-  margin-bottom: 1rem;
 }
 
 h2 {
   font-size: 1.72rem;
-  margin-bottom: 0.62rem;
 }
 
 h3 {
   font-size: 1.48rem;
-  margin-bottom: 0.38rem;
 }
 
 h4 {
   font-size: 1.27rem;
-  margin-bottom: 0.23rem;
 }
 
 h5 {
   font-size: 1.10rem;
-  margin-bottom: 0.14rem;
 }
 
 h6 {
   font-size: 1rem;
-  margin-bottom: 0.1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0;
 }
 
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
@@ -257,20 +255,15 @@ h6:has(a):target:after
   text-decoration: none;
 }
 
-p {
-  margin-top: 0;
+* + p {
+  margin-top: 1rem;
 }
 
 blockquote {
   border-left: 0.2rem solid var(--color-highlight);
   font-style: italic;
   margin: 0;
-  margin-bottom: 1rem;
   padding: 0 1rem;
-}
-
-blockquote > *:last-child {
-  margin-bottom: 0;
 }
 
 kbd {
@@ -326,6 +319,10 @@ h1:has(+ .post-metadata),
   color: inherit;
 }
 
+.post-metadata {
+  margin-bottom: 1rem;
+}
+
 .reply-metadata {
   display: flex;
 }
@@ -369,10 +366,6 @@ ul, ol {
   padding-left: 1rem;
 }
 
-li > p {
-  margin-bottom: 0;
-}
-
 #toc {
   background: linear-gradient(135deg, #f7f8f9, #f1f7ff);
   border: 1px solid var(--color-border);
@@ -414,8 +407,7 @@ hr {
 }
 
 figure {
-  margin: 0;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem 0;
 }
 
 figcaption {
@@ -436,22 +428,6 @@ figcaption {
 
 .text-with-figure__figure {
   max-width: 100%;
-}
-
-details {
-  margin-bottom: 1rem;
-}
-
-details > *:nth-child(2) {
-  margin-top: 0;
-}
-
-.shell-command:has(+ details) {
-  margin-bottom: 0;
-}
-
-.shell-command > *:last-child {
-  margin-bottom: 0;
 }
 
 th {
