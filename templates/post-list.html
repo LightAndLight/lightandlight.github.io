@@ -6,13 +6,13 @@ $for(posts)$
 <article class="post-list-item">
   $if(is_post)$
   <h1><a href="$url$">$title$</a></h1>
-  <p class="post-metadata">
+  <span class="post-metadata">
     $date$
     $if(has_tags)$
     ⋅
     $partial("templates/tags-list.html")$
     $endif$
-  </p>
+  </span>
   $excerpt$
   <a href="$url$">Read more</a>
   $endif$
