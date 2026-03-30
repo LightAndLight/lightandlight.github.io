@@ -36,3 +36,22 @@
   color: #D30102;
   font-weight: bold;
 }
+
+
+/* `diff` syntax highlighting
+
+References:
+
+* <https://github.com/jgm/skylighting/blob/3bf03100600e81f221a855ee11082293730b2193/skylighting-core/xml/diff.xml>
+* <https://github.com/jgm/skylighting/blob/3bf03100600e81f221a855ee11082293730b2193/skylighting-format-blaze-html/src/Skylighting/Format/HTML.hs#L132>
+*/
+
+/* variable (added line) */
+.sourceCode.diff .va {
+  color: #018238;
+}
+
+/* string (removed line) */
+.sourceCode.diff .st {
+  color: #b14236;
+}
