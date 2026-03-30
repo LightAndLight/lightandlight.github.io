@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preload" href="/fonts/SourceSerif4/SourceSerif4-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/SourceSans3/SourceSans3-Regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="/res/fonts.css">
+  <link rel="stylesheet" href="/res/style.css">
+
+  <!-- defer non-critical stylesheet -->
+  <link href="/res/syntax.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/res/syntax.css"></noscript>
+
+  
+
+  
+
+  
+
+  
+  <title>Local Hoogle - blog.ielliott.io</title>
+  
+
+  <link rel="canonical" href="https://blog.ielliott.io/local-hoogle">
+<link rel="alternate" type="application/atom+xml" title="blog.ielliott.io" href="/feed.xml">
+
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="blog.ielliott.io">
+<meta property="og:url" content="https://blog.ielliott.io/local-hoogle">
+<meta property="og:title" content="Local Hoogle">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Local Hoogle">
+
+
+<meta name="author" content="Isaac Elliott">
+<meta name="description" content="Hoogle didn't work when I tried to use for local documentation search,
+so I fixed it.">
+<meta property="og:description" content="Hoogle didn't work when I tried to use for local documentation search,
+so I fixed it.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-03-30T00:30+00:00">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline":"Local Hoogle",
+  "author": {
+    "@type":"Person",
+    "name":"Isaac Elliott"
+  },
+  "datePublished":"2026-03-30T00:30+00:00",
+  "dateModified":"2026-03-30T00:30+00:00",
+  "description":"Hoogle didn't work when I tried to use for local documentation search,
+so I fixed it.",
+  "mainEntityOfPage": {
+    "@type":"WebPage",
+    "@id":"https://blog.ielliott.io/local-hoogle"
+  },
+  "url": "https://blog.ielliott.io/local-hoogle"
+}
+</script>
+</head>
+
+<body>
+  <header>
+    <h1><a href="/">I E</a></h1>
+    <nav>
+      <ol>
+        <li><a href="/">Home</a>
+        <li><a href="/about">About</a>
+        <li><a href="/resources">Resources</a>
+      </ol>
+    </nav>
+  </header>
+
+  <main>
+    
+
+    <article>
+  <header>
+    <h1>Local Hoogle</h1>
+    <span class="post-metadata">
+      30 March, 2026
+      
+      ⋅
+      
+<a class="post-metadata-tag" href="/tags/programming">programming</a>
+
+<a class="post-metadata-tag" href="/tags/haskell">haskell</a>
+
+
+      
+    </span>
+  </header>
+  <div id="toc">
+<h3>Contents</h3>
+<ul>
+<li><a href="#hoogle-patches">Hoogle patches</a>
+<ul>
+<li><a href="#proof-of-concept-read-haddock-html-field-from-ghc-pkg-entries">Proof of concept: read <code>haddock-html</code> field from <code>ghc-pkg</code> entries</a></li>
+<li><a href="#proof-of-concept-make-generate---local-respect-ghc_environment-variable">Proof of concept: make <code>generate --local</code> respect <code>GHC_ENVIRONMENT</code> variable</a></li>
+</ul></li>
+<li><a href="#cabal-patch">Cabal patch</a></li>
+<li><a href="#usage">Usage</a></li>
+</ul>
+</div>
+<p><a href="https://github.com/ndmitchell/hoogle">Hoogle</a> didn’t work when I tried to use for local documentation search,
+so I fixed it.</p>
+<h2 id="hoogle-patches"><a href="#hoogle-patches">Hoogle patches</a></h2>
+<p>See also: my fork <a href="https://github.com/LightAndLight/hoogle">here</a>.</p>
+<h3 id="proof-of-concept-read-haddock-html-field-from-ghc-pkg-entries"><a href="#proof-of-concept-read-haddock-html-field-from-ghc-pkg-entries">Proof of concept: read <code>haddock-html</code> field from <code>ghc-pkg</code> entries</a></h3>
+<p>When I tried to generate a Hoogle database (on NixOS) I got this error:</p>
+<pre><code>$ cabal exec -- hoogle generate --local --database db.hoo
+Starting generate
+Reading ghc-pkg... 0.04s
+
+Packages missing documentation: array base binary bytestring Cabal Cabal-syntax containers deepseq directory exceptions filepath ghc ghc-bignum ghc-boot ghc-boot-th ghc-compact ghc-experimental ghc-heap ghc-internal ghc-platform ghc-prim ghc-toolchain ghci haskeline hpc integer-gmp mtl os-string parsec pretty process rts semaphore-compat stm system-cxx-std-lib template-haskell terminfo text time transformers unix xhtml
+No packages were found, aborting (use no arguments to index all of Stackage)</code></pre>
+<p>Hoogle was using hard-coded package documentation locations that weren’t present on my system.
+<a href="https://downloads.haskell.org/ghc/latest/docs/users_guide/packages.html#package-management-the-ghc-pkg-command"><code>ghc-pkg</code></a>
+package descriptions have a <code>haddock-html</code> field, so Hoogle should just use that.</p>
+<details open>
+<summary>
+Hoogle patch 1/2
+</summary>
+<div class="sourceCode" id="cb2"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">diff --git a/src/Input/Cabal.hs b/src/Input/Cabal.hs</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>index 6180fe06..f31292ec 100644</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">--- a/src/Input/Cabal.hs</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">+++ b/src/Input/Cabal.hs</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">@@ -117,8 +117,32 @@ readGhcPkg settings = do</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>     let fixer p = p{packageLibrary = True, packageDocs = g &lt;$&gt; packageDocs p}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>     let f ((stripPrefix &quot;name: &quot; -&gt; Just x):xs) = Just (mkPackageName $ trimStart x, fixer $ readCabal settings $ bstrPack $ unlines xs)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>         f _ = Nothing</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st">-    pure $ Map.fromList $ mapMaybe f $ splitOn [&quot;---&quot;] $ lines $ filter (/= '\r') $ UTF8.toString stdout</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">-</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="va">+    let</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="va">+        withHaddockHtml (name, package) =</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="va">+            case packageDocs package of</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="va">+                Nothing -&gt; do</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="va">+                    packageDocs' &lt;- readGhcPkgHaddockHtml (unPackageName name)</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="va">+                    pure (name, package{packageDocs = packageDocs'})</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="va">+                Just{} -&gt;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="va">+                    pure (name, package)</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="va">+    fmap Map.fromList $ traverse withHaddockHtml $ mapMaybe f $ splitOn [&quot;---&quot;] $ lines $ filter (/= '\r') $ UTF8.toString stdout</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="va">+</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="va">+readGhcPkgHaddockHtml ::</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="va">+    -- | Package name</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="va">+    String -&gt;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="va">+    IO (Maybe FilePath)</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="va">+readGhcPkgHaddockHtml packageName = do</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="va">+    let args = [&quot;field&quot;, packageName, &quot;haddock-html&quot;, &quot;--expand-pkgroot&quot;, &quot;--simple&quot;]</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="va">+    (exit, stdout, stderr) &lt;- BS.readProcessWithExitCode &quot;ghc-pkg&quot; args mempty</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="va">+    if exit /= ExitSuccess</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="va">+        then do</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="va">+            putStrLn &quot;error when calling ghc-pkg:&quot;</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="va">+            putStrLn $ &quot;args: &quot; ++ show args</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="va">+            putStrLn $ &quot;exit: &quot; ++ show exit</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="va">+            putStrLn $ &quot;stderr: &quot; ++ UTF8.toString stderr</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="va">+            pure Nothing</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="va">+        else</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="va">+            pure . Just . trimEnd $ UTF8.toString stdout</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a> -- | Given a tarball of Cabal files, parse the latest version of each package.</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a> parseCabalTarball :: Settings -&gt; FilePath -&gt; IO (Map.Map PkgName Package)</span></code></pre></div>
+</details>
+<h3 id="proof-of-concept-make-generate---local-respect-ghc_environment-variable"><a href="#proof-of-concept-make-generate---local-respect-ghc_environment-variable">Proof of concept: make <code>generate --local</code> respect <code>GHC_ENVIRONMENT</code> variable</a></h3>
+<p>Now Hoogle doesn’t crash on my system:</p>
+<pre><code>$ cabal exec -- hoogle generate --local --database db.hoo
+Starting generate
+Reading ghc-pkg... 1.04s
+[6/42] bytestring... 0.06s
+[12/42] ghc... 2.10s
+[19/42] ghc-prim... 0.26s
+[37/42] xhtml... 0.02s
+Packages missing documentation: ghc-compact ghc-experimental integer-gmp rts system-cxx-std-lib
+Found 30 warnings when processing items
+
+Reordering items... 0.03s
+Writing tags... 0.10s
+Writing names... 0.10s
+Writing types... 0.37s
+Took 6.76s</code></pre>
+<p>But it only includes GHC’s boot libraries in the generated index; my project’s dependencies are missing.
+I made Hoogle use the
+<a href="https://downloads.haskell.org/ghc/latest/docs/users_guide/packages.html#envvar-GHC_ENVIRONMENT"><code>GHC_ENVIRONMENT</code></a>
+variable to decide which packages should be included in the generated database
+(this variable is provided by <code>cabal exec</code>).
+I also needed this part of Hoogle to use package IDs instead of package names.</p>
+<p>This code does the job, but it feels hacky.
+I wouldn’t want it to be merged into Hoogle as-is.</p>
+<details open>
+<summary>
+Hoogle patch 2/2
+</summary>
+<div class="sourceCode" id="cb4"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">diff --git a/src/Input/Cabal.hs b/src/Input/Cabal.hs</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>index f31292ec..31aee29d 100644</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">--- a/src/Input/Cabal.hs</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">+++ b/src/Input/Cabal.hs</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dt">@@ -21,6 +21,7 @@ import System.Exit</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a> import qualified System.Process.ByteString as BS</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a> import qualified Data.ByteString.UTF8 as UTF8</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a> import System.Directory</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="va">+import System.Environment</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a> import Data.Maybe</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a> import Data.Tuple.Extra</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a> import qualified Data.Map.Strict as Map</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="dt">@@ -86,9 +87,29 @@ packagePopularity cbl = mp `seq` (errs, mp)</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a> ---------------------------------------------------------------------</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a> -- READERS</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="va">+-- | Returns a list of extra ghc-pkg flags, and an optional list of enabled packages.</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="va">+readGhcEnvironment :: IO ([String], Maybe [String])</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="va">+readGhcEnvironment = do</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="va">+    mFile &lt;- lookupEnv &quot;GHC_ENVIRONMENT&quot;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="va">+    case mFile of</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="va">+        Nothing -&gt; pure ([], Nothing)</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="va">+        Just file -&gt; do</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="va">+            contents &lt;- readFile file</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="va">+            let</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="va">+                f line rest@(flags, enabledPackages)</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="va">+                    | line == &quot;clear-package-db&quot; = (&quot;--no-user-package-db&quot; : flags, enabledPackages)</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="va">+                    | line == &quot;global-package-db&quot; = (&quot;--global&quot; : flags, enabledPackages)</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="va">+                    | Just packageDb &lt;- stripPrefix &quot;package-db &quot; line = ((&quot;--package-db=&quot; ++ packageDb) : flags, enabledPackages)</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="va">+                    | Just name &lt;- stripPrefix &quot;package-id &quot; line = (flags, name : enabledPackages)</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="va">+                    | otherwise = rest</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="va">+</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="va">+            let (flags, enabledPackages) = foldr f ([], []) (lines contents)</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="va">+            pure (flags, Just enabledPackages)</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="va">+</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a> -- | Run 'ghc-pkg' and get a list of packages which are installed.</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a> readGhcPkg :: Settings -&gt; IO (Map.Map PkgName Package)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a> readGhcPkg settings = do</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="va">+    (ghcPkgFlags, mEnabledPackages) &lt;- readGhcEnvironment</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>     topdir &lt;- findExecutable &quot;ghc-pkg&quot;</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>     (exit, stdout, stderr) &lt;-</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>     -- From GHC 9.0.1, the `haddock-html` field in `*.conf` files for GHC boot</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="dt">@@ -108,31 +129,57 @@ readGhcPkg settings = do</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>     -- correct manually the affected `*.conf` files.</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>     -- important to use BS process reading so it's in Binary format, see #194</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="st">-      BS.readProcessWithExitCode &quot;ghc-pkg&quot; [&quot;dump&quot;, &quot;--expand-pkgroot&quot;] mempty</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="va">+      BS.readProcessWithExitCode &quot;ghc-pkg&quot; ([&quot;dump&quot;, &quot;--expand-pkgroot&quot;] ++ ghcPkgFlags) mempty</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>     when (exit /= ExitSuccess) $</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>         errorIO $ &quot;Error when reading from ghc-pkg, &quot; ++ show exit ++ &quot;\n&quot; ++ UTF8.toString stderr</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>     let g (stripPrefix &quot;$topdir&quot; -&gt; Just x) | Just t &lt;- topdir = takeDirectory t ++ x</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>         -- ^ Backwards compatibility with GHC &lt; 9.0</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>         g x = x</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>     let fixer p = p{packageLibrary = True, packageDocs = g &lt;$&gt; packageDocs p}</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="st">-    let f ((stripPrefix &quot;name: &quot; -&gt; Just x):xs) = Just (mkPackageName $ trimStart x, fixer $ readCabal settings $ bstrPack $ unlines xs)</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="va">+</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="va">+    let</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="va">+        findPackageId [] = Nothing</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a><span class="va">+        findPackageId (x:xs)</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="va">+            | Just rest &lt;- stripPrefix &quot;id:&quot; x =</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="va">+                if null rest</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="va">+                    then</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="va">+                        -- some package database entries have the `id` field's value</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="va">+                        -- on the next line.</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="va">+                        --</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="va">+                        -- should really use a proper parser.</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="va">+                        case xs of</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="va">+                            x':_xs' -&gt; Just $ trimStart x'</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="va">+                            [] -&gt; Nothing</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="va">+                    else Just $ trimStart rest</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="va">+            | otherwise = findPackageId xs</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="va">+</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="va">+    let</span></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="va">+        f ((stripPrefix &quot;name: &quot; -&gt; Just x):xs)</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="va">+            | Just pId &lt;- findPackageId xs</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="va">+            , maybe True (pId `elem`) mEnabledPackages =</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="va">+            Just (pId, mkPackageName $ trimStart x, fixer $ readCabal settings $ bstrPack $ unlines xs)</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>         f _ = Nothing</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a><span class="va">+</span></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>     let</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a><span class="st">-        withHaddockHtml (name, package) =</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a><span class="va">+        withHaddockHtml (pId, name, package) =</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>             case packageDocs package of</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>                 Nothing -&gt; do</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="st">-                    packageDocs' &lt;- readGhcPkgHaddockHtml (unPackageName name)</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="st">-                    pure (name, package{packageDocs = packageDocs'})</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="va">+                    packageDocs' &lt;- readGhcPkgHaddockHtml ghcPkgFlags pId</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="va">+                    pure (pId, name, package{packageDocs = packageDocs'})</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>                 Just{} -&gt;</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="st">-                    pure (name, package)</span></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="st">-    fmap Map.fromList $ traverse withHaddockHtml $ mapMaybe f $ splitOn [&quot;---&quot;] $ lines $ filter (/= '\r') $ UTF8.toString stdout</span></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="va">+                    pure (pId, name, package)</span></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="va">+    </span></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="va">+    let dump = splitOn [&quot;---&quot;] $ lines $ filter (/= '\r') $ UTF8.toString stdout</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="va">+    Map.fromList . fmap (\(_pId, name, pkg) -&gt; (name, pkg)) &lt;$&gt; traverse withHaddockHtml (mapMaybe f dump)</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a> readGhcPkgHaddockHtml ::</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="st">-    -- | Package name</span></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="va">+    -- | Extra ghc-pkg flags</span></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a><span class="va">+    [String] -&gt;</span></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="va">+    -- | Package ID</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>     String -&gt;</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>     IO (Maybe FilePath)</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="st">-readGhcPkgHaddockHtml packageName = do</span></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="st">-    let args = [&quot;field&quot;, packageName, &quot;haddock-html&quot;, &quot;--expand-pkgroot&quot;, &quot;--simple&quot;]</span></span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="va">+readGhcPkgHaddockHtml flags pkgId = do</span></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="va">+    let args = [&quot;field&quot;, pkgId, &quot;haddock-html&quot;, &quot;--unit-id&quot;, &quot;--expand-pkgroot&quot;, &quot;--simple&quot;] ++ flags</span></span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>     (exit, stdout, stderr) &lt;- BS.readProcessWithExitCode &quot;ghc-pkg&quot; args mempty</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>     if exit /= ExitSuccess</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>         then do</span></code></pre></div>
+</details>
+<h2 id="cabal-patch"><a href="#cabal-patch">Cabal patch</a></h2>
+<p>Fixes a <a href="https://github.com/haskell/cabal/issues/11217">Cabal bug</a> that caused Haddock to sometimes generate invalid URLs.
+In Cabal’s main branch as <a href="https://github.com/haskell/cabal/commit/423ce6c8032cb66a78c8068533c295b99416841c">this commit</a>.</p>
+<details open>
+<summary>
+<code>Cabal/src/Distribution/Simple/Program/HcPkg.hs</code>
+</summary>
+<div class="sourceCode" id="cb5"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">diff --git a/Cabal/src/Distribution/Simple/Program/HcPkg.hs b/Cabal/src/Distribution/Simple/Program/HcPkg.hs</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>index a494bc63f..7ad7eba4e 100644</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">--- a/Cabal/src/Distribution/Simple/Program/HcPkg.hs</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">+++ b/Cabal/src/Distribution/Simple/Program/HcPkg.hs</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">@@ -351,7 +351,7 @@ mungePackagePaths pkgroot pkginfo =</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     , libraryDynDirs = mungePaths (libraryDynDirs pkginfo)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>     , frameworkDirs = mungePaths (frameworkDirs pkginfo)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>     , haddockInterfaces = mungePaths (haddockInterfaces pkginfo)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">-    , haddockHTMLs = mungeUrls (haddockHTMLs pkginfo)</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="va">+    , haddockHTMLs = mungePaths (mungeUrls (haddockHTMLs pkginfo))</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>     }</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>   where</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>     mungePaths = map mungePath</span></code></pre></div>
+</details>
+<h2 id="usage"><a href="#usage">Usage</a></h2>
+<p>With the patched versions of Cabal and Hoogle, I can build a local Hoogle database for a Haskell project and its dependencies.</p>
+<p>To my <code>cabal.project</code> file, I add:</p>
+<pre><code>documentation: True
+haddock-hoogle: True
+haddock-html: True
+
+package *
+  documentation: True
+  haddock-hoogle: True
+  haddock-html: True</code></pre>
+<p>The first block configures docs / Hoogle for the project’s packages, and the second block is for the project’s dependencies.
+If you don’t care about searching your project’s code then omit the first block.</p>
+<p>Then I run:</p>
+<pre><code>$ cabal build all
+$ cabal exec -- hoogle generate --local --database db.hoo
+$ hoogle serve --local --database db.hoo</code></pre>
+  <p class="post-navigation">
+  
+  <a href="/finishing-bioshock" title="Previous post: Finishing BioShock">← Finishing BioShock</a>
+  
+
+  
+  <span>Newest</span>
+  
+</p>
+
+</article>
+
+  </main>
+
+  <footer>
+    <span>Isaac Elliott</span>
+
+    <ol>
+      <li><a class="footer-item-link" href="https://github.com/lightandlight">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28a8 8 0 0 0-6.93-4 59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32M200 112a40 40 0 0 1-40 40h-48a40 40 0 0 1-40-40v-8a41.74 41.74 0 0 1 6.9-22.48 8 8 0 0 0 1.1-7.69 43.8 43.8 0 0 1 .79-33.58 43.88 43.88 0 0 1 32.32 20.06 8 8 0 0 0 6.71 3.69h32.35a8 8 0 0 0 6.74-3.69 43.87 43.87 0 0 1 32.32-20.06 43.8 43.8 0 0 1 .77 33.58 8.09 8.09 0 0 0 1 7.65 41.7 41.7 0 0 1 7 22.52Z"></path></svg>
+        GitHub
+      </a>
+
+      <li><a class="footer-item-link" href="mailto:blog@id.ielliott.io">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8m-20.57 16L128 133.15 52.57 64ZM216 192H40V74.19l82.59 75.71a8 8 0 0 0 10.82 0L216 74.19z"></path></svg>
+        Email
+      </a>
+
+      <li><a class="footer-item-link" href="/feed.xml">
+        <svg class="footer-item-link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M224 192a8 8 0 0 1-16 0c0-79.4-64.6-144-144-144a8 8 0 0 1 0-16c88.22 0 160 71.78 160 160M64 104a8 8 0 0 0 0 16 72.08 72.08 0 0 1 72 72 8 8 0 0 0 16 0 88.1 88.1 0 0 0-88-88m4 72a12 12 0 1 0 12 12 12 12 0 0 0-12-12"></path></svg>
+        Feed
+      </a>
+    </ol>
+  </footer>
+
+  
+</body>
+
+</html>
