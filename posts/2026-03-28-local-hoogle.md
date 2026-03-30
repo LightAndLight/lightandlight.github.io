@@ -9,7 +9,7 @@ tags:
 
 <div id="toc"><!-- generated --></div>
 
-[Hoogle](https://github.com/ndmitchell/hoogle) didn't work when I tried to use for local documentation search,
+[Hoogle](https://github.com/ndmitchell/hoogle) didn't work when I tried to use it for local documentation search,
 so I fixed it.
 
 ## Hoogle patches
