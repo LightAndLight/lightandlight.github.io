@@ -20,7 +20,7 @@
     <published>2026-03-30T00:30:00Z</published>
     <updated>2026-03-30T00:30:00Z</updated>
     
-    <summary type="html" xml:base="https://blog.ielliott.io/local-hoogle"><![CDATA[<p><a href="https://github.com/ndmitchell/hoogle">Hoogle</a> didn’t work when I tried to use for local documentation search,
+    <summary type="html" xml:base="https://blog.ielliott.io/local-hoogle"><![CDATA[<p><a href="https://github.com/ndmitchell/hoogle">Hoogle</a> didn’t work when I tried to use it for local documentation search,
 so I fixed it.</p>]]></summary>
     
     
@@ -38,7 +38,7 @@ so I fixed it.</p>]]></summary>
 <li><a href="#usage">Usage</a></li>
 </ul>
 </div>
-<p><a href="https://github.com/ndmitchell/hoogle">Hoogle</a> didn’t work when I tried to use for local documentation search,
+<p><a href="https://github.com/ndmitchell/hoogle">Hoogle</a> didn’t work when I tried to use it for local documentation search,
 so I fixed it.</p>
 <h2 id="hoogle-patches"><a href="#hoogle-patches">Hoogle patches</a></h2>
 <p>See also: my fork <a href="https://github.com/LightAndLight/hoogle">here</a>.</p>
