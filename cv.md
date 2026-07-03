@@ -6,16 +6,13 @@ description: My curriculum vitae.
 
 # Curriculum Vitae
 
-* Oct 2023 - present &mdash; Programmer at social discussion technology startup &mdash; Haskell, Nix
+* Oct 2023 - Feb 2026 &mdash; Programmer at [UpTrust](https://uptrusthq.com/) &mdash; Haskell, Nix
 
-  I've omitted the name of the company because it might change (we've not yet released our product),
-  and I don't want to pollute search results.
-
-  We are working on a web discussion platform.
-  My main responsibility is researching and implementing trust metrics,
-  so that we can rank and suggest content to users based on their subjective trust instead of using inscrutable machine learning methods.
-  I also contribute to the frontend
-  (Haskell: [reflex](https://reflex-frp.org/) + [GHCJS](https://github.com/ghcjs/ghcjs)),
+  UpTrust is an attempt to create more trustworthy, less polarising social media.
+  My main responsibility was researching and implementing trust metrics,
+  to rank and suggest content to users based on their subjective trust for each other instead of using inscrutable machine learning methods.
+  I also contributed to the frontend
+  (Haskell: [reflex](https://reflex-frp.org/) + [GHCJS](https://github.com/ghcjs/ghcjs), and then TypeScript),
   backend (also Haskell),
   and build system (Nix).
 
