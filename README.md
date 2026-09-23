@@ -4,6 +4,9 @@
 
 My personal GitHub Pages site.
 
+*Note: as of 2026-09-23, I've moved off GitHub Pages to [my own blog engine](https://github.com/LightAndLight/blog).
+I'll no longer be updating this repository.*
+
 ## Publishing
 
 The actual site is served from [`docs/` on the `published`
